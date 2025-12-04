@@ -1,4 +1,6 @@
 private_packages
+website docs
+.github/copilot-instruction.md
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
