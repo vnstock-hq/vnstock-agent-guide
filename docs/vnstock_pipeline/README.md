@@ -127,6 +127,64 @@ Tài liệu chi tiết về thư viện **vnstock_pipeline** - công cụ xây d
 - Giám sát & kiểm tra sức khỏe
 - Hướng dẫn khắc phục sự cố
 
+#### Scheduler Configuration (v2.1.5)
+- Tối ưu hóa max_workers, request_delay, rate_limit_wait
+- Xử lý batch lớn (500+ tickers)
+- Tránh rate limit hiệu quả
+
+---
+
+### [6. Tối Ưu Hóa Scheduler (v2.1.5)](06-scheduler-tuning.md)
+**Hướng dẫn tối ưu hóa hiệu suất & xử lý rate limiting**
+
+#### Các Tham Số Scheduler
+- **max_workers** - Số luồng xử lý song song (1-10)
+- **request_delay** - Độ trễ giữa requests (0.1-2.0s)
+- **rate_limit_wait** - Thời gian chờ khi rate limit (30-120s)
+
+#### Chiến Lược Cấu Hình
+- Ít dữ liệu (< 50 tickers): `max_workers=3, request_delay=0.5, rate_limit_wait=35`
+- Nhiều dữ liệu (100-300): `max_workers=2, request_delay=1.0, rate_limit_wait=40`
+- Rất nhiều (500+): `max_workers=1, request_delay=2.0, rate_limit_wait=120`
+- Tối ưu tốc độ: `max_workers=8, request_delay=0.1, rate_limit_wait=30`
+
+#### Các Tính Năng Khác
+- Xử lý batch lớn (500+ tickers)
+- Override tham số tại runtime
+- Debug & monitoring
+- Troubleshooting rate limit & timeout
+
+**Quan trọng cho tất cả users xử lý dữ liệu lớn**
+
+---
+
+### [5. Phương Pháp Tốt Nhất & Tối Ưu Hóa](05-best-practices.md)
+**Hướng dẫn cho triển khai sản xuất**
+
+#### Hiệu Suất
+- Lấy dữ liệu song song (50+ workers)
+- Xử lý theo lô (100 mã/lô)
+- Bộ nhớ đệm tích cực (TTL 24h)
+- Tối ưu hóa kiểu dữ liệu (giảm 75% bộ nhớ)
+- Vector hóa (nhanh hơn 100 lần)
+
+#### Xử Lý Lỗi
+- Các mẫu try-catch toàn diện
+- Xác thực ở mỗi bước
+- Thử lại với lùi theo hàm mũ
+- Ghi nhật ký lỗi vào CSV
+
+#### Kiểm Thử
+- Kiểm thử đơn vị (fetcher, validator, transformer, exporter)
+- Kiểm thử tích hợp (đầu-cuối)
+- Kiểm thử tải (10000+ dòng)
+
+#### Triển Khai
+- Container hóa Docker
+- Lập lịch pipeline (hàng ngày lúc 16:30)
+- Giám sát & kiểm tra sức khỏe
+- Hướng dẫn khắc phục sự cố
+
 ---
 
 ## 🚀 Bắt Đầu Nhanh

@@ -263,6 +263,101 @@ run_price_board(tickers, interval=0, mode="eod")
 
 ## II. BUILDERS (Xây Dựng Custom Pipeline)
 
+Từ phiên bản v2.1.5, vnstock_pipeline cung cấp các tham số scheduler để tối ưu hóa tốc độ xử lý và tránh rate limiting.
+
+### Các Tham Số Scheduler
+
+| Tham Số | Mặc Định | Phạm Vi | Mô Tả |
+|---------|----------|--------|--------|
+| **max_workers** | 3 | 1-10 | Số luồng xử lý song song |
+| **request_delay** | 0.5 | 0.1-2.0 | Delay giữa mỗi request (giây) |
+| **rate_limit_wait** | 35.0 | 30-120 | Thời gian chờ khi gặp rate limit (giây) |
+
+### Cấu hình Tại Khởi Tạo Scheduler
+
+```python
+from vnstock_pipeline.core.scheduler import Scheduler
+from vnstock_pipeline.tasks.financial import (
+    FinancialFetcher, FinancialValidator, 
+    FinancialTransformer, FinancialExporter
+)
+
+scheduler = Scheduler(
+    FinancialFetcher(),
+    FinancialValidator(),
+    FinancialTransformer(),
+    FinancialExporter(base_path="./data/financial"),
+    retry_attempts=3,
+    max_workers=3,              # (v2.1.5) Số workers
+    request_delay=0.5,          # (v2.1.5) Delay giữa requests
+    rate_limit_wait=35.0        # (v2.1.5) Chờ khi rate limit
+)
+
+scheduler.run(tickers)
+```
+
+### Override Tham Số Tại Thời Điểm Chạy
+
+```python
+# Override config mặc định của scheduler
+scheduler.run(
+    tickers,
+    max_workers=5,              # Override: 5 workers
+    request_delay=0.2,          # Override: 0.2s delay
+    rate_limit_wait=40.0        # Override: 40s chờ
+)
+```
+
+### Cấu hình Qua Hàm Task
+
+```python
+from vnstock_pipeline.tasks.financial import run_financial_task
+
+tickers = ["VCB", "ACB", "HPG", "FPT"]
+
+# Cấu hình nhanh
+run_financial_task(
+    tickers,
+    max_workers=5,              # 5 workers song song
+    request_delay=0.2,          # 0.2s delay
+    rate_limit_wait=30.0,       # 30s chờ
+)
+
+# Cấu hình an toàn
+run_financial_task(
+    tickers,
+    max_workers=1,              # Tuần tự
+    request_delay=1.0,          # 1s delay
+    rate_limit_wait=60.0,       # 60s chờ
+)
+```
+
+### Hướng Dẫn Lựa Chọn Cấu Hình
+
+**Xử lý ít dữ liệu (< 50 tickers)**:
+```python
+max_workers=3, request_delay=0.5, rate_limit_wait=35.0
+```
+
+**Xử lý nhiều dữ liệu (100+ tickers)**:
+```python
+max_workers=2, request_delay=1.0, rate_limit_wait=60.0
+```
+
+**Xử lý rất nhiều dữ liệu (500+ tickers)**:
+```python
+max_workers=1, request_delay=2.0, rate_limit_wait=120.0
+```
+
+**Tối ưu cho tốc độ (với rủi ro cao hơn)**:
+```python
+max_workers=8, request_delay=0.1, rate_limit_wait=30.0
+```
+
+---
+
+## III. BUILDERS (Xây Dựng Custom Pipeline)
+
 ### Builder 1: Simple Custom Fetcher
 
 **Mục đích**: Fetch dữ liệu từ API riêng hoặc nguồn khác

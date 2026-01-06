@@ -3,6 +3,7 @@
 ## Giới Thiệu
 
 Chương này cung cấp guidance cho:
+
 - **Performance optimization**: Tăng tốc độ fetch & process
 - **Error handling**: Quản lý lỗi gracefully
 - **Testing & debugging**: Kiểm tra pipeline
@@ -16,6 +17,7 @@ Chương này cung cấp guidance cho:
 ### 1. Parallel Fetching
 
 **Problem**: Fetch từng cổ phiếu tuần tự quá chậm
+
 **Solution**: Fetch song song
 
 ```python
@@ -41,11 +43,18 @@ scheduler = Scheduler(
     max_workers=50  # Adjust based on API limits
 )
 
-# Recommended:
-# - Free API: 5-10 workers
-# - Premium API: 20-50 workers
-# - Local data: 100+ workers
+# Recommended (v2.1.5):
+# - Ít dữ liệu (< 50 tickers): max_workers=3, request_delay=0.5
+# - Nhiều dữ liệu (100+): max_workers=2, request_delay=1.0  
+# - Rất nhiều (500+): max_workers=1, request_delay=2.0
+# - Tối ưu tốc độ: max_workers=8, request_delay=0.1
 ```
+
+**v2.1.5 Improvements**:
+
+- New `request_delay` parameter để tránh rate limit
+- New `rate_limit_wait` parameter để handle 429 errors
+- Auto-retry khi gặp rate limit
 
 ---
 
@@ -584,6 +593,7 @@ CMD ["python", "pipeline_script.py"]
 ```
 
 **requirements.txt**:
+
 ```
 vnstock>=3.2.0
 pandas>=1.3.0
@@ -593,6 +603,7 @@ websocket-client>=1.0.0
 ```
 
 **Build & Run**:
+
 ```bash
 docker build -t vnstock-pipeline:latest .
 docker run -v $(pwd)/data:/app/data vnstock-pipeline:latest
@@ -695,13 +706,13 @@ monitor.end()       # Final summary
 
 ### 1. Common Issues
 
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| **Timeout** | API slow or network issue | Increase timeout, add retries |
-| **Memory error** | Too many workers / large data | Reduce workers, process in batches |
-| **Missing data** | Ticker not exist or no data | Validate ticker, check date range |
-| **Validation fail** | Bad data quality | Check validator rules, inspect source |
-| **Export fail** | Disk full or permission | Check disk space, verify paths |
+| Issue               | Cause                         | Solution                              |
+| ------------------- | ----------------------------- | ------------------------------------- |
+| **Timeout**         | API slow or network issue     | Increase timeout, add retries         |
+| **Memory error**    | Too many workers / large data | Reduce workers, process in batches    |
+| **Missing data**    | Ticker not exist or no data   | Validate ticker, check date range     |
+| **Validation fail** | Bad data quality              | Check validator rules, inspect source |
+| **Export fail**     | Disk full or permission       | Check disk space, verify paths        |
 
 ### 2. Debugging
 
@@ -766,3 +777,6 @@ else:
     print(f"⚠️ Health issues: {health}")
 ```
 
+## [](06-scheduler-tuning.md)
+
+---

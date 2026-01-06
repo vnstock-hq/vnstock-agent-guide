@@ -224,13 +224,25 @@ scheduler = Scheduler(
     transformer,
     exporter,
     retry_attempts=3,
-    backoff_factor=2.0
+    backoff_factor=2.0,
+    max_workers=3,           # (v2.1.5) Số luồng xử lý song song
+    request_delay=0.5,       # (v2.1.5) Delay giữa requests (giây)
+    rate_limit_wait=35.0     # (v2.1.5) Thời gian chờ khi gặp rate limit (giây)
 )
 
 # Chạy
 scheduler.run(
     tickers,
     fetcher_kwargs={"start": "2024-01-01", "end": "2024-12-02"}
+)
+
+# Hoặc override tại thời điểm chạy
+scheduler.run(
+    tickers,
+    fetcher_kwargs={"start": "2024-01-01", "end": "2024-12-02"},
+    max_workers=5,           # Override scheduler config
+    request_delay=0.3,
+    rate_limit_wait=40.0
 )
 ```
 
