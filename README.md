@@ -1,13 +1,60 @@
-# vnstock-agent-guide
+# Vnstock Agent Guide
 
-> Chào mừng bạn đến với **vnstock-agent-guide** – kho tài liệu toàn diện và cập nhật nhất, được thiết kế đặc biệt để hướng dẫn sử dụng và tham chiếu các hàm của thư viện Vnstock, mang lại hỗ trợ tối ưu cho các AI Agent và người dùng.
+> 🤖 **Tài Liệu Toàn Diện & Hướng Dẫn AI Agent cho Hệ Sinh Thái Vnstock**
+>
+> Hướng dẫn chính xác cho AI agents để hiểu, tham chiếu và sử dụng hệ sinh thái thư viện **vnstock** Python cho thị trường chứng khoán Việt Nam.
 
-Kho lưu trữ này cung cấp hướng dẫn chi tiết cho các gói thư viện trong chương trình tài trợ Vnstock. Để tham gia chương trình, vui lòng truy cập: 
+---
 
-[![Insiders Program](https://img.shields.io/badge/Insiders%20Program-Tham%20Gia%20Ngay-green)](https://vnstocks.com/insiders-program#tiers)
+## 📚 Tổng Quan
 
-Tài liệu được tạo tự động từ mã nguồn của bộ thư viện Vnstock, được tinh chỉnh nhưng có thể chứa một số chi tiết chưa hoàn thiện hoặc không chính xác. Nếu bạn phát hiện bất kỳ sai sót nào, chúng tôi rất trân trọng sự đóng góp của bạn – vui lòng báo lỗi bằng cách tạo issue: 
+**vnstock-agent-guide** là kho tài liệu toàn diện được thiết kế đặc biệt cho **AI Agents** (Claude, Gemini, GitHub Copilot, Cursor, Windsurf, Google Antigravity) để cung cấp hướng dẫn chính xác, cập nhật về cách sử dụng hệ sinh thái thư viện **vnstock**.
 
-[![Report Issue](https://img.shields.io/badge/Report%20Issue-Báo%20Lỗi-red)](https://github.com/vnstock-hq/vnstock-agent-guide/issues/new)
+### 🎯 Mục Đích Chính
 
-Mục tiêu của chúng tôi là cung cấp hướng dẫn rõ ràng, chi tiết, giúp AI Agent và người dùng khai thác tối đa các chức năng và tính năng phong phú của thư viện Vnstock.
+- **Hỗ Trợ AI Agent**: Trang bị cho AI assistants với ngữ cảnh hoàn chỉnh để giúp người dùng xây dựng ứng dụng phân tích và đầu tư chứng khoán viết riêng cho cộng đồng Việt Nam
+- **Tài Liệu Tham Chiếu**: Tài liệu chi tiết cho tất cả thư viện vnstock và tính năng của chúng
+- **Hướng Dẫn User Tier**: Phân biệt rõ ràng giữa khả năng của người dùng miễn phí và tài trợ
+- **Ví Dụ Sẵn Sàng**: Mẫu code cho các trường hợp sử dụng
+- **Best Practices**: Mẹo tối ưu, xử lý lỗi, và hiệu suất
+
+---
+
+## 🏗️ Hệ Sinh Thái Thư Viện
+
+### Thư Viện Cốt Lõi
+
+| Thư Viện           | Mục Đích                                                                | Đối Tượng       | Trạng Thái    |
+| ------------------ | ---------------------------------------------------------------------- | -------------- | ------------ |
+| **vnstock**        | API dữ liệu chứng khoán miễn phí (Quote, Company, Finance, Trading, Listing) | Người dùng miễn phí | ✅ Hoạt động |
+| **vnstock_data**   | Lớp dữ liệu cao cấp với tính năng nâng cao (Macro, Insights, Screener) | Người tài trợ | ✅ Hoạt động |
+| **vnstock_ta**     | Chỉ báo phân tích kỹ thuật và vẽ biểu đồ                             | Người tài trợ | ✅ Hoạt động |
+| **vnstock_news**   | Thu thập tin tức và phân tích cảm xúc                                 | Người tài trợ | ✅ Hoạt động |
+| **vnstock_pipeline** | Pipeline dữ liệu và streaming cho production                            | Người tài trợ | ✅ Hoạt động |
+
+---
+
+## 🤖 Hướng Dẫn AI Agent
+
+Kho lưu trữ này cung cấp file hướng dẫn chuyên biệt cho các nền tảng AI khác nhau:
+
+- **[.cursor/rules/instructions.md](.cursor/rules/instructions.md)** - Cho Cursor & Windsurf IDE
+- **[.agent/rules/GEMINI.md](.agent/rules/GEMINI.md)** - Cho Cursor & Windsurf IDE
+- **[AGENTS.md](AGENTS.md)** - Hướng dẫn cho Windsurf IDE
+- **[CLAUDE.md](CLAUDE.md)** - Cho Claude Code
+- **[GEMINI.md](GEMINI.md)** - Cho Gemini
+
+---
+
+## 📚 Cấu Trúc Tài Liệu
+
+### Thư Viện Miễn Phí (`docs/vnstock/`)
+Kiến trúc, cài đặt, APIs, và hướng dẫn di chuyển
+
+### Thư Viện Cao Cấp (`docs/vnstock-data/`)
+Tính năng nâng cao, phân tích nâng cao, và best practices
+
+### Thư Viện Chuyên Biệt
+- **[docs/vnstock_ta/](docs/vnstock_ta/)** - Phân tích kỹ thuật & chỉ báo
+- **[docs/vnstock_news/](docs/vnstock_news/)** - Thu thập tin tức & cảm xúc
+- **[docs/vnstock_pipeline/](docs/vnstock_pipeline/)** - Pipeline dữ liệu & streaming

@@ -59,7 +59,83 @@ pip install pandas requests beautifulsoup4 lxml pydantic tenacity \
     python-dateutil aiohttp tqdm packaging python-dotenv
 ```
 
-## 🔧 Cấu Hình
+## � Xác Thực API Key
+
+VNStock hỗ trợ các cấp độ sử dụng khác nhau với giới hạn requests tương ứng:
+
+### Cấp Độ Sử Dụng
+
+| Cấp độ | Giới hạn | Yêu cầu | Mô tả |
+|--------|----------|---------|-------|
+| **Khách (Guest)** | 20 requests/phút | Không cần đăng ký | Sử dụng miễn phí, giới hạn thấp |
+| **Cộng đồng (Community)** | 60 requests/phút | Đăng ký miễn phí | Phù hợp cá nhân mới tìm hiểu |
+| **Tài trợ (Sponsor)** | 180-600 requests/phút | Thành viên tài trợ| Dành cho nghiên cứu chuyên sâu |
+
+### Đăng Ký API Key (Miễn Phí)
+
+** 1. Đăng ký tương tác**
+
+```python
+from vnstock.core.utils.auth import register_user
+
+# Chạy đăng ký tương tác
+register_user()
+```
+
+Quá trình đăng ký sẽ:
+1. Kiểm tra nếu đã có API key
+2. Hướng dẫn đến trang đăng nhập: https://vnstocks.com/login
+3. Nhập API key từ tài khoản Vnstock của người dùng
+4. Lưu và xác thực API key
+
+** 2. Đổi API key**
+
+1. Truy cập https://vnstocks.com/login
+2. Đăng nhập bằng tài khoản Google
+3. Lấy API key từ trang quản lý tài khoản
+4. Lưu API key bằng code:
+
+```python
+from vnstock.core.utils.auth import change_api_key
+
+# Thay đổi API key
+change_api_key("your_api_key_here")
+```
+
+### Kiểm Tra Trạng Thái
+
+```python
+from vnstock.core.utils.auth import check_status
+
+# Kiểm tra trạng thái hiện tại
+status = check_status()
+# Output:
+# ✓ API key: ab12***ef34
+#   Tier: Community
+#   Giới hạn: 60 requests/phút
+```
+
+### Sử Dụng Sau Khi Đăng Ký
+
+Sau khi đăng ký API key, VNStock sẽ tự động sử dụng key cho tất cả requests:
+
+```python
+from vnstock import Quote, Listing
+
+# Sẽ tự động sử dụng API key đã đăng ký
+quote = Quote(source="KBS", symbol="VCI")
+df = quote.history(start="2024-01-01", end="2024-12-31")
+
+# Không cần cấu hình thêm gì!
+```
+
+### Lưu Ý Quan Trọng
+
+- **API key được lưu trữ**: Không cần nhập lại. Nếu chạy trên môi trường Google Colab, sẽ phải lặp lại nhập API key mỗi lần sử dụng.
+- **Miễn phí**: Sử dụng bậc miễn phí dành cho đào tạo cộng đồng với nhu cầu trải nghiệm thấp
+- **Google OAuth**: Đăng nhập nhanh bằng tài khoản Google
+
+## � Cấu Hình
 
 ### 1. Basic Configuration
 
@@ -68,9 +144,13 @@ VNStock có thể dùng ngay sau khi cài đặt mà không cần cấu hình:
 ```python
 from vnstock import Quote, Listing
 
-# Khởi tạo với giá trị mặc định
-quote = Quote(source="vci", symbol="VCI")
-listing = Listing(source="vci")
+# Khởi tạo với KBS (khuyến nghị)
+quote = Quote(source="KBS", symbol="VCI")
+listing = Listing(source="KBS")
+
+# Hoặc VCI
+quote_kbs = Quote(source="VCI", symbol="VCI")
+listing_kbs = Listing(source="VCI")
 ```
 
 ### 2. Environment Variables
@@ -171,6 +251,8 @@ except ImportError as e:
     sys.exit(1)
 
 print("\n📊 Available Data Sources:", DataSource.all_sources())
+print("⚠️  Note: TCBS is deprecated, use VCI or KBS instead")
+print("🆕 KBS is now available in v3.4.0")
 print("⏱️ Available TimeFrames:", [t.value for t in TimeFrame])
 print("\n✅ All checks passed!")
 ```
@@ -188,12 +270,12 @@ python test_installation.py
 from vnstock import Quote, Listing
 from vnstock.core.types import TimeFrame
 
-print("Testing Quote...")
-quote = Quote(source="vci", symbol="VCI")
+print("Testing Quote...")# Khởi tạo với KBS (khuyến nghị)
+quote = Quote(source="KBS", symbol="VCI")
 print(f"✅ Quote initialized: {quote}")
 
 print("\nTesting Listing...")
-listing = Listing(source="vci")
+listing = Listing(source="KBS")
 print(f"✅ Listing initialized: {listing}")
 
 print("\n✅ Installation successful!")
@@ -269,6 +351,17 @@ HTTPError: 429 Too Many Requests
 
 **Giải pháp:**
 
+**Cách 1: Đăng ký API key miễn phí**
+
+```python
+from vnstock.core.utils.auth import register_user
+
+# Đăng ký để tăng từ 20 lên 60 requests/phút
+register_user()
+```
+
+**Cách 2: Tăng retry và delay**
+
 ```python
 from vnstock.config import Config
 import time
@@ -310,7 +403,8 @@ my_project/
 ### Ví dụ requirements.txt
 
 ```
-vnstock>=3.3.0
+vnstock>=3.4.0
+vnai>=2.3.0
 pandas>=1.3.0
 numpy>=1.20.0
 matplotlib>=3.3.0
@@ -374,8 +468,8 @@ logs/
 # example1_list_symbols.py
 from vnstock import Listing
 
-# Khởi tạo
-listing = Listing(source="vci", show_log=True)
+# Khởi tạo với KBS (khuyến nghị)
+listing = Listing(source="KBS")
 
 # Lấy tất cả mã chứng khoán
 all_symbols = listing.all_symbols(to_df=True)
@@ -406,8 +500,8 @@ python example1_list_symbols.py
 from vnstock import Quote
 from vnstock.core.types import TimeFrame
 
-# Khởi tạo
-quote = Quote(source="vci", symbol="VCI", show_log=True)
+# Khởi tạo với KBS (khuyến nghị)
+quote = Quote(source="KBS", symbol="VCI")
 
 # Lấy giá lịch sử
 df = quote.history(
@@ -430,8 +524,8 @@ print(f"Khối lượng trung bình: {df['volume'].mean():,.0f}")
 # example3_company_info.py
 from vnstock import Company
 
-# Khởi tạo
-company = Company(source="vci", symbol="VCI", show_log=True)
+# Khởi tạo với KBS (khuyến nghị)
+company = Company(source="KBS", symbol="VCI")
 
 # Lấy thông tin công ty
 overview = company.overview()
@@ -461,6 +555,7 @@ print(officers)
 
 ---
 
-**Last Updated**: 2024-12-03  
-**Version**: 3.3.0  
-**Status**: Actively Maintained
+**Last Updated**: 2024-12-17  
+**Version**: 3.4.0  
+**Status**: Actively Maintained  
+**Important**: TCBS deprecated, use VCI or KBS instead

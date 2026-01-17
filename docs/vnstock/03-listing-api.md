@@ -11,21 +11,49 @@ Listing API cung cấp các phương thức tìm kiếm, lọc và lấy thông 
 - Futures, Bonds, Warrants, Funds
 - Industries & Sector classification
 
+## 🔌 So Sánh Nguồn Dữ Liệu
+
+| Method | KBS | VCI | Ghi Chú |
+|--------|-----|-----|---------|
+| **all_symbols()** | ✅ | ✅ | Cấu trúc giống nhau |
+| **symbols_by_exchange()** | ✅ | ✅ | KBS 6 columns, VCI 7 columns |
+| **symbols_by_industries()** | ✅ | ✅ | KBS 3 columns, VCI 10 columns |
+| **symbols_by_group()** | ✅ | ✅ | Cả hai đều trả về Series |
+| **industries_icb()** | ✅ | ✅ | KBS có thể rỗng, VCI đầy đủ |
+| **all_future_indices()** | ✅ | ✅ | Cả hai đều Series |
+| **all_government_bonds()** | ✅ | ✅ | Cả hai đều Series |
+| **all_covered_warrant()** | ✅ | ✅ | Cả hai đều Series |
+| **all_bonds()** | ✅ | ✅ | Cả hai đều Series |
+| **all_etf()** | ✅ | ❌ | **KBS độc quyền** |
+| **all_indices()** | ❌ | ✅ | **VCI độc quyền** |
+| **get_supported_groups()**  | ✅ | ❌ | **KBS độc quyền** |
+| **indices_by_group()** | ❌ | ✅ | **VCI độc quyền** |
+
+**Tổng số methods:**
+- **KBS**: 12 methods
+- **VCI**: 13 methods
+
+**Khuyến nghị:**
+- **KBS**: Ổn định hơn cho Google Colab/Kaggle
+- **VCI**: Dữ liệu đầy đủ hơn, có ICB classification và indices
+
 ## 🏗️ Khởi Tạo
 
 ```python
 from vnstock import Listing
 
 # Khởi tạo Listing adapter
-# Hỗ trợ VCI, MSN
+# Hỗ trợ KBS, VCI, MSN
 listing = Listing(
-    source="vci",           # Nguồn dữ liệu
-    random_agent=False,     # Sử dụng random user agent
-    show_log=True           # Hiển thị log chi tiết
+    source="vci",           # Nguồn dữ liệu (khuyến nghị)
+    random_agent=False      # Sử dụng random user agent
 )
 
-# Hoặc với TCBS (nếu có hỗ trợ)
-# listing = Listing(source="msn")
+# Hoặc với KBS (mới trong v3.4.0)
+listing_kbs = Listing(source="kbs")
+
+# ⚠️ TCBS đã deprecated, không nên sử dụng
+# listing_tcbs = Listing(source="tcbs")  # DeprecatedWarning sẽ hiện ra
 ```
 
 ## 📋 Các Phương Thức
@@ -43,41 +71,63 @@ Lấy danh sách tất cả mã chứng khoán.
 
 **Ví dụ:**
 
+**Với KBS (khuyến nghị):**
 ```python
+# Khởi tạo với KBS
+listing = Listing(source="KBS")
+
 # Trả về DataFrame
 df = listing.all_symbols(to_df=True)
-print(df.head())
+print(f"Shape: {df.shape}")  # (1565, 2)
+print(f"Columns: {list(df.columns)}")
+print(f"Dtypes:\n{df.dtypes}")
 # Output:
-#   symbol     company_name   exchange  industry
-# 0   AAA      AAA Company      HOSE     Real Estate
-# 1   AAH      AAH Company      HOSE     Finance
-# 2   AAT      AAT Company      HOSE     Telecom
-# ...
+# Shape: (1565, 2)
+# Columns: ['symbol', 'organ_name']
+# Dtypes:
+# symbol        object
+# organ_name    object
+df.head()
+# Output với KBS:
+#   symbol          organ_name
+# 0    DPP  CTCP Dược Đồng Nai
+# 1    SDA  CTCP Simco Sông Đà
 
 # Trả về list
 symbols = listing.all_symbols(to_df=False)
+print(f"Type: {type(symbols)}")  # <class 'list'>
+print(f"Length: {len(symbols)}")  # 1565
 print(symbols[:10])
-# Output: ['AAA', 'AAH', 'AAT', 'ABS', 'ABT', ...]
-
-# Tiếng Anh
-df_en = listing.all_symbols(lang='en')
-print(df_en[['symbol', 'company_name', 'industry']].head())
+# Output: ['DPP', 'SDA', 'SDC', 'SDH', 'SDS', 'SDT', 'SDV', 'SDW', 'SDY', 'SDZ']
 ```
 
-**Kiến Thức:**
-
+**Với VCI (nguồn truyền thống):**
 ```python
-# Lấy số lượng mã
-total_symbols = len(listing.all_symbols())
-print(f"Total symbols: {total_symbols}")
+# Khởi tạo với VCI
+listing = Listing(source="VCI")
 
-# Tìm công ty theo tên
-all_df = listing.all_symbols(to_df=True)
-banking = all_df[all_df['industry'] == 'Finance']
-print(banking[['symbol', 'company_name']])
+# Trả về DataFrame
+df = listing.all_symbols(to_df=True)
+print(f"Shape: {df.shape}")  # (1733, 2)
+print(f"Columns: {list(df.columns)}")
+print(f"Dtypes:\n{df.dtypes}")
+# Output:
+# Shape: (1733, 2)
+# Columns: ['symbol', 'organ_name']
+# Dtypes:
+# symbol        object
+# organ_name    object
+df.head()
+# Output với VCI:
+#   symbol                                         organ_name
+# 0    YTC  Công ty Cổ phần Xuất nhập khẩu Y tế Thành phố ...
+# 1    YEG                     Công ty Cổ phần Tập đoàn Yeah1
 
-# Export ra CSV
-all_df.to_csv('all_symbols.csv', index=False)
+# Trả về list
+symbols = listing.all_symbols(to_df=False)
+print(f"Length: {len(symbols)}")  # 1733
+print(symbols[:10])
+# Output: ['YTC', 'YEG', 'YBM', 'YBC', 'XPH', 'XDC', 'XDC1', 'XDA', 'XDA1', 'XDG']
 ```
 
 ### 2. symbols_by_exchange() - Lọc Theo Sàn
@@ -96,23 +146,77 @@ Lấy danh sách mã chứng khoán theo sàn giao dịch.
 
 **Ví dụ:**
 
+**Với KBS (khuyến nghị):**
 ```python
+# Khởi tạo với KBS
+listing = Listing(source="KBS")
+
 # Lấy các mã HOSE
-hose_symbols = listing.symbols_by_exchange(exchange="HOSE")
-print(f"Total HOSE symbols: {len(hose_symbols)}")
-print(f"First 10: {hose_symbols[:10]}")
+hose_symbols = listing.symbols_by_exchange(exchange="HOSE", to_df=True)
+print(f"Shape: {hose_symbols.shape}")  # (1952, 6)
+print(f"Columns: {list(hose_symbols.columns)}")
+print(f"Dtypes:\n{hose_symbols.dtypes}")
+# Output:
+# Shape: (1952, 6)
+# Columns: ['symbol', 'organ_name', 'en_organ_name', 'exchange', 'type', 'id']
+# Dtypes:
+# symbol           object
+# organ_name       object
+# en_organ_name    object
+# exchange         object
+# type             object
+# id                int64
+print(hose_symbols[['symbol', 'exchange', 'type']].head())
+# Output với KBS:
+#   symbol exchange   type  id
+# 0    DPP    UPCOM  stock   1
+# 1    SDA      HNX  stock   1
 
 # Lấy các mã HNX
-hnx_symbols = listing.symbols_by_exchange(exchange="HNX")
-print(f"Total HNX symbols: {len(hnx_symbols)}")
+hnx_symbols = listing.symbols_by_exchange(exchange="HNX", to_df=True)
+print(f"HNX symbols: {len(hnx_symbols)}")
 
 # Lấy các mã UPCOM
-upcom_symbols = listing.symbols_by_exchange(exchange="UPCOM")
-print(f"Total UPCOM symbols: {len(upcom_symbols)}")
+upcom_symbols = listing.symbols_by_exchange(exchange="UPCOM", to_df=True)
+print(f"UPCOM symbols: {len(upcom_symbols)}")
 
-# Kết hợp
-all_hose_hnx = hose_symbols + hnx_symbols
-print(f"Total HOSE + HNX: {len(all_hose_hnx)}")
+# Chỉ lấy list symbols
+hose_list = listing.symbols_by_exchange(exchange="HOSE", to_df=False)
+print(f"Type: {type(hose_list)}")  # <class 'list'>
+print(f"First 10: {hose_list[:10]}")
+```
+
+**Với VCI (nguồn truyền thống):**
+```python
+# Khởi tạo với VCI
+listing = Listing(source="VCI")
+
+# Lấy các mã HOSE
+hose_symbols = listing.symbols_by_exchange(exchange="HOSE", to_df=True)
+print(f"Shape: {hose_symbols.shape}")  # (3210, 7)
+print(f"Columns: {list(hose_symbols.columns)}")
+print(f"Dtypes:\n{hose_symbols.dtypes}")
+# Output:
+# Shape: (3210, 7)
+# Columns: ['symbol', 'exchange', 'type', 'organ_short_name', 'organ_name', 'product_grp_id', 'icb_code2']
+# Dtypes:
+# symbol              object
+# exchange            object
+# type                object
+# organ_short_name    object
+# organ_name          object
+# product_grp_id      object
+# icb_code2           object
+print(hose_symbols[['symbol', 'exchange', 'type']].head())
+# Output với VCI:
+#   symbol exchange   type organ_short_name                                         organ_name product_grp_id icb_code2
+# 0    YTC    UPCOM  STOCK  XNK Y tế TP.HCM  Công ty Cổ phần Xuất nhập khẩu Y tế Thành phố ...            UPX      4500
+# 1    YEG      HSX  STOCK   Tập đoàn Yeah1                     Công ty Cổ phần Tập đoàn Yeah1            STO      5500
+
+# Chỉ lấy list symbols
+hose_list = listing.symbols_by_exchange(exchange="HOSE", to_df=False)
+print(f"Type: {type(hose_list)}")  # <class 'list'>
+print(f"First 10: {hose_list[:10]}")
 ```
 
 **Kiến Thức Nâng Cao:**
@@ -151,37 +255,70 @@ Lấy danh sách mã chứng khoán theo ngành công nghiệp.
 
 **Ví dụ:**
 
+**Với KBS (khuyến nghị):**
 ```python
-# Trả về DataFrame
-df = listing.symbols_by_industries(to_df=True)
-print(df.head())
+# Khởi tạo với KBS
+listing = Listing(source="KBS")
+
+# Lọc theo ngành cụ thể
+banking_df = listing.symbols_by_industries(industry_name='Ngân hàng', to_df=True)
+print(f"Total Banking stocks: {len(banking_df)}")
+print(banking_df.head())
+# Output với KBS:
+# Total Banking stocks: 697
+#   symbol  industry_code           industry_name
+# 0    ABR              6  Công nghệ và thông tin
+# 1    ADC              6  Công nghệ và thông tin
+# 2    BED              6  Công nghệ và thông tin
+# 3    CKV              6  Công nghệ và thông tin
+# 4    CMG              6  Công nghệ và thông tin
+
+# Lấy tất cả các ngành (không lọc)
+all_industries = listing.symbols_by_industries(to_df=True)
+print(f"Total symbols with industry: {len(all_industries)}")
+print(all_industries.head())
 # Output:
-#   symbol  industry_id  industry_name  sector
-# 0   AAA        130     Finance        Real Estate
-# 1   ACB        130     Finance        Banking
-# ...
+#   symbol  industry_code           industry_name
+# 0    MGC              1  Nông nghiệp - lâm nghiệp và thủy sản
+# 1    GVT              1  Nông nghiệp - lâm nghiệp và thủy sản
+# 2    SWC              1  Nông nghiệp - lâm nghiệp và thủy sản
+# 3    SLD              1  Nông nghiệp - lâm nghiệp và thủy sản
+# 4    VID              1  Nông nghiệp - lâm nghiệp và thủy sản
 
-# Lọc theo ngành
-finance_df = df[df['industry_name'] == 'Finance']
-print(f"Total Finance stocks: {len(finance_df)}")
-print(finance_df[['symbol', 'company_name']].head())
-
-# Lọc theo sector
-real_estate = df[df['sector'] == 'Real Estate']
-print(f"Real Estate symbols: {real_estate['symbol'].tolist()}")
+# Lấy danh sách các ngành duy nhất
+unique_industries = all_industries['industry_name'].unique()
+print(f"Total industries: {len(unique_industries)}")
+print(f"First 10 industries: {list(unique_industries[:10])}")
+# Output: Total industries: 28
 ```
 
-**Kiến Thức Nâng Cao:**
-
+**Với VCI (nguồn truyền thống):**
 ```python
-# Danh sách tất cả ngành
+# Khởi tạo với VCI
+listing = Listing(source="VCI")
+
+# Lọc theo ngành cụ thể
+banking_df = listing.symbols_by_industries(lang='vi', to_df=True)
+print(f"Total Banking stocks: {len(banking_df)}")
+print(banking_df.head())
+# Output với VCI:
+# Total Banking stocks: 35
+#   symbol                                         organ_name                   icb_name3  ... icb_code2 icb_code3 icb_code4
+# 0    STB                      Ngân hàng TMCP Sài Gòn                     Ngân hàng  ...      8000      8350      8353
+# 1    TCB                      Ngân hàng TMCP Kỹ thương Việt Nam                 Ngân hàng  ...      8000      8350      8353
+# 2    CTG                      Ngân hàng TMCP Công thương Việt Nam                 Ngân hàng  ...      8000      8350      8353
+
+# Lấy tất cả các ngành (không lọc)
+all_industries = listing.symbols_by_industries(lang='vi', to_df=True)
+print(f"Total symbols with industry: {len(all_industries)}")
+print(f"Total industries: {len(all_industries)}")
 industries = listing.symbols_by_industries(to_df=True)
 unique_industries = industries['industry_name'].unique()
 print(f"Total industries: {len(unique_industries)}")
 print(unique_industries)
 
-# Số mã theo ngành
-industry_counts = industries['industry_name'].value_counts()
+# Top 5 ngành có nhiều mã nhất
+industry_counts = industries['industry_name'].value_counts().head(5)
 print(industry_counts)
 # Output:
 # Finance           200
@@ -189,6 +326,10 @@ print(industry_counts)
 # Real Estate       120
 # ...
 
+# Lấy thông tin chi tiết về các ngành ICB (Industry Classification Benchmark) - chỉ hỗ trợ với VCI.
+# Parameters:
+# - lang (str): Ngôn ngữ
+# Ví dụ (với VCI):
 # Top 5 ngành có nhiều mã nhất
 top_5 = industry_counts.head(5)
 print(top_5)
@@ -196,7 +337,9 @@ print(top_5)
 
 ### 4. industries_icb() - Phân Loại ICB
 
-Lấy thông tin chi tiết về các ngành ICB (Industry Classification Benchmark).
+⚠️ **Lưu ý với KBS**: KBS không cung cấp ICB classification. Sử dụng `symbols_by_industries()` để lấy mã theo ngành.
+
+Lấy thông tin chi tiết về các ngành ICB (Industry Classification Benchmark) - chỉ hỗ trợ với VCI.
 
 **Parameters:**
 
@@ -204,11 +347,14 @@ Lấy thông tin chi tiết về các ngành ICB (Industry Classification Benchm
 - lang (str): Ngôn ngữ
 ```
 
-**Ví dụ:**
+**Ví dụ (với VCI):**
 
 ```python
+# Sử dụng VCI cho ICB
+listing_vci = Listing(source="vci")
+
 # Lấy danh sách ICB
-icb_df = listing.industries_icb()
+icb_df = listing_vci.industries_icb()
 print(icb_df.head())
 # Output:
 #   icb_id  icb_code  icb_name            super_group
@@ -224,6 +370,17 @@ print(f"Columns: {icb_df.columns.tolist()}")
 # Tim theo super_group
 energy = icb_df[icb_df['super_group'] == 'Energy']
 print(f"Energy sectors: {energy['icb_name'].tolist()}")
+```
+
+**Lỗi với KBS:**
+
+```python
+# ❌ Sẽ gây lỗi với KBS
+try:
+    icb_df = listing.industries_icb()
+except NotImplementedError as e:
+    print(f"Lỗi: {e}")
+# Output: Lỗi: KBS không cung cấp ICB classification. Sử dụng symbols_by_industries() để lấy mã theo ngành.
 ```
 
 **Kiến Thức:**
@@ -256,23 +413,29 @@ Lấy danh sách mã chứng khoán theo chỉ số (Index Group).
 
 ```python
 # VN30 - 30 cổ phiếu vốn hóa lớn nhất
-vn30 = listing.symbols_by_group(group="VN30")
-print(f"VN30 symbols: {vn30}")
-# Output: ['VCI', 'ACB', 'BID', 'CTD', 'CTG', ...]
+vn30 = listing.symbols_by_group(group_name="VN30", to_df=True)
+print(f"VN30 symbols: {vn30['symbol'].tolist()}")
+# Output với KBS:
+# VN30 symbols: ['ACB', 'BCM', 'BID', 'CTG', 'DGC', 'FPT', 'GAS', 'GVR', 'HDB', 'HPG', 
+#                'LPB', 'MBB', 'MSN', 'MWG', 'PLX', 'SAB', 'SHB', 'SSB', 'SSI', 'STB', 
+#                'TCB', 'TPB', 'VCB', 'VHM', 'VIB', 'VIC', 'VJC', 'VNM', 'VPB', 'VRE']
+print(f"Total VN30: {len(vn30)}")
+# Output: Total VN30: 30
 
-# VNMID - Mid-cap
-vnmid = listing.symbols_by_group(group="VNMID")
-print(f"VNMID count: {len(vnmid)}")
+# HNX30 - 30 cổ phiếu trên HNX
+hnx30 = listing.symbols_by_group(group_name="HNX30", to_df=True)
+print(f"HNX30 symbols: {hnx30['symbol'].tolist()}")
+# Output với KBS:
+# HNX30 symbols: ['BVS', 'CAP', 'CEO', 'DHT', 'DP3', 'DTD', 'DVM', 'DXP', 'HGM', 'HUT', 
+#                 'IDC', 'IDV', 'L14', 'L18', 'LAS', 'LHC', 'MBS', 'NTP', 'PLC', 'PSD', 
+#                 'PVB', 'PVC', 'PVI', 'PVS', 'SHS', 'SLS', 'TMB', 'TNG', 'VC3', 'VCS']
+print(f"Total HNX30: {len(hnx30)}")
+# Output: Total HNX30: 30
 
-# VNSML - Small-cap
-vnsml = listing.symbols_by_group(group="VNSML")
-print(f"VNSML count: {len(vnsml)}")
-
-# Chỉ số ngành
-vnit = listing.symbols_by_group(group="VNIT")  # IT
-vnfin = listing.symbols_by_group(group="VNFIN")  # Finance
-print(f"IT stocks: {len(vnit)}")
-print(f"Finance stocks: {len(vnfin)}")
+# Chỉ lấy list symbols
+vn30_list = listing.symbols_by_group(group_name="VN30", to_df=False)
+print(f"First 10 VN30: {vn30_list[:10]}")
+# Output: First 10 VN30: ['ACB', 'BCM', 'BID', 'CTG', 'DGC', 'FPT', 'GAS', 'GVR', 'HDB', 'HPG']
 ```
 
 **Kiến Thức Nâng Cao:**
@@ -440,7 +603,104 @@ vn100_df.to_csv('vn100_details.csv', index=False)
 print("✅ Exported successfully!")
 ```
 
-## 📊 Performance & Caching
+## � Methods Độc Quyền
+
+### 1. get_supported_groups() - Danh Sách Nhóm Hỗ Trợ (Chỉ KBS)
+
+Lấy danh sách tất cả các nhóm được hỗ trợ bởi KBS.
+
+**Ví dụ:**
+```python
+# Khởi tạo với KBS
+listing = Listing(source="KBS")
+
+# Lấy danh sách nhóm hỗ trợ
+supported_groups = listing.get_supported_groups()
+print(f"Shape: {supported_groups.shape}")  # (16, 4)
+print(f"Columns: {list(supported_groups.columns)}")
+print(f"Dtypes:\n{supported_groups.dtypes}")
+# Output:
+# Shape: (16, 4)
+# Columns: ['group_name', 'group_code', 'category', 'description']
+# Dtypes:
+# group_name     object
+# group_code     object
+# category       object
+# description    object
+print(supported_groups[['group_name', 'category']].head())
+```
+
+**Output với KBS:**
+```
+  group_name       category
+0       BOND     Trái phiếu
+1         CW    Chứng quyền
+2        ETF        ETF/Quỹ
+3   FU_INDEX      Phái sinh
+4        HNX  Sàn giao dịch
+```
+
+### 2. all_indices() - Tất Cả Chỉ Số (Chỉ VCI)
+
+Lấy danh sách tất cả các chỉ số tiêu chuẩn hóa với thông tin đầy đủ.
+
+**Ví dụ:**
+```python
+# Khởi tạo với VCI
+listing = Listing(source="VCI")
+
+# Lấy tất cả chỉ số
+all_indices = listing.all_indices()
+print(f"Shape: {all_indices.shape}")  # (21, 7)
+print(f"Columns: {list(all_indices.columns)}")
+print(f"Dtypes:\n{all_indices.dtypes}")
+# Output:
+# Shape: (21, 7)
+# Columns: ['symbol', 'name', 'description', 'full_name', 'group', 'index_id', 'sector_id']
+# Dtypes:
+# symbol          object
+# name            object
+# description     object
+# full_name       object
+# group           object
+# index_id         int64
+# sector_id      float64
+print(all_indices[['symbol', 'name', 'group']].head())
+```
+
+**Output với VCI:**
+```
+  symbol   name         group
+0   VN30   VN30  HOSE Indices
+1  VNMID  VNMID  HOSE Indices
+2  VNSML  VNSML  HOSE Indices
+3  VN100  VN100  HOSE Indices
+4  VNALL  VNALL  HOSE Indices
+```
+
+### 3. indices_by_group() - Chỉ Số Theo Nhóm (Chỉ VCI)
+
+Lấy danh sách chỉ số theo nhóm tiêu chuẩn hóa.
+
+**Tham số:**
+- `group` (str): Tên nhóm
+
+**Ví dụ:**
+```python
+# Khởi tạo với VCI
+listing = Listing(source="VCI")
+
+# Lấy chỉ số theo nhóm
+indices = listing.indices_by_group(group="HOSE")
+if indices is not None:
+    print(f"Shape: {indices.shape}")
+    print(indices[['symbol', 'name']].head())
+else:
+    print("Không có dữ liệu cho nhóm này")
+# Note: Method có thể trả về None nếu không có dữ liệu
+```
+
+## �📊 Performance & Caching
 
 ### Caching Dữ Liệu
 
@@ -491,11 +751,28 @@ print(f"HOSE Finance: {len(finance_df)}")
 # ❌ Sai
 listing = Listing(source="invalid")
 
-# ✅ Đúng
-listing = Listing(source="vci")  # hoặc "msn"
+# ✅ Đúng - KBS (khuyến nghị), VCI, MSN
+listing = Listing(source="kbs")  # Nguồn mới, ổn định
+listing = Listing(source="vci")  # Nguồn truyền thống
+listing = Listing(source="msn")  # Nguồn dữ liệu quốc tế, crypto
+
+# ⚠️ TCBS đã deprecated
+# listing = Listing(source="tcbs")  # DeprecatedWarning
 ```
 
-### Lỗi 2: Network/Timeout
+### Lỗi 2: NotImplementedError - ICB với KBS
+
+```python
+# ❌ KBS không hỗ trợ ICB
+try:
+    icb_df = listing.industries_icb()
+except NotImplementedError as e:
+    print(f"Lỗi: {e}")
+    # Solution: Sử dụng symbols_by_industries() thay thế
+    industries = listing.symbols_by_industries()
+```
+
+### Lỗi 3: Network/Timeout
 
 ```python
 # Tăng timeout
@@ -510,11 +787,11 @@ def get_symbols():
     return listing.all_symbols()
 ```
 
-### Lỗi 3: Empty Result
+### Lỗi 4: Empty Result
 
 ```python
 # Nếu không có dữ liệu
-symbols = listing.symbols_by_group(group="INVALID_INDEX")
+symbols = listing.symbols_by_group(group_name="INVALID_INDEX")
 if not symbols or len(symbols) == 0:
     print("⚠️ No symbols found for this group")
 ```
@@ -531,6 +808,7 @@ if not symbols or len(symbols) == 0:
 
 ---
 
-**Last Updated**: 2024-12-03  
-**Version**: 3.3.0  
-**Status**: Actively Maintained
+**Last Updated**: 2024-12-17  
+**Version**: 3.4.0  
+**Status**: Actively Maintained  
+**Important**: KBS là nguồn dữ liệu mới được khuyến nghị, ổn định hơn VCI cho Google Colab/Kaggle

@@ -1,4 +1,4 @@
-# 05 - Financial API - Dữ Liệu Tài Chính
+# 07 - Financial API - Dữ Liệu Tài Chính
 
 ## 📖 Giới Thiệu
 
@@ -9,206 +9,346 @@ Financial API cung cấp các phương thức lấy dữ liệu tài chính doan
 - **Chu kỳ báo cáo**: Hàng quý (Quarter) hoặc hàng năm (Year)
 - **Phân tích**: Xu hướng tài chính, so sánh ngành
 
+## 🔌 So Sánh Nguồn Dữ Liệu
+
+| Method | KBS | VCI | Ghi Chú |
+|--------|-----|-----|---------|
+| **income_statement()** | ✅ | ✅ | KBS: 90 items, VCI: 25+ columns |
+| **balance_sheet()** | ✅ | ✅ | KBS: 162 items, VCI: 36 columns |
+| **cash_flow()** | ✅ | ✅ | KBS: 159 items, VCI: 39 columns |
+| **ratio()** | ✅ | ✅ | KBS: 27 ratios, VCI: 37+ ratios |
+
+**Tổng số methods:**
+- **KBS**: 4 methods
+- **VCI**: 4 methods
+
+**Khuyến nghị:**
+- **KBS**: Dữ liệu chi tiết theo dòng (item-based), phù hợp phân tích chuyên sâu
+- **VCI**: Dữ liệu theo cột (column-based), dễ sử dụng và tích hợp
+
 ## 🏗️ Khởi Tạo
 
 ```python
 from vnstock import Finance
 
-# Khởi tạo Finance adapter
-# Hỗ trợ: VCI, TCBS
-finance = Finance(
-    source="vci",           # Nguồn dữ liệu
-    symbol="VCI",           # Mã chứng khoán
-    random_agent=False,     # Sử dụng random user agent
-    show_log=True           # Hiển thị log chi tiết
+# Khởi tạo với KBS
+finance_kbs = Finance(
+    source="kbs",           # Nguồn dữ liệu
+    symbol="VCI",            # Mã chứng khoán
+    standardize_columns=True,  # Chuẩn hóa tên cột
+    random_agent=False      # Sử dụng random user agent
+)
+
+# Khởi tạo với VCI
+finance_vci = Finance(
+    source="vci",            # Nguồn dữ liệu
+    symbol="VCI",            # Mã chứng khoán
+    period="quarter",        # Chu kỳ mặc định
+    get_all=True,            # Lấy tất cả các trường
+    show_log=False           # Hiển thị log
 )
 ```
 
-## 📊 Báo Cáo Tài Chính
+## 📊 Cấu Trúc Dữ Liệu So Sánh
 
-### 1. balance_sheet() - Bảng Cân Đối Kế Toán
+### KBS Data Structure
 
-Lấy dữ liệu bảng cân đối kế toán theo quý hoặc năm.
+**Format:** Item-based (dòng-based)
+- **Shape**: (N items, 10 columns)
+- **Index**: Không có index name
+- **Columns tiêu chuẩn**:
+  ```
+  ['item', 'item_en', 'item_id', 'unit', 'levels', 'row_number', 
+   '2025-Q3', '2025-Q2', '2025-Q1', '2024-Q4']
+  ```
+- **Đặc điểm**:
+  - Mỗi dòng là một chỉ tiêu tài chính
+  - Các cột thời gian là các quý/ năm
+  - Có cả tên tiếng Việt và tiếng Anh
+  - Có hierarchical levels
 
-**Ví dụ:**
+### VCI Data Structure
 
+**Format:** Column-based (cột-based)
+- **Shape**: (51 periods, N columns)
+- **Index**: Không có index name
+- **Columns tiêu chuẩn**:
+  ```
+  ['ticker', 'yearReport', 'lengthReport', ...financial_fields...]
+  ```
+- **Đặc điểm**:
+  - Mỗi dòng là một kỳ báo cáo
+  - Các cột là các chỉ tiêu tài chính
+  - Tên cột theo tiếng Anh có đơn vị
+  - MultiIndex cho ratios
+
+## 📚 Phương Thức Chính
+
+### 1. income_statement() - Báo Cáo Kết Quả Kinh Doanh
+
+Lấy dữ liệu báo cáo kết quả hoạt động kinh doanh.
+
+**KBS:**
 ```python
-from vnstock import Finance
+finance = Finance(source="kbs", symbol="VCI")
+df = finance.income_statement(period="quarter")
 
+print(f"Shape: {df.shape}")  # (90, 10)
+print(f"Columns: {list(df.columns)}")
+# ['item', 'item_en', 'item_id', 'unit', 'levels', 'row_number', 
+#  '2025-Q3', '2025-Q2', '2025-Q1', '2024-Q4']
+
+# Xem các chỉ tiêu chính
+print(df[df['levels'] == 1][['item', 'item_en', '2025-Q3']].head())
+```
+
+**Output KBS:**
+```
+Shape: (90, 10)
+Columns: ['item', 'item_en', 'item_id', 'unit', 'levels', 'row_number', '2025-Q3', '2025-Q2', '2025-Q1', '2024-Q4']
+
+                 item                 item_en  2025-Q3
+0            Doanh thu               Revenue  1200.5
+1        Lợi nhuận gộp           Gross_profit   450.2
+2    Lợi nhuận hoạt động       Operating_profit   180.3
+3  Lợi nhuận trước thuế     Profit_before_tax   165.1
+4      Lợi nhuận sau thuế           Net_profit   132.4
+```
+
+**VCI:**
+```python
 finance = Finance(source="vci", symbol="VCI")
+df = finance.income_statement(period="quarter")
 
-# Bảng cân đối năm
-df = finance.balance_sheet(period="year")
+print(f"Shape: {df.shape}")  # (51, 25)
+print(f"Columns: {list(df.columns)}")
+# ['ticker', 'yearReport', 'lengthReport', 'Revenue (Bn. VND)', 
+#  'Revenue YoY (%)', 'Cost of Sales', 'Gross Profit', ...]
 
-print(f"Số bản ghi: {len(df)}")
-print(f"Các cột: {df.columns.tolist()}")
-print(df)
+# Xem dữ liệu gần nhất
+print(df[['ticker', 'yearReport', 'Revenue (Bn. VND)', 'Net Profit For the Year']].tail())
 ```
 
-**Output:**
+**Output VCI:**
 ```
-Số bản ghi: 13
-Các cột: ['ticker', 'yearReport', 'CURRENT ASSETS (Bn. VND)', 'Cash and cash equivalents (Bn. VND)', ...]
+Shape: (51, 25)
+Columns: ['ticker', 'yearReport', 'lengthReport', 'Revenue (Bn. VND)', 
+          'Revenue YoY (%)', 'Attribute to parent company (Bn. VND)', ...]
+
+   ticker  yearReport  Revenue (Bn. VND)  Net Profit For the Year
+46    VCI        2025               1200                    132
+47    VCI        2024               1150                    125
+48    VCI        2023               1080                    118
 ```
 
-### 2. income_statement() - Báo Cáo Khoản Lợi Nhập
+### 2. balance_sheet() - Bảng Cân Đối Kế Toán
 
-Lấy dữ liệu báo cáo khoản lợi nhập theo quý hoặc năm.
+Lấy dữ liệu bảng cân đối kế toán.
 
-**Ví dụ:**
+**KBS:**
+```python
+df = finance.balance_sheet(period="quarter")
+print(f"Shape: {df.shape}")  # (162, 10)
+
+# Các chỉ tiêu quan trọng
+key_items = ['Tổng tài sản', 'Tài sản ngắn hạn', 'Vốn chủ sở hữu', 'Nợ phải trả']
+print(df[df['item'].isin(key_items)][['item', '2025-Q3']])
+```
+
+**VCI:**
+```python
+df = finance.balance_sheet(period="quarter")
+print(f"Shape: {df.shape}")  # (51, 36)
+
+# Các chỉ tiêu quan trọng
+key_cols = ['TOTAL ASSETS (Bn. VND)', 'CURRENT ASSETS (Bn. VND)', 
+           "OWNER'S EQUITY(Bn.VND)", 'LIABILITIES (Bn. VND)']
+print(df[['ticker', 'yearReport'] + key_cols].tail())
+```
+
+### 3. cash_flow() - Báo Cáo Lưu Chuyển Tiền Tệ
+
+Lấy dữ liệu báo cáo lưu chuyển tiền tệ.
+
+**KBS:**
+```python
+df = finance.cash_flow(period="quarter")
+print(f"Shape: {df.shape}")  # (159, 10)
+
+# Các dòng tiền quan trọng
+cash_items = ['Lưu chuyển tiền từ hoạt động', 'Lưu chuyển tiền từ đầu tư', 
+              'Lưu chuyển tiền từ tài chính', 'Thay đổi tiền mặt']
+print(df[df['item'].isin(cash_items)][['item', '2025-Q3']])
+```
+
+**VCI:**
+```python
+df = finance.cash_flow(period="quarter")
+print(f"Shape: {df.shape}")  # (51, 39)
+
+# Các dòng tiền quan trọng
+cash_cols = ['Net cash inflows/outflows from operating activities',
+             'Net Cash Flows from Investing Activities',
+             'Cash flows from financial activities',
+             'Net increase/decrease in cash and cash equivalents']
+print(df[['ticker', 'yearReport'] + cash_cols].tail())
+```
+
+### 4. ratio() - Chỉ Số Tài Chính
+
+Lấy các chỉ số tài chính quan trọng.
+
+**KBS:**
+```python
+df = finance.ratio(period="quarter")
+print(f"Shape: {df.shape}")  # (27, 10)
+
+# Các chỉ số quan trọng
+ratio_items = ['PE', 'PB', 'ROE', 'ROA', 'Beta']
+print(df[df['item'].isin(ratio_items)][['item', 'item_en', '2025-Q3']])
+```
+
+**Output KBS:**
+```
+Shape: (27, 10)
+     item item_en  2025-Q3
+0      PE     pe     12.5
+1      PB     pb      1.8
+2     ROE    roe     15.2
+3     ROA    roa      8.7
+4   Beta   beta      1.2
+```
+
+**VCI:**
+```python
+df = finance.ratio(period="quarter", flatten_columns=True)
+print(f"Shape: {df.shape}")  # (51, 37+)
+
+# Các chỉ số quan trọng
+ratio_cols = ['Chỉ tiêu định giá_P/E', 'Chỉ tiêu định giá_P/B', 
+              'Chỉ tiêu khả năng sinh lợi_ROE (%)', 'Chỉ tiêu khả năng sinh lợi_ROA (%)']
+print(df[['ticker', 'yearReport'] + ratio_cols].tail())
+```
+
+**Output VCI:**
+```
+Shape: (51, 37)
+   ticker  yearReport  Chỉ tiêu định giá_P/E  Chỉ tiêu định giá_P/B  \
+46    VCI        2025                   12.5                    1.8
+47    VCI        2024                   11.8                    1.7
+
+   Chỉ tiêu khả năng sinh lợi_ROE (%)  Chỉ tiêu khả năng sinh lợi_ROA (%)
+46                             15.2                          8.7
+47                             14.8                          8.3
+```
+
+## 🎯 So Sánh Chi Tiết
+
+### Data Format Comparison
+
+| Feature | KBS | VCI | Ưu Điểm |
+|---------|-----|-----|---------|
+| **Structure** | Item-based rows | Column-based periods | KBS chi tiết, VCI dễ dùng |
+| **Language** | Việt Nam + Anh | Tiếng Anh | KBS đa ngôn ngữ |
+| **Units** | Trong column 'unit' | Trong tên column | VCI rõ ràng hơn |
+| **Time Series** | Columns là thời gian | Rows là thời gian | Tùy chọn use case |
+| **Hierarchical** | Có levels | Không | KBS có cấu trúc |
+
+### Field Mapping Examples
+
+**KBS → VCI Mapping:**
+```
+KBS: 'Doanh thu' → VCI: 'Revenue (Bn. VND)'
+KBS: 'Lợi nhuận sau thuế' → VCI: 'Net Profit For the Year'
+KBS: 'Tổng tài sản' → VCI: 'TOTAL ASSETS (Bn. VND)'
+KBS: 'Vốn chủ sở hữu' → VCI: "OWNER'S EQUITY(Bn.VND)"
+KBS: 'PE' → VCI: 'Chỉ tiêu định giá_P/E'
+```
+
+### Use Case Recommendations
+
+**Dùng KBS khi:**
+- Cần phân tích chi tiết theo dòng chỉ tiêu
+- Muốn dữ liệu đa ngôn ngữ (Việt + Anh)
+- Cần hierarchical structure
+- Muốn số lượng items nhiều hơn
+
+**Dùng VCI khi:**
+- Cần tích hợp dễ dàng với pandas/Excel
+- Muốn format column-based chuẩn
+- Cần các chỉ tiêu tài chính đầy đủ
+- Muốn multi-level ratios
+
+## 💡 Mẹo Sử Dụng
+
+### 1. Chuyển đổi KBS sang VCI format
 
 ```python
-from vnstock import Finance
+# KBS format → VCI format (transpose)
+def kbs_to_vci_format(df_kbs):
+    # Chọn các cột số liệu
+    data_cols = [col for col in df_kbs.columns if col.isdigit() or 'Q' in col]
+    
+    # Transpose để thời gian thành rows
+    df_transposed = df_kbs.set_index('item_en')[data_cols].T
+    
+    # Reset index để thời gian thành column
+    df_transposed = df_transposed.reset_index()
+    df_transposed.columns = ['period'] + list(df_transposed.columns[1:])
+    
+    return df_transposed
 
-finance = Finance(source="vci", symbol="VCI")
-
-# Báo cáo khoản lợi nhập năm
-df = finance.income_statement(period="year")
-
-print(f"Số bản ghi: {len(df)}")
-print(f"Các cột: {df.columns.tolist()}")
-print(df)
+# Sử dụng
+finance_kbs = Finance(source="kbs", symbol="VCI")
+df_kbs = finance_kbs.income_statement(period="quarter")
+df_vci_format = kbs_to_vci_format(df_kbs)
 ```
 
-**Output:**
-```
-Số bản ghi: 13
-Các cột: ['ticker', 'yearReport', 'Revenue (Bn. VND)', 'Revenue YoY (%)', 'Attribute to parent company (Bn. VND)', ...]
-```
-
-### 3. cash_flow() - Lưu Chuyển Tiền Tệ
-
-Lấy dữ liệu báo cáo lưu chuyển tiền tệ theo quý hoặc năm.
-
-**Ví dụ:**
+### 2. Lấy các chỉ tiêu quan trọng
 
 ```python
-from vnstock import Finance
+# KBS - Lọc theo levels
+def get_kbs_key_items(df, level=1):
+    """Lấy các chỉ tiêu chính (level 1)"""
+    return df[df['levels'] == level]
 
-finance = Finance(source="vci", symbol="VCI")
-
-# Lưu chuyển tiền tệ năm
-df = finance.cash_flow(period="year")
-
-print(f"Số bản ghi: {len(df)}")
-print(f"Các cột: {df.columns.tolist()}")
-print(df)
+# VCI - Lọc theo pattern
+def get_vci_key_columns(df):
+    """Lấy các cột chính"""
+    key_patterns = ['Revenue', 'Profit', 'Assets', 'Equity', 'Cash']
+    key_cols = [col for col in df.columns 
+                if any(pattern in col for pattern in key_patterns)]
+    return ['ticker', 'yearReport'] + key_cols
 ```
 
-**Output:**
-```
-Số bản ghi: 13
-Các cột: ['ticker', 'yearReport', 'Net Profit/Loss before tax', 'Depreciation and Amortisation', ...]
-```
-
-## 💹 Chỉ Số Tài Chính
-
-### 4. ratio() - Các Chỉ Số Tài Chính
-
-Lấy các chỉ số tài chính khác nhau (MultiIndex DataFrame).
-
-**Ví dụ:**
+### 3. Kết hợp dữ liệu từ cả hai nguồn
 
 ```python
-from vnstock import Finance
+# Kết hợp để đối chiếu
+finance_kbs = Finance(source="kbs", symbol="VCI")
+finance_vci = Finance(source="vci", symbol="VCI")
 
-finance = Finance(source="vci", symbol="VCI")
+# Lấy revenue từ cả hai nguồn
+revenue_kbs = finance_kbs.income_statement(period="quarter")
+revenue_vci = finance_vci.income_statement(period="quarter")
 
-# Lấy tất cả chỉ số
-df = finance.ratio()
+# Chuẩn hóa và so sánh
+kbs_revenue = revenue_kbs[revenue_kbs['item_en'] == 'Revenue']['2025-Q3'].iloc[0]
+vci_revenue = revenue_vci[revenue_vci['yearReport'] == 2025]['Revenue (Bn. VND)'].iloc[0]
 
-print(f"Số bản ghi: {len(df)}")
-print(f"Các nhóm chỉ số: {df.columns.get_level_values(0).unique().tolist()}")
-print(df)
+print(f"KBS Revenue: {kbs_revenue}")
+print(f"VCI Revenue: {vci_revenue}")
+print(f"Difference: {abs(kbs_revenue - vci_revenue):.2f}")
 ```
 
-**Output:**
-```
-Số bản ghi: 51
-Các nhóm chỉ số: ['Meta', 'Chỉ tiêu cơ cấu nguồn vốn', 'Chỉ tiêu hiệu quả hoạt động', 'Chỉ tiêu khả năng sinh lợi', 'Chỉ tiêu thanh khoản', 'Chỉ tiêu định giá']
-```
+## 🚨 Lưu Ý Quan Trọng
 
-## 📈 Phân Tích Tài Chính
-
-### Ví dụ 1: Lấy Dữ Liệu Báo Cáo Tài Chính
-
-```python
-from vnstock import Finance
-
-finance = Finance(source="vci", symbol="ACB")
-
-# Bảng cân đối kế toán
-bs = finance.balance_sheet(period="year")
-print(f"Balance Sheet: {len(bs)} năm")
-print(bs.columns.tolist()[:5])
-
-# Báo cáo khoản lợi nhập
-is_data = finance.income_statement(period="year")
-print(f"\nIncome Statement: {len(is_data)} năm")
-print(is_data.columns.tolist()[:5])
-
-# Lưu chuyển tiền tệ
-cf = finance.cash_flow(period="year")
-print(f"\nCash Flow: {len(cf)} năm")
-print(cf.columns.tolist()[:5])
-
-# Chỉ số tài chính
-ratios = finance.ratio()
-print(f"\nRatios: {len(ratios)} bản ghi")
-print(f"Các nhóm: {ratios.columns.get_level_values(0).unique().tolist()}")
-```
-
-### Ví dụ 2: So Sánh Nhiều Công Ty
-
-```python
-from vnstock import Finance
-
-# Danh sách các cổ phiếu
-symbols = ['ACB', 'BID', 'CTG']
-
-for symbol in symbols:
-    try:
-        finance = Finance(source="vci", symbol=symbol)
-        
-        # Lấy dữ liệu năm mới nhất
-        bs = finance.balance_sheet(period="year")
-        is_data = finance.income_statement(period="year")
-        
-        print(f"\n✅ {symbol}")
-        print(f"   Balance Sheet: {len(bs)} bản ghi")
-        print(f"   Income Statement: {len(is_data)} bản ghi")
-    except Exception as e:
-        print(f"❌ {symbol}: {type(e).__name__}")
-```
-
-## 💾 Lưu Dữ Liệu Tài Chính
-
-```python
-from vnstock import Finance
-import pandas as pd
-
-finance = Finance(source="vci", symbol="VCI")
-
-# Lấy dữ liệu
-bs = finance.balance_sheet(period="year")
-is_data = finance.income_statement(period="year")
-cf = finance.cash_flow(period="year")
-
-# Export ra CSV
-bs.to_csv('balance_sheet.csv', index=False)
-is_data.to_csv('income_statement.csv', index=False)
-cf.to_csv('cash_flow.csv', index=False)
-
-print("✅ Dữ liệu đã export ra CSV")
-
-# Hoặc export ra Excel
-with pd.ExcelWriter('vci_financials.xlsx') as writer:
-    bs.to_excel(writer, sheet_name='Balance Sheet', index=False)
-    is_data.to_excel(writer, sheet_name='Income Statement', index=False)
-    cf.to_excel(writer, sheet_name='Cash Flow', index=False)
-
-print("✅ Dữ liệu đã export ra Excel")
-```
+1. **Data Validation**: Luôn kiểm tra shape và columns trước khi xử lý
+2. **Missing Data**: VCI có thể có NaN cho các chỉ tiêu không áp dụng
+3. **Unit Differences**: KBS dùng unit column, VCI ghi trong tên column
+4. **Period Format**: KBS dùng "2025-Q3", VCI dùng năm 2025
+5. **Language**: KBS support Việt Nam, VCI chỉ tiếng Anh
+6. **Memory Usage**: KBS có nhiều items hơn, VCI có nhiều periods hơn
 
 ## ❌ Các Lỗi Thường Gặp
 
@@ -228,9 +368,9 @@ df = finance.balance_sheet(period="quarter")  # hoặc "year"
 # ❌ Sai - FMP không hỗ trợ Finance
 finance = Finance(source="fmp", symbol="AAPL")
 
-# ✅ Đúng - Dùng VCI hoặc TCBS
+# ✅ Đúng - Dùng VCI hoặc KBS
 finance = Finance(source="vci", symbol="VCI")
-finance = Finance(source="tcbs", symbol="VCI")
+finance = Finance(source="kbs", symbol="VCI")
 ```
 
 ### Lỗi 3: Không Có Dữ Liệu
