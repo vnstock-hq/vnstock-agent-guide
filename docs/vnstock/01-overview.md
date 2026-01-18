@@ -129,8 +129,8 @@ TIER_LIMITS = {
     "guest": {"min": 20, "hour": 1200, "day": 5000},
     "free": {"min": 60, "hour": 3600, "day": 10000},
     "bronze": {"min": 180, "hour": 10800, "day": 50000},
-    "silver": {"min": 300, "hour": 18000, "day": 100000},
-    "golden": {"min": 600, "hour": 36000, "day": 150000}
+    "silver": {"min": 300, "hour": 15000, "day": 100000},
+    "golden": {"min": 500, "hour": 30000, "day": 150000}
 }
 ```
 

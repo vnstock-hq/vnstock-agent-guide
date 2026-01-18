@@ -73,13 +73,13 @@ cp GEMINI.md ./
 
 ### Bước 3: Sử Dụng Với AI Agents
 
-| AI Agent | File Instruction | Đặt tại thư mục gốc |
-|---------|----------------|-------------------|
-| **Google Antigravity** | `.agent/rules/GEMINI.md` | ✅ |
-| **Cursor IDE** | `.cursor/rules/instructions.md` | ✅ |
-| **Windsurf IDE** | `AGENTS.md` | ✅ |
-| **Claude Code** | `CLAUDE.md` | ✅ |
-| **Google Gemini CLI** | `GEMINI.md` | ✅ |
+| AI Agent               | File Instruction                | Đặt tại thư mục gốc | Link Tải IDE                                                              |
+| ---------------------- | ------------------------------- | ------------------- | ------------------------------------------------------------------------- |
+| **Google Antigravity** | `.agent/rules/GEMINI.md`        | ✅                  | [Tải tại đây](https://antigravity.google/)                               |
+| **Cursor IDE**         | `.cursor/rules/instructions.md` | ✅                  | [Tải tại đây](https://cursor.com/download)                                |
+| **Windsurf IDE**       | `AGENTS.md`                     | ✅                  | [Tải tại đây](https://windsurf.com/editor)                                |
+| **Claude Code**        | `CLAUDE.md`                     | ✅                  | [Tải tại đây](https://claude.com/product/claude-code)                     |
+| **VS Code + Copilot**  | `.github/copilot-instructions.md` | ✅               | [VS Code](https://code.visualstudio.com/download) + [Github Copilot](https://github.com/features/copilot/plans) |
 
 ### Bước 4: Demo Notebook (Colab)
 
