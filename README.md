@@ -24,13 +24,13 @@
 
 ### Thư Viện Cốt Lõi
 
-| Thư Viện           | Mục Đích                                                                | Đối Tượng       | Trạng Thái    |
-| ------------------ | ---------------------------------------------------------------------- | -------------- | ------------ |
-| **vnstock**        | API dữ liệu chứng khoán miễn phí (Quote, Company, Finance, Trading, Listing) | Người dùng miễn phí | ✅ Hoạt động |
-| **vnstock_data**   | Lớp dữ liệu cao cấp với tính năng nâng cao (Macro, Insights, Screener) | Người tài trợ | ✅ Hoạt động |
-| **vnstock_ta**     | Chỉ báo phân tích kỹ thuật và vẽ biểu đồ                             | Người tài trợ | ✅ Hoạt động |
-| **vnstock_news**   | Thu thập tin tức và phân tích cảm xúc                                 | Người tài trợ | ✅ Hoạt động |
-| **vnstock_pipeline** | Pipeline dữ liệu và streaming cho production                            | Người tài trợ | ✅ Hoạt động |
+| Thư Viện             | Mục Đích                                                                     | Đối Tượng           | Trạng Thái   |
+| -------------------- | ---------------------------------------------------------------------------- | ------------------- | ------------ |
+| **vnstock**          | API dữ liệu chứng khoán miễn phí (Quote, Company, Finance, Trading, Listing) | Người dùng miễn phí | ✅ Hoạt động |
+| **vnstock_data**     | Lớp dữ liệu cao cấp với tính năng nâng cao (Macro, Insights, Screener)       | Người tài trợ       | ✅ Hoạt động |
+| **vnstock_ta**       | Chỉ báo phân tích kỹ thuật và vẽ biểu đồ                                     | Người tài trợ       | ✅ Hoạt động |
+| **vnstock_news**     | Thu thập tin tức và phân tích cảm xúc                                        | Người tài trợ       | ✅ Hoạt động |
+| **vnstock_pipeline** | Pipeline dữ liệu và streaming cho production                                 | Người tài trợ       | ✅ Hoạt động |
 
 ---
 
@@ -64,6 +64,7 @@ Sau khi clone, sao chép các thư mục sau ra thư mục gốc của dự án 
 
 ```bash
 # Copy các thư mục instruction ra thư mục gốc
+cp -r docs​ ./
 cp -r .agent ./
 cp -r .cursor ./
 cp AGENTS.md ./
@@ -73,13 +74,13 @@ cp GEMINI.md ./
 
 ### Bước 3: Sử Dụng Với AI Agents
 
-| AI Agent               | File Instruction                | Đặt tại thư mục gốc | Link Tải IDE                                                              |
-| ---------------------- | ------------------------------- | ------------------- | ------------------------------------------------------------------------- |
-| **Google Antigravity** | `.agent/rules/GEMINI.md`        | ✅                  | [Tải tại đây](https://antigravity.google/)                               |
-| **Cursor IDE**         | `.cursor/rules/instructions.md` | ✅                  | [Tải tại đây](https://cursor.com/download)                                |
-| **Windsurf IDE**       | `AGENTS.md`                     | ✅                  | [Tải tại đây](https://windsurf.com/editor)                                |
-| **Claude Code**        | `CLAUDE.md`                     | ✅                  | [Tải tại đây](https://claude.com/product/claude-code)                     |
-| **VS Code + Copilot**  | `.github/copilot-instructions.md` | ✅               | [VS Code](https://code.visualstudio.com/download) + [Github Copilot](https://github.com/features/copilot/plans) |
+| AI Agent               | File Instruction                  | Đặt tại thư mục gốc | Link Tải IDE                                                                                         |
+| ---------------------- | --------------------------------- | ------------------- | ---------------------------------------------------------------------------------------------------- |
+| **Google Antigravity** | `.agent/rules/GEMINI.md`          | ✅                  | [Tải tại đây](https://antigravity.google/)                                                           |
+| **Cursor IDE**         | `.cursor/rules/instructions.md`   | ✅                  | [Tải tại đây](https://cursor.com/download)                                                           |
+| **Windsurf IDE**       | `AGENTS.md`                       | ✅                  | [Tải tại đây](https://windsurf.com/editor)                                                           |
+| **Claude Code**        | `CLAUDE.md`                       | ✅                  | [Tải tại đây](https://claude.com/product/claude-code)                                                |
+| **VS Code + Copilot**  | `.github/copilot-instructions.md` | ✅                  | [VS Code](https://code.visualstudio.com/download) + [Github Copilot](https://github.com/features/copilot/plans) |
 
 ### Bước 4: Demo Notebook (Colab)
 
@@ -88,6 +89,7 @@ Sử dụng notebook minh hoạ nhanh trên Google Colab:
 📓 **[demo/vnstock_agent_guide_quickstart.ipynb](demo/vnstock_agent_guide_quickstart.ipynb)**
 
 Notebook này bao gồm:
+
 - Clone repository tự động
 - Cấu hình user tier và use case
 - Generate AI Agent context
@@ -100,12 +102,15 @@ Notebook này bao gồm:
 ## 📚 Cấu Trúc Tài Liệu
 
 ### Thư Viện Miễn Phí (`docs/vnstock/`)
+
 Kiến trúc, cài đặt, APIs, và hướng dẫn di chuyển
 
 ### Thư Viện Cao Cấp (`docs/vnstock-data/`)
+
 Tính năng nâng cao, phân tích nâng cao, và best practices
 
 ### Thư Viện Chuyên Biệt
+
 - **[docs/vnstock_ta/](docs/vnstock_ta/)** - Phân tích kỹ thuật & chỉ báo
 - **[docs/vnstock_news/](docs/vnstock_news/)** - Thu thập tin tức & cảm xúc
 - **[docs/vnstock_pipeline/](docs/vnstock_pipeline/)** - Pipeline dữ liệu & streaming
