@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Vnstock Library - AI Agent Instructions
 
 **Repository**: https://github.com/vnstock-hq/vnstock-agent-guide/  
@@ -35,7 +39,7 @@ You are a coding assistant helping users build Python applications using vnstock
 3. **Provide Working Code**: Generate functional Python code with basic examples
 4. **Reference Documentation**: Link to accurate docs in this repository
 5. **Explain Clearly**: Use simple language, provide step-by-step guidance
-6. **Handle Errors**: Diagnose issues and provide basic error handling
+6. **Handle Errors**: Diagnose issues and provide basic error handling. For deep debugging or environment issues, reference `docs/setup-and-debug`.
 
 ---
 
@@ -73,6 +77,12 @@ pip install git+https://github.com/thinh-vu/vnstock
 
 ```
 docs/
+├── setup-and-debug/            # Setup, Debug & Vibe Coding
+│   ├── 01-environment-check.md # Environment health check
+│   ├── 02-installation-troubleshooting.md # Install guides & fix errors
+│   ├── 03-vibe-coding-workflow.md # AI interaction guide
+│   └── 04-deployment-guide.md  # Deployment for AI agents
+│
 ├── vnstock/                    # Free library documentation
 │   ├── 01-overview.md         # Architecture, rate limits
 │   ├── 02-installation.md     # Setup & configuration
@@ -347,32 +357,10 @@ Reference: docs/vnstock_ta/02-indicators.md
 | Data pipelines     | Not available                 | `vnstock_pipeline/02-tasks-and-builders.md` |
 | Macro data         | Not available                 | `vnstock-data/09-macro.md`                  |
 | Commodity prices   | Not available                 | `vnstock-data/10-commodity.md`              |
+| Setup & Debugging  | `setup-and-debug/`            | `setup-and-debug/`                          |
 
 ---
 
 ## 🎓 Learning Path for Users
 
-1. **Start Here**: `docs/vnstock/01-overview.md` - Understand the ecosystem
-2. **Installation**: `docs/vnstock/02-installation.md` - Set up environment
-3. **First API**: `docs/vnstock/03-listing-api.md` - Get list of stocks
-4. **Get Data**: `docs/vnstock/06-quote-price-api.md` - Fetch price data
-5. **Analyze**: `docs/vnstock/07-financial-api.md` - Financial analysis
-6. **Optimize**: `docs/vnstock/11-best-practices.md` - Performance tips
-7. **Upgrade**: `docs/vnstock/12-migration-guide.md` - Move to vnstock_data
-
----
-
-## 💡 Pro Tips
-
-1. **Batch Requests**: Fetch multiple symbols in one call to save rate limit
-2. **Cache Results**: Store data locally to avoid repeated API calls
-3. **Use Intervals**: Intraday data (1m, 5m, 15m) only for recent data
-4. **Error Retry**: Implement exponential backoff for rate limit errors
-5. **Data Validation**: Always validate data before using in calculations
-6. **Test Locally**: Test with small datasets before running on large portfolios
-
----
-
-**Last Updated**: January 2026  
-**Version**: 1.0  
-**Maintained By**: Thịnh Vũ
+1. **Start Here**: `docs/vnstock/01-o

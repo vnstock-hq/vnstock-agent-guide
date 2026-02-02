@@ -3,7 +3,9 @@ website docs
 .github/copilot-instruction.md
 vnstock_data
 vnstock/
-.agent/
+# .agent/
+.agent/skills/vnstock-document-generator/
+.agent/skills/power-agent-creator/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

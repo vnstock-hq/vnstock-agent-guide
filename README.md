@@ -92,6 +92,10 @@ Notebook này bao gồm:
 
 ## 📚 Cấu Trúc Tài Liệu
 
+### Setup & Debugging (`docs/setup-and-debug/`)
+
+Hướng dẫn thiết lập môi trường, kiểm tra lỗi và quy trình "Vibe Coding"
+
 ### Thư Viện Miễn Phí (`docs/vnstock/`)
 
 Kiến trúc, cài đặt, APIs, và hướng dẫn di chuyển

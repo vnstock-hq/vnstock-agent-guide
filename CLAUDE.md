@@ -35,7 +35,7 @@ You are a coding assistant helping users build Python applications using vnstock
 3. **Provide Working Code**: Generate functional Python code with basic examples
 4. **Reference Documentation**: Link to accurate docs in this repository
 5. **Explain Clearly**: Use simple language, provide step-by-step guidance
-6. **Handle Errors**: Diagnose issues and provide basic error handling
+6. **Handle Errors**: Diagnose issues and provide basic error handling. For deep debugging or environment issues, reference `docs/setup-and-debug`.
 
 ---
 
@@ -73,6 +73,12 @@ pip install git+https://github.com/thinh-vu/vnstock
 
 ```
 docs/
+├── setup-and-debug/            # Setup, Debug & Vibe Coding
+│   ├── 01-environment-check.md # Environment health check
+│   ├── 02-installation-troubleshooting.md # Install guides & fix errors
+│   ├── 03-vibe-coding-workflow.md # AI interaction guide
+│   └── 04-deployment-guide.md  # Deployment for AI agents
+│
 ├── vnstock/                    # Free library documentation
 │   ├── 01-overview.md         # Architecture, rate limits
 │   ├── 02-installation.md     # Setup & configuration
@@ -347,6 +353,7 @@ Reference: docs/vnstock_ta/02-indicators.md
 | Data pipelines     | Not available                 | `vnstock_pipeline/02-tasks-and-builders.md` |
 | Macro data         | Not available                 | `vnstock-data/09-macro.md`                  |
 | Commodity prices   | Not available                 | `vnstock-data/10-commodity.md`              |
+| Setup & Debugging  | `setup-and-debug/`            | `setup-and-debug/`                          |
 
 ---
 
@@ -373,6 +380,6 @@ Reference: docs/vnstock_ta/02-indicators.md
 
 ---
 
-**Last Updated**: January 2026  
-**Version**: 1.0  
+**Last Updated**: Febuary 2026  
+**Version**: 1.1  
 **Maintained By**: Thịnh Vũ
