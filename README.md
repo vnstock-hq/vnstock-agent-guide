@@ -48,28 +48,19 @@ Kho lưu trữ này cung cấp file hướng dẫn chuyên biệt cho các nền
 
 ## 🚀 Cách sử dụng nhanh
 
-### Bước 1: Clone Repository
+Chạy lệnh dưới đây tại **thư mục gốc của dự án của bạn** để tải về bộ hướng dẫn và chép vào môi trường làm việc. Chọn lệnh phù hợp với hệ điều hành bạn dùng.
 
 ```bash
+# 1. Tải về bộ hướng dẫn
 git clone https://github.com/vnstock-hq/vnstock-agent-guide.git
-cd vnstock-agent-guide
-```
 
-- Nếu máy tính của bạn chưa có git, hãy tải về cài đặt [Git](https://git-scm.com/install/)
-- Nhập lệnh vào ứng dụng dòng lệnh: Terminal với macOS và Linux và là Command Prompt hoặc Powershell cho Windows 10 trở xuống, dùng Terminal nếu là Windows 11
+# 2. Sao chép vào dự án của bạn (Chọn lệnh phù hợp với OS)
 
-### Bước 2: Copy Instruction Files
+# macOS / Linux:
+cp -r vnstock-agent-guide/docs vnstock-agent-guide/.agent vnstock-agent-guide/.cursor vnstock-agent-guide/.github vnstock-agent-guide/AGENTS.md vnstock-agent-guide/CLAUDE.md vnstock-agent-guide/GEMINI.md ./
 
-Sau khi clone, sao chép các thư mục sau ra thư mục gốc của dự án để IDE hoặc AI nhận diện chính xác. Copy thủ công hoặc chạy lệnh dưới đây với macOS, Linux.
-
-```bash
-# Copy các thư mục instruction ra thư mục gốc
-cp -r docs​ ./
-cp -r .agent ./
-cp -r .cursor ./
-cp AGENTS.md ./
-cp CLAUDE.md ./
-cp GEMINI.md ./
+# Windows (PowerShell):
+Copy-Item -Path vnstock-agent-guide/docs, vnstock-agent-guide/.agent, vnstock-agent-guide/.cursor, vnstock-agent-guide/.github, vnstock-agent-guide/AGENTS.md, vnstock-agent-guide/CLAUDE.md, vnstock-agent-guide/GEMINI.md -Destination ./ -Recurse -Force
 ```
 
 ### Bước 3: Sử Dụng Với AI Agents
