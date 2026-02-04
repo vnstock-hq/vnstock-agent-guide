@@ -57,10 +57,10 @@ git clone https://github.com/vnstock-hq/vnstock-agent-guide.git
 # 2. Sao chép vào dự án của bạn (Chọn lệnh phù hợp với OS)
 
 # macOS / Linux:
-cp -r vnstock-agent-guide/docs vnstock-agent-guide/.agent vnstock-agent-guide/.cursor vnstock-agent-guide/.github vnstock-agent-guide/AGENTS.md vnstock-agent-guide/CLAUDE.md vnstock-agent-guide/GEMINI.md ./
+mv -r vnstock-agent-guide/docs vnstock-agent-guide/.agent vnstock-agent-guide/.cursor vnstock-agent-guide/.github vnstock-agent-guide/AGENTS.md vnstock-agent-guide/CLAUDE.md ./
 
 # Windows (PowerShell):
-Copy-Item -Path vnstock-agent-guide/docs, vnstock-agent-guide/.agent, vnstock-agent-guide/.cursor, vnstock-agent-guide/.github, vnstock-agent-guide/AGENTS.md, vnstock-agent-guide/CLAUDE.md, vnstock-agent-guide/GEMINI.md -Destination ./ -Recurse -Force
+Copy-Item -Path vnstock-agent-guide/docs, vnstock-agent-guide/.agent, vnstock-agent-guide/.cursor, vnstock-agent-guide/.github, vnstock-agent-guide/AGENTS.md, vnstock-agent-guide/CLAUDE.md -Destination ./ -Recurse -Force
 ```
 
 ### Bước 3: Sử Dụng Với AI Agents
