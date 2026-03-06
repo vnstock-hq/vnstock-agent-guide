@@ -42,7 +42,7 @@ Market()
 #### Ví Dụ
 
 ```python
-from vnstock_data.ui import Market
+from vnstock_data import Market
 
 mkt = Market()
 
@@ -123,7 +123,7 @@ print(vol_profile[['price', 'cumulative_volume']])
 #### Ví Dụ
 
 ```python
-from vnstock_data.ui import Market
+from vnstock_data import Market
 
 mkt = Market()
 
@@ -159,7 +159,7 @@ print(f"VNIndex: {quote_index['close'].values[0]}")
 #### Ví Dụ
 
 ```python
-from vnstock_data.ui import Market
+from vnstock_data import Market
 
 mkt = Market()
 
@@ -193,7 +193,7 @@ quote_vn30f = mkt.derivatives().futures("VN30F").quote()
 #### Ví Dụ
 
 ```python
-from vnstock_data.ui import Market
+from vnstock_data import Market
 
 mkt = Market()
 
@@ -227,7 +227,7 @@ quote = mkt.derivatives().warrant("VICW-VIC26A").quote()
 #### Ví Dụ
 
 ```python
-from vnstock_data.ui import Market
+from vnstock_data import Market
 
 mkt = Market()
 
@@ -260,7 +260,7 @@ print(industry[['industry', 'percentage']])
 #### Ví Dụ
 
 ```python
-from vnstock_data.ui import Market
+from vnstock_data import Market
 
 mkt = Market()
 

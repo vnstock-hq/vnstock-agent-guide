@@ -30,7 +30,7 @@ market = Market()
 df = market.pe()
 
 # ✅ MỚI (sử dụng Unified UI)
-from vnstock_data.ui import Market as UnifiedMarket
+from vnstock_data import Market as UnifiedMarket
 market = UnifiedMarket()
 df = market.equity().valuation().pe()
 ```
@@ -57,7 +57,7 @@ market = Market()
 df = market.pb()
 
 # ✅ MỚI
-from vnstock_data.ui import Market as UnifiedMarket
+from vnstock_data import Market as UnifiedMarket
 market = UnifiedMarket()
 df = market.equity().valuation().pb()
 ```
@@ -86,7 +86,7 @@ market = Market()
 df = market.evaluation()
 
 # ✅ MỚI
-from vnstock_data.ui import Market as UnifiedMarket
+from vnstock_data import Market as UnifiedMarket
 market = UnifiedMarket()
 df = market.equity().valuation().all()  # Hoặc truy cập các metric riêng lẻ
 ```
@@ -106,7 +106,7 @@ Unified UI tổ chức dữ liệu thành các lớp miền (Domain) theo chủ 
 from vnstock_data.api.market import Market
 
 # ✅ MỚI (Import từ UI layer)
-from vnstock_data.ui import Market
+from vnstock_data import Market
 ```
 
 ### Bước 3: Cập Nhật Gọi Hàm

@@ -39,7 +39,7 @@ Reference()
 #### Ví Dụ
 
 ```python
-from vnstock_data.ui import Reference
+from vnstock_data import Reference
 
 ref = Reference()
 
@@ -82,7 +82,7 @@ print(df_officers[['name', 'position']])
 #### Ví Dụ
 
 ```python
-from vnstock_data.ui import Reference
+from vnstock_data import Reference
 
 ref = Reference()
 
@@ -115,7 +115,7 @@ print(f"HSX symbols: {len(hsx_stocks)}")
 #### Ví Dụ
 
 ```python
-from vnstock_data.ui import Reference
+from vnstock_data import Reference
 
 ref = Reference()
 
@@ -140,7 +140,7 @@ print(indices[['code', 'name']])
 #### Ví Dụ
 
 ```python
-from vnstock_data.ui import Reference
+from vnstock_data import Reference
 
 ref = Reference()
 
@@ -177,7 +177,7 @@ Derivatives domain cung cấp access tới Warrant và Futures thông qua sub-do
 #### Ví Dụ
 
 ```python
-from vnstock_data.ui import Reference
+from vnstock_data import Reference
 
 ref = Reference()
 
@@ -208,7 +208,7 @@ print(df_futures_profile)
 #### Ví Dụ
 
 ```python
-from vnstock_data.ui import Reference
+from vnstock_data import Reference
 
 ref = Reference()
 
@@ -234,7 +234,7 @@ print(funds[['code', 'name', 'nav']])
 #### Ví Dụ
 
 ```python
-from vnstock_data.ui import Reference
+from vnstock_data import Reference
 
 ref = Reference()
 

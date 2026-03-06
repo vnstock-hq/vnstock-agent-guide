@@ -39,7 +39,7 @@ Báo cáo thu nhập hàng quý/năm, gồm doanh thu, chi phí, lợi nhuận.
 #### Ví Dụ
 
 ```python
-from vnstock_data.ui import Fundamental
+from vnstock_data import Fundamental
 
 fun = Fundamental()
 
@@ -82,7 +82,7 @@ Cân đối kế toán hàng quý/năm, gồm tài sản, nợ, vốn chủ sở
 #### Ví Dụ
 
 ```python
-from vnstock_data.ui import Fundamental
+from vnstock_data import Fundamental
 
 fun = Fundamental()
 
@@ -123,7 +123,7 @@ Báo cáo lưu chuyển tiền tệ từ hoạt động kinh doanh, đầu tư, 
 #### Ví Dụ
 
 ```python
-from vnstock_data.ui import Fundamental
+from vnstock_data import Fundamental
 
 fun = Fundamental()
 
@@ -163,7 +163,7 @@ Các tỷ số tài chính quan trọng: PE, PB, ROE, ROA, Debt/Equity, v.v.
 #### Ví Dụ
 
 ```python
-from vnstock_data.ui import Fundamental
+from vnstock_data import Fundamental
 
 fun = Fundamental()
 
@@ -217,7 +217,7 @@ FUNDAMENTAL_SOURCES = {
 ### 1. Phân Tích Tài Chính Cơ Bản
 
 ```python
-from vnstock_data.ui import Fundamental, Market
+from vnstock_data import Fundamental, Market
 
 fun = Fundamental()
 mkt = Market()
@@ -248,7 +248,7 @@ print(f"Net Profit: {recent_income['net_profit']:,.0f}")
 ### 2. So Sánh Giữa Các Công Ty
 
 ```python
-from vnstock_data.ui import Fundamental
+from vnstock_data import Fundamental
 
 fun = Fundamental()
 
@@ -272,7 +272,7 @@ print(f"Đắt nhất: {most_expensive} (PE={pe_ratios[most_expensive]:.1f})")
 ### 3. Kiểm Tra Xu Hướng Lợi Nhuận
 
 ```python
-from vnstock_data.ui import Fundamental
+from vnstock_data import Fundamental
 import pandas as pd
 
 fun = Fundamental()
@@ -301,7 +301,7 @@ else:
 ### 4. Phân Tích Khả Năng Thanh Toán
 
 ```python
-from vnstock_data.ui import Fundamental
+from vnstock_data import Fundamental
 
 fun = Fundamental()
 

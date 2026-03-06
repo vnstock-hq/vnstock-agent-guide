@@ -50,7 +50,7 @@ Dữ liệu kinh tế Việt Nam theo quý/năm: GDP, CPI, FDI, xuất nhập kh
 #### Ví Dụ
 
 ```python
-from vnstock_data.ui import Macro
+from vnstock_data import Macro
 
 mac = Macro()
 
@@ -132,7 +132,7 @@ Tỷ giá hối đoái, lãi suất tiền tệ, chính sách tiền tệ.
 #### Ví Dụ
 
 ```python
-from vnstock_data.ui import Macro
+from vnstock_data import Macro
 
 mac = Macro()
 
@@ -205,7 +205,7 @@ Giá hàng hóa địa phương và quốc tế: vàng, dầu, thép, nông sả
 #### Ví Dụ
 
 ```python
-from vnstock_data.ui import Macro
+from vnstock_data import Macro
 import pandas as pd
 
 mac = Macro()
@@ -325,7 +325,7 @@ MACRO_SOURCES = {
 ### 1. Phân Tích Tác Động Vĩ Mô
 
 ```python
-from vnstock_data.ui import Macro, Market
+from vnstock_data import Macro, Market
 import pandas as pd
 
 mac = Macro()
@@ -348,7 +348,7 @@ print(f"VNIndex: {vnindex['close'].values[0]:.0f}")
 ### 2. Theo Dõi Tỷ Giá & Lãi Suất
 
 ```python
-from vnstock_data.ui import Macro
+from vnstock_data import Macro
 
 mac = Macro()
 
@@ -377,7 +377,7 @@ else:
 ### 3. Phân Tích Giá Hàng Hóa
 
 ```python
-from vnstock_data.ui import Macro
+from vnstock_data import Macro
 
 mac = Macro()
 
@@ -407,7 +407,7 @@ print(f"Volatility: {oil_volatility:.2f} USD/barrel")
 ### 4. Dashboard Vĩ Mô
 
 ```python
-from vnstock_data.ui import Macro
+from vnstock_data import Macro
 import pandas as pd
 
 mac = Macro()

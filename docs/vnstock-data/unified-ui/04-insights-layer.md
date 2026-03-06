@@ -39,7 +39,7 @@ Xếp hạng top cổ phiếu theo các tiêu chí khác nhau: tăng giá, giả
 #### Ví Dụ
 
 ```python
-from vnstock_data.ui import Insights
+from vnstock_data import Insights
 
 ins = Insights()
 
@@ -109,7 +109,7 @@ print(df_deals[['code', 'volume', 'price', 'time']].head(10))
 #### Ví Dụ
 
 ```python
-from vnstock_data.ui import Insights
+from vnstock_data import Insights
 
 ins = Insights()
 
@@ -182,7 +182,7 @@ Máy lọc chứng khoán theo các tiêu chí tùy chọn: P/E, P/B, ROE, v.v.
 #### Ví Dụ
 
 ```python
-from vnstock_data.ui import Insights
+from vnstock_data import Insights
 
 ins = Insights()
 
@@ -253,7 +253,7 @@ INSIGHTS_SOURCES = {
 ### 1. Tìm Cơ Hội Giá Trị
 
 ```python
-from vnstock_data.ui import Insights
+from vnstock_data import Insights
 
 ins = Insights()
 
@@ -275,7 +275,7 @@ print(opportunity[['code', 'price', 'change_percent', 'rating']])
 ### 2. Theo Dõi Dòng Tiền Nước Ngoài
 
 ```python
-from vnstock_data.ui import Insights
+from vnstock_data import Insights
 
 ins = Insights()
 
@@ -295,7 +295,7 @@ print(foreign_selling[['code', 'foreign_sell', 'net']].head(10))
 ### 3. Phân Tích Tham Chiếu Định Giá
 
 ```python
-from vnstock_data.ui import Insights, Reference
+from vnstock_data import Insights, Reference
 
 ins = Insights()
 ref = Reference()
@@ -321,7 +321,7 @@ print(cheap_banks[['code', 'pe_ratio']].head())
 ### 4. Quản Lý Danh Mục Đầu Tư
 
 ```python
-from vnstock_data.ui import Insights
+from vnstock_data import Insights
 
 ins = Insights()
 

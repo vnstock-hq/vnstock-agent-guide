@@ -1,6 +1,6 @@
 # Unified UI - Giao Diện Hợp Nhất (Unified Financial Data Platform)
 
-Thư mục `vnstock_data.ui` cung cấp một cấu trúc giao diện cấp cao gom nhóm tất cả các tính năng dữ liệu thành từng **domain ngữ nghĩa** để dễ dàng tra cứu và gọi.
+Thư mục `vnstock_data` cung cấp một cấu trúc giao diện cấp cao gom nhóm tất cả các tính năng dữ liệu thành từng **domain ngữ nghĩa** để dễ dàng tra cứu và gọi.
 
 Các lớp dữ liệu được phân chia thành **5 trụ cột chính**: `Reference`, `Market`, `Fundamental`, `Insights`, và `Macro`.
 
@@ -21,7 +21,7 @@ Các lớp dữ liệu được phân chia thành **5 trụ cột chính**: `Ref
 ### Cấu Trúc Phân Cấp
 
 ```
-vnstock_data.ui
+vnstock_data
 ├── Reference (Layer 1)
 │   ├── .company()          # Thông tin công ty
 │   ├── .equity()           # Danh sách cổ phiếu
@@ -62,7 +62,7 @@ vnstock_data.ui
 ### Import
 
 ```python
-from vnstock_data.ui import Reference, Market, Fundamental, Insights, Macro
+from vnstock_data import Reference, Market, Fundamental, Insights, Macro
 ```
 
 ### Khởi Tạo
@@ -104,7 +104,7 @@ df_gold = mac.commodity().gold(market="VN")
 ## 🎯 Quick Start - Ví Dụ Đầy Đủ
 
 ```python
-from vnstock_data.ui import Reference, Market, Fundamental, Insights, Macro
+from vnstock_data import Reference, Market, Fundamental, Insights, Macro
 
 # Reference: Lấy danh sách công ty, chỉ số, chứng chỉ
 ref = Reference()
@@ -241,7 +241,7 @@ df = Macro().economy().gdp(period="quarter")
 ### Ví dụ 1: Phân Tích Một Cổ Phiếu
 
 ```python
-from vnstock_data.ui import Reference, Market, Fundamental
+from vnstock_data import Reference, Market, Fundamental
 
 ref = Reference()
 mkt = Market()
@@ -272,7 +272,7 @@ print(f"PE Ratio: {ratio['pe']}")
 ### Ví dụ 2: Xem Top Cổ Phiếu Tăng Giá
 
 ```python
-from vnstock_data.ui import Insights
+from vnstock_data import Insights
 
 ins = Insights()
 
@@ -288,7 +288,7 @@ print(high_volume.head(10))
 ### Ví dụ 3: Phân Tích Vĩ Mô
 
 ```python
-from vnstock_data.ui import Macro
+from vnstock_data import Macro
 
 mac = Macro()
 
@@ -308,7 +308,7 @@ print(gold.tail(1))
 ### Ví dụ 4: Chứng Quyền & Hợp Đồng Tương Lai
 
 ```python
-from vnstock_data.ui import Reference, Market
+from vnstock_data import Reference, Market
 
 ref = Reference()
 mkt = Market()
@@ -417,7 +417,7 @@ market = Market()
 pe_df = market.pe()
 
 # ✅ MỚI (sử dụng cấu trúc Unified UI)
-from vnstock_data.ui import Macro, Market
+from vnstock_data import Macro, Market
 macro = Macro()
 gdp_df = macro.economy().gdp()
 market = Market()
@@ -430,7 +430,7 @@ pe_df = market.equity().valuation().pe()
 - **31/8/2026**: Cutoff date - legacy explorer classes sẽ bị xóa
 - **Sau 31/8/2026**: Chỉ Unified UI API khả dụng
 
-**Lưu ý**: Import `Macro` và `Market` từ `vnstock_data.ui` để sử dụng Unified UI, hoặc từ `vnstock_data` để sử dụng legacy explorer (cho đến deadline).
+**Lưu ý**: Import `Macro` và `Market` từ `vnstock_data` để sử dụng Unified UI, hoặc từ `vnstock_data` để sử dụng legacy explorer (cho đến deadline).
 
 ---
 
