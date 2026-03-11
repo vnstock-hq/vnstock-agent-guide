@@ -2,6 +2,10 @@
 
 Tất cả các thay đổi đáng chú ý của dự án **vnstock-agent-guide** sẽ được ghi lại trong tập tin này.
 
+## [1.1.1] - 11/03/2026
+
+- Cập nhật tài liệu cho `vnstock_data` v3.0.0 và tinh chỉnh các hướng dẫn hành vi cho AI Agent.
+
 ## [1.1.0] - 02/02/2026
 
 ### 🚀 Tính Năng & Cải Tiến

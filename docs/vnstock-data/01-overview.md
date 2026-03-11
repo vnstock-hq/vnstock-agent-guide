@@ -37,15 +37,23 @@ vnstock_data/
 │   ├── spl/            # SPL data source
 │   ├── vci/            # VCI data source
 │   └── vnd/            # VND data source
-└── ui/                 # User interface components
-    └── __init__.py
+└── ui/                 # Unified UI - Giao diện hợp nhất thế hệ mới
+    ├── __init__.py
+    ├── helper.py       # show_api(), show_doc()
+    ├── reference.py    # Layer 1: Dữ liệu tham chiếu
+    ├── market.py       # Layer 2: Dữ liệu giao dịch
+    ├── fundamental.py  # Layer 3: Báo cáo tài chính
+    ├── analytics.py    # Layer 4: Phân tích định giá
+    ├── macro.py        # Layer 5: Kinh tế vĩ mô
+    ├── insights.py     # Layer 6: Xếp hạng & lọc
+    └── domains/        # Domain implementations
 ```
 
 **Giải thích cấu trúc:**
 - **`api/`**: Chứa các interface thống nhất cho từng loại dữ liệu (giá, công ty, tài chính, v.v.)
 - **`explorer/`**: Implementations cụ thể cho từng nguồn dữ liệu (VCI, VND, CafeF, v.v.)
 - **`core/`**: Utilities và constants dùng chung
-- **`ui/`**: Components giao diện người dùng (nếu có)
+- **`ui/`**: **Unified UI** - Giao diện hợp nhất thế hệ mới (áp dụng từ 11/3/2026), cung cấp trải nghiệm sử dụng tốt hơn và toàn vẹn hơn
 
 ### Đặc Điểm Chính
 
@@ -55,29 +63,57 @@ vnstock_data/
 - **Hiệu suất cao**: Caching, retry logic, rate limit handling
 - **Xử lý lỗi mạnh mẽ**: Tự động retry khi kết nối mất
 - **Minh bạch**: Dữ liệu công khai, có thể kiểm tra và ghi nguồn.
+- **Unified UI**: Giao diện hợp nhất mới với `show_api()` / `show_doc()` để tra cứu cấu trúc tính năng
 
 ### Các Loại Dữ Liệu Chính
 
-| Loại Dữ Liệu | Lớp | Mô Tả |
-|---|---|---|
-| **Niêm Yết** | `Listing` | Danh sách cổ phiếu, chỉ số, chứng quyền |
-| **Giá Lịch Sử** | `Quote` | OHLCV, intraday, price depth |
-| **Công Ty** | `Company` | Thông tin, cổ đông, ban lãnh đạo |
-| **Tài Chính** | `Finance` | BCTC, chỉ số tài chính, kế hoạch |
-| **Giao Dịch** | `Trading` | Bảng giá, thống kê, nước ngoài, nội bộ |
-| **Thị Trường** | `Market` | Định giá P/E, P/B |
-| **Khám phá** | `TopStock` | Top gainer, loser, volume, deal, vv |
-| **Kinh Tế Vĩ Mô** | `Macro` | GDP, CPI, FDI, tỷ giá, vv |
-| **Hàng Hóa** | `CommodityPrice` | Vàng, dầu, gas, sắt, giá thịt heo, vv |
-| **Quỹ** | `Fund` | Thông tin quỹ ETF, chứng chỉ quỹ |
+| Loại Dữ Liệu | Lớp (Legacy) | Unified UI | Mô Tả |
+|---|---|---|---|
+| **Niêm Yết** | `Listing` | `Reference().equity` | Danh sách cổ phiếu, chỉ số, chứng quyền |
+| **Giá Lịch Sử** | `Quote` | `Market().equity(symbol)` | OHLCV, intraday, order book |
+| **Công Ty** | `Company` | `Reference().company(symbol)` | Thông tin, cổ đông, ban lãnh đạo |
+| **Tài Chính** | `Finance` | `Fundamental().equity(symbol)` | BCTC, chỉ số tài chính |
+| **Giao Dịch** | `Trading` | `Market().equity(symbol)` | Bảng giá, thống kê, nước ngoài, nội bộ |
+| **Định Giá** | `Market` | `Analytics().valuation(index)` | P/E, P/B toàn thị trường |
+| **Khám phá** | `TopStock` | `Insights().ranking()` | Top gainer, loser, volume, deal |
+| **Kinh Tế Vĩ Mô** | `Macro` | `Macro().economy()` | GDP, CPI, FDI, tỷ giá, vv |
+| **Hàng Hóa** | `CommodityPrice` | `Macro().commodity()` | Vàng, dầu, gas, sắt, thịt heo, vv |
+| **Quỹ** | `Fund` | `Reference().fund` / `Market().fund()` | Quỹ đầu tư mở, ETF |
 
 ### Cài Đặt Thư Viện
 
 Các gói thư viện vnstock_data được cài đặt **chung** thông qua chương trình cài đặt của Vnstock. Để cài đặt và kích hoạt vnstock_data, vui lòng tham khảo hướng dẫn chi tiết tại **[Hướng Dẫn Cài Đặt Vnstock](https://vnstocks.com/onboard-member)**.
 
-### Cách Sử Dụng Cơ Bản
+## Cách sử dụng cơ bản
+### Unified UI - Giao Diện Hợp Nhất (Khuyến Nghị dùng từ 11/3/2026)
 
-#### 1. Cách Thứ Nhất: Adapter Chung (Khuyến Nghị cho Linh Hoạt)
+**Unified UI** là giao diện sử dụng thế hệ mới nhất, cung cấp 8 nhóm tính năng dữ liệu với cú pháp chaining API trực quan. Các cách gọi hàm trước kia vẫn hoạt động nhưng được khuyến nghị chuyển đổi dần sang Unified UI để tận dụng bộ dữ liệu toàn diện và chặt chẽ nhất.
+
+```python
+from vnstock_data import Reference, Market, Fundamental, Analytics, Insights, Macro
+from vnstock_data import show_api, show_doc  # Tra cứu cấu trúc tính năng
+
+# Tra cứu cấu trúc tính năng
+show_api()                    # Xem toàn bộ cây tính năng
+show_doc(Reference.company)   # Đọc hướng dẫn chi tiết
+
+# Sử dụng chaining API
+ref = Reference()
+df = ref.company("TCB").info()                          # Thông tin công ty
+df = Market().equity("VIC").ohlcv(start="2026-02-01", end="2026-03-01")  # Lịch sử giá
+df = Fundamental().equity("HPG").income_statement()     # BCTC
+df = Analytics().valuation("VNINDEX").pe(duration="1Y") # P/E thị trường
+df = Insights().ranking().gainer()                       # Top tăng giá
+df = Macro().economy().gdp(period="quarter")             # GDP
+```
+
+> **Chi tiết đầy đủ**: Xem **[14-unified-ui.md](14-unified-ui.md)** và các file trong thư mục **[unified-ui/](./unified-ui/)**. Hướng dẫn chuyển đổi: **[04-migration-guide.md](unified-ui/00-migration-guide.md)**.
+
+### Legacy API: Cách dùng cũ vẫn được duy trì
+
+Các cách sử dụng bên dưới vẫn hoạt động nhưng dần chuyển đổi sang Unified UI.
+
+#### 1. Cách Thứ Nhất: Adapter Chung (Linh Hoạt)
 
 ```python
 from vnstock_data import Quote, Finance, Trading
@@ -91,16 +127,7 @@ quote_vnd = Quote(source="vnd", symbol="VCB")
 df_price_vnd = quote_vnd.history(start="2024-01-01", end="2024-12-31", interval="1D")
 ```
 
-**Ưu điểm:**
-- Linh hoạt thay đổi nguồn
-- Code dễ bảo trì
-- Thử test nhiều nguồn dễ dàng
-
-**Nhược điểm:**
-- Không phải nguồn nào cũng hỗ trợ tất cả methods
-- Cần kiểm tra ma trận phương thức được hỗ trợ của từng nguồn
-
-#### 2. Cách Thứ Hai: Import Trực Tiếp (Khuyến Nghị cho Ổn Định)
+#### 2. Cách Thứ Hai: Import Trực Tiếp (Ổn Định)
 
 ```python
 from vnstock_data.explorer.vci import Quote, Finance, Trading
@@ -109,15 +136,6 @@ from vnstock_data.explorer.vci import Quote, Finance, Trading
 quote = Quote(symbol="VCB")
 df_price = quote.history(start="2024-01-01", end="2024-12-31", interval="1D")
 ```
-
-**Ưu điểm:**
-- Ổn định, không có lỗi "method not supported"
-- Hiệu suất có thể tốt hơn
-- Có thể sử dụng features riêng của từng nguồn
-
-**Nhược điểm:**
-- Cần thay đổi import khi chuyển nguồn
-- Cần nhớ địa chỉ import của của nguồn trong thư viện
 
 ## Tham Số Thời Gian Tương Đối (`length`)
 
@@ -148,7 +166,9 @@ Hệ thống cung cấp cơ chế giải mã linh hoạt cho `length`. Bạn có
 | **MAS** | `mas` | Mirae Asset | BCTC định dạng Excel-style |
 | **CafeF** | `cafef` | CafeF Vietnam | Dữ liệu phong phú |
 | **MBK** | `mbk` | Maybank Kimeng - Kinh tế Vĩ Mô | Dữ liệu kinh tế vĩ mô |
+| **KBS** | `kbs` | KIS Berger Sec. | Dữ liệu giao dịch, phái sinh, bảng giá |
 | **SPL** | `spl` | Dữ Lệu Hàng Hóa | Giá hàng hóa |
+| **MSN** | `msn` | MSN Finance | Chứng khoán quốc tế, crypto, forex |
 
 ### Lý Do Sử Dụng Vnstock_data
 
@@ -182,5 +202,7 @@ Tài liệu được chia thành các phần chính:
 11. **[11-fund.md](11-fund.md)** - Dữ liệu quỹ ETF
 12. **[12-data-sources.md](12-data-sources.md)** - Ma trận support các nguồn dữ liệu
 13. **[13-best-practices.md](13-best-practices.md)** - Best practices và tips sử dụng
+14. **[14-unified-ui.md](14-unified-ui.md)** - 🆕 Unified UI: Giao diện hợp nhất thế hệ mới (`show_api`, `show_doc`)
+15. **[unified-ui/](./unified-ui/)** - Tài liệu chi tiết từng layer của Unified UI
 
 > **Lưu ý**: Để tìm hiểu chi tiết hơn về các lỗi phổ biến, tips tối ưu, templates sử dụng và so sánh các nguồn dữ liệu, vui lòng xem **[README.md](README.md)**.

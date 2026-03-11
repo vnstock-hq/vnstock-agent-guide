@@ -8,36 +8,40 @@
 
 ```python
 Market()
-├── .equity          # Thị trường chứng khoán cổ phiếu
-├── .index           # Thị trường chỉ số
-├── .fund            # Thị trường quỹ đầu tư
-└── .derivatives     # Thị trường chứng chỉ phái sinh
-    ├── .futures()   # Thị trường hợp đồng tương lai (nested)
-    └── .warrant()   # Thị trường chứng quyền (nested)
+├── .equity(symbol)        # Thị trường cổ phiếu
+├── .index(symbol)         # Thị trường chỉ số
+├── .futures(symbol)       # Thị trường hợp đồng tương lai
+├── .warrant(symbol)       # Thị trường chứng quyền
+├── .etf(symbol)           # Thị trường ETF
+├── .fund(symbol)          # Thị trường quỹ đầu tư mở
+├── .crypto(symbol)        # 🧪 Tiền mã hoá (experimental)
+├── .forex(symbol)         # 🧪 Ngoại hối (experimental)
+├── .commodity(symbol)     # 🧪 Hàng hoá quốc tế (experimental)
+└── .quote(symbols_list)   # Bảng giá nhiều mã
 ```
 
 ## 📋 Chi Tiết Các Domain
 
-### 1. Equity Market (Thị Trường Chứng Khoán)
+### 1. Equity Market (Thị Trường Cổ Phiếu)
 
-**Primary Source:** KBS (kbs)  
-**Fallback:** VCI (vci)  
+**Nguồn chính:** KBS (kbs), VCI (vci)  
 **Registry Key:** `"market.equity"`
 
 #### Phương Thức
 
-| Method | Tham Số | Mô Tả | Return |
-|--------|---------|-------|--------|
-| `ohlcv()` | `symbol`, `start`, `end` | Giá mở/cao/thấp/đóng/khối lượng | DataFrame |
-| `trades()` | `symbol`, `start`, `end` | Lệnh giao dịch chi tiết | DataFrame |
-| `order_book()` | `symbol` | Cấp độ mua/bán | DataFrame |
-| `quote()` | `symbol` (opt) | Giá hiện tại | DataFrame |
-| `session_stats()` | - | Thống kê phiên giao dịch | DataFrame |
-| `foreign_flow()` | - | Dòng tiền nước ngoài | DataFrame |
-| `proprietary_flow()` | - | Dòng tiền tự doanh | DataFrame |
-| `block_trades()` | - | Giao dịch khối | DataFrame |
-| `odd_lot()` | - | Giao dịch lẻ | DataFrame |
-| `volume_profile()` | `symbol` | Phân bố khối lượng theo giá | DataFrame |
+| Method | Mô Tả | Return |
+|--------|------|--------|
+| `ohlcv()` | Giá OHLCV lịch sử | DataFrame |
+| `trades()` | Lệnh giao dịch chi tiết (Time & Sales) | DataFrame |
+| `order_book()` | Cấp độ mua/bán | DataFrame |
+| `quote()` | Giá hiện tại / Bảng giá | DataFrame |
+| `session_stats()` | Thống kê phiên giao dịch | DataFrame |
+| `foreign_flow()` | Dòng tiền nước ngoài | DataFrame |
+| `proprietary_flow()` | Dòng tiền tự doanh | DataFrame |
+| `block_trades()` | Giao dịch thỏa thuận | DataFrame |
+| `odd_lot()` | Giao dịch lô lẻ | DataFrame |
+| `volume_profile()` | Phân bố khối lượng theo giá | DataFrame |
+| `summary()` | Tổng hợp thông tin cổ phiếu | DataFrame |
 
 #### Ví Dụ
 
@@ -47,78 +51,56 @@ from vnstock_data import Market
 mkt = Market()
 
 # ===== OHLCV Data (Giá & Khối lượng) =====
-# Lịch sử giá 1 tháng
-df_ohlc = mkt.equity.ohlcv(
-    "VIC",
-    start="2026-02-06",
-    end="2026-03-06"
+df_ohlc = mkt.equity("VIC").ohlcv(
+    start="2026-02-01",
+    end="2026-03-01"
 )
-print(df_ohlc[['time', 'open', 'high', 'low', 'close', 'volume']])
-#             time    open    high     low   close    volume
-# 0  2026-02-06  14.50  14.75  14.45  14.65  2500000
-# 1  2026-02-09  14.70  14.90  14.60  14.80  3100000
+print(df_ohlc)
+# Columns: ['time', 'open', 'high', 'low', 'close', 'volume']
 
 # ===== Intraday Trades (Chi tiết lệnh) =====
-# Các lệnh giao dịch trong ngày
-df_trades = mkt.equity.trades("TCB")
-print(df_trades[['time', 'price', 'volume', 'side']])
+df_trades = mkt.equity("TCB").trades()
+print(df_trades)
 
 # ===== Order Book (Cấp độ mua/bán) =====
-# Cấp độ thầu mua/bán
-df_orderbook = mkt.equity.order_book("VNM")
-print(df_orderbook[['bid_price', 'bid_volume', 'ask_price', 'ask_volume']])
+df_orderbook = mkt.equity("VNM").order_book()
+print(df_orderbook)
 
-# ===== Quote (Giá Hiện Tại) =====
-# Giá realtime
-quote_all = mkt.equity.quote()  # Toàn bộ
-quote_symbol = mkt.equity.quote("HPG")  # Một síbol
+# ===== Quote (Bảng giá) =====
+quote = mkt.equity("HPG").quote()
+print(quote)
 
-print(quote_all[['code', 'close', 'change_percent', 'volume']])
+# ===== Dòng tiền Nước ngoài =====
+foreign = mkt.equity("VIC").foreign_flow()
+print(foreign)
 
-# ===== Session Stats (Thống kê Phiên) =====
-# Thống kê toàn thị trường
-session = mkt.equity.session_stats()
-print(f"Toàn thị trường - Advance: {session['advance']}, Decline: {session['decline']}")
+# ===== Dòng tiền Tự doanh =====
+proprietary = mkt.equity("VIC").proprietary_flow()
+print(proprietary)
 
-# ===== Foreign Flow (Dòng Nước Ngoài) =====
-# Mua/Bán nước ngoài
-foreign = mkt.equity.foreign_flow()
-print(foreign[['code', 'foreign_buy', 'foreign_sell', 'foreign_net']])
+# ===== Giao dịch Thỏa thuận =====
+blocks = mkt.equity("VIC").block_trades()
+print(blocks)
 
-# ===== Proprietary Flow (Dòng Tự Doanh) =====
-# Mua/Bán tự doanh
-proprietary = mkt.equity.proprietary_flow()
-print(proprietary[['code', 'prop_buy', 'prop_sell']])
-
-# ===== Block Trades (Giao Dịch Khối) =====
-# Giao dịch khối trong ngày
-blocks = mkt.equity.block_trades()
-print(blocks[['code', 'price', 'volume', 'time']])
-
-# ===== Odd Lot (Giao Dịch Lẻ) =====
-# Giao dịch lẻ
-odd_lots = mkt.equity.odd_lot()
-print(odd_lots[['code', 'price', 'quantity']])
-
-# ===== Volume Profile (Phân Bố Khối Lượng) =====
-# Khối lượng tích lũy theo giá
-vol_profile = mkt.equity.volume_profile("VJC")
-print(vol_profile[['price', 'cumulative_volume']])
+# ===== Volume Profile =====
+vol_profile = mkt.equity("VJC").volume_profile()
+print(vol_profile)
 ```
 
 ---
 
 ### 2. Index Market (Thị Trường Chỉ Số)
 
-**Source:** KBS (kbs)  
+**Nguồn:** KBS (kbs)  
 **Registry Key:** `"market.index"`
 
 #### Phương Thức
 
-| Method | Tham Số | Mô Tả | Return |
-|--------|---------|-------|--------|
-| `ohlcv()` | `index`, `start`, `end` | Điểm chỉ số, cao/thấp | DataFrame |
-| `quote()` | `index` (opt) | Điểm chỉ số hiện tại | DataFrame |
+| Method | Mô Tả | Return |
+|--------|------|--------|
+| `ohlcv()` | Điểm chỉ số lịch sử | DataFrame |
+| `quote()` | Điểm chỉ số hiện tại | DataFrame |
+| `summary()` | Tổng hợp chỉ số | DataFrame |
 
 #### Ví Dụ
 
@@ -128,33 +110,34 @@ from vnstock_data import Market
 mkt = Market()
 
 # Lịch sử điểm VNIndex
-df_vnindex = mkt.index.ohlcv(
-    "VNINDEX",
-    start="2026-01-06",
-    end="2026-03-06"
+df_vnindex = mkt.index("VNINDEX").ohlcv(
+    start="2026-01-01",
+    end="2026-03-01"
 )
-print(df_vnindex[['time', 'open', 'high', 'low', 'close']])
+print(df_vnindex)
+# Columns: ['time', 'open', 'high', 'low', 'close', 'volume']
 
 # Điểm hiện tại
-quote_index = mkt.index.quote("VNINDEX")
-print(f"VNIndex: {quote_index['close'].values[0]}")
+quote_index = mkt.index("VNINDEX").quote()
+print(quote_index)
 ```
 
 ---
 
-### 3. Futures Market (Thị Trường Tương Lai)
+### 3. Futures Market (Thị Trường Hợp Đồng Tương Lai)
 
-**Source:** KBS (kbs)  
+**Nguồn:** KBS (kbs)  
 **Registry Key:** `"market.futures"`
 
 #### Phương Thức
 
-| Method | Tham Số | Mô Tả | Return |
-|--------|---------|-------|--------|
-| `ohlcv()` | `contract`, `start`, `end` | Giá hợp đồng | DataFrame |
-| `quote()` | `contract` | Giá hiện tại | DataFrame |
-| `trades()` | `contract` | Giao dịch chi tiết | DataFrame |
-| `order_book()` | `contract` | Cấp độ mua/bán | DataFrame |
+| Method | Mô Tả | Return |
+|--------|------|--------|
+| `ohlcv()` | Giá hợp đồng lịch sử | DataFrame |
+| `quote()` | Giá hiện tại | DataFrame |
+| `trades()` | Giao dịch chi tiết | DataFrame |
+| `order_book()` | Cấp độ mua/bán | DataFrame |
+| `summary()` | Thông tin hợp đồng | DataFrame |
 
 #### Ví Dụ
 
@@ -163,32 +146,34 @@ from vnstock_data import Market
 
 mkt = Market()
 
-# Lịch sử VN30F (VNIndex Futures) - nested under derivatives
-df_vn30f = mkt.derivatives().futures("VN30F").ohlcv(
-    start="2026-02-06",
-    end="2026-03-06"
+# Lịch sử VN30F (truy cập trực tiếp, KHÔNG qua derivatives)
+df_vn30f = mkt.futures("VN30F2503").ohlcv(
+    start="2026-02-01",
+    end="2026-03-01"
 )
 print(df_vn30f)
 
 # Giá hiện tại
-quote_vn30f = mkt.derivatives().futures("VN30F").quote()
+quote_vn30f = mkt.futures("VN30F2503").quote()
+print(quote_vn30f)
 ```
 
 ---
 
 ### 4. Warrant Market (Thị Trường Chứng Quyền)
 
-**Source:** KBS (kbs)  
+**Nguồn:** KBS (kbs)  
 **Registry Key:** `"market.warrant"`
 
 #### Phương Thức
 
-| Method | Tham Số | Mô Tả | Return |
-|--------|---------|-------|--------|
-| `ohlcv()` | `warrant`, `start`, `end` | Giá chứng quyền | DataFrame |
-| `quote()` | `warrant` | Giá hiện tại | DataFrame |
-| `trades()` | `warrant` | Giao dịch chi tiết | DataFrame |
-| `order_book()` | `warrant` | Cấp độ mua/bán | DataFrame |
+| Method | Mô Tả | Return |
+|--------|------|--------|
+| `ohlcv()` | Giá chứng quyền lịch sử | DataFrame |
+| `quote()` | Giá hiện tại | DataFrame |
+| `trades()` | Giao dịch chi tiết | DataFrame |
+| `order_book()` | Cấp độ mua/bán | DataFrame |
+| `summary()` | Thông tin chứng quyền | DataFrame |
 
 #### Ví Dụ
 
@@ -197,32 +182,63 @@ from vnstock_data import Market
 
 mkt = Market()
 
-# Lịch sử giá warrant - nested under derivatives
-df_warrant = mkt.derivatives().warrant("VICW-VIC26A").ohlcv(
-    start="2026-02-06",
-    end="2026-03-06"
+# Lịch sử giá warrant (truy cập trực tiếp)
+df_warrant = mkt.warrant("CACB2511").ohlcv(
+    start="2026-02-01",
+    end="2026-03-01"
 )
 print(df_warrant)
 
 # Giá hiện tại warrant
-quote = mkt.derivatives().warrant("VICW-VIC26A").quote()
+quote = mkt.warrant("CACB2511").quote()
+print(quote)
 ```
 
 ---
 
-### 5. Fund Market (Thị Trường Quỹ)
+### 5. ETF Market (Thị Trường ETF)
 
-**Source:** FMarket (fmarket)  
+**Nguồn:** KBS (kbs), VCI (vci)  
+**Registry Key:** `"market.etf"`
+
+#### Phương Thức
+
+Giống Equity Market (đầy đủ): `ohlcv()`, `trades()`, `order_book()`, `quote()`, `session_stats()`, `foreign_flow()`, `proprietary_flow()`, `block_trades()`, `odd_lot()`, `volume_profile()`, `summary()`.
+
+#### Ví Dụ
+
+```python
+from vnstock_data import Market
+
+mkt = Market()
+
+# Lịch sử giá ETF
+df_etf = mkt.etf("E1VFVN30").ohlcv(
+    start="2026-02-01",
+    end="2026-03-01"
+)
+print(df_etf)
+
+# Giá hiện tại
+quote_etf = mkt.etf("E1VFVN30").quote()
+print(quote_etf)
+```
+
+---
+
+### 6. Fund Market (Thị Trường Quỹ Đầu Tư Mở)
+
+**Nguồn:** FMarket (fmarket)  
 **Registry Key:** `"market.fund"`
 
 #### Phương Thức
 
-| Method | Tham Số | Mô Tả | Return |
-|--------|---------|-------|--------|
-| `history()` | `fund_code` | Lịch sử NAV | DataFrame |
-| `top_holding()` | `fund_code` | Top ứng cử viên | DataFrame |
-| `industry_holding()` | `fund_code` | Nắm giữ theo ngành | DataFrame |
-| `asset_holding()` | `fund_code` | Nắm giữ theo loại tài sản | DataFrame |
+| Method | Mô Tả | Return |
+|--------|------|--------|
+| `history()` | Lịch sử NAV quỹ | DataFrame |
+| `top_holding()` | Top cổ phiếu nắm giữ | DataFrame |
+| `industry_holding()` | Nắm giữ theo ngành | DataFrame |
+| `asset_holding()` | Nắm giữ theo loại tài sản | DataFrame |
 
 #### Ví Dụ
 
@@ -232,30 +248,29 @@ from vnstock_data import Market
 mkt = Market()
 
 # Lịch sử NAV quỹ
-df_nav = mkt.fund.history("VFIBS")
-print(df_nav[['date', 'nav', 'nav_change']])
+df_nav = mkt.fund("VFIBS").history()
+print(df_nav)
 
-# Top ứng cử viên trong quỹ
-top_holding = mkt.fund.top_holding("VFIBS")
-print(top_holding[['symbol', 'price', 'weight']])
+# Top cổ phiếu trong quỹ
+top_holding = mkt.fund("VFIBS").top_holding()
+print(top_holding)
 
 # Nắm giữ theo ngành
-industry = mkt.fund.industry_holding("VFIBS")
-print(industry[['industry', 'percentage']])
+industry = mkt.fund("VFIBS").industry_holding()
+print(industry)
 ```
 
 ---
 
-### 6. Market Wide (Thị Trường Rộng)
+### 7. Market Wide (Bảng Giá Nhiều Mã)
 
-**Source:** KBS (kbs)  
-**Registry Key:** `"market.market_wide"`
+**Nguồn:** KBS (kbs)
 
 #### Phương Thức
 
 | Method | Tham Số | Mô Tả | Return |
-|--------|---------|-------|--------|
-| `quote()` | - | Tất cả giá thị trường | DataFrame |
+|--------|---------|------|--------|
+| `quote()` | `symbols_list` | Giá nhiều mã cùng lúc | DataFrame |
 
 #### Ví Dụ
 
@@ -264,87 +279,79 @@ from vnstock_data import Market
 
 mkt = Market()
 
-# Toàn bộ giá thị trường
-all_quotes = mkt.market_wide.quote()
-print(all_quotes.head())
+# Bảng giá nhiều mã cùng lúc
+df_quotes = mkt.quote(["VIC", "TCB", "HPG", "VNM"])
+print(df_quotes)
 ```
 
 ---
 
-## 🔗 Registry Mapping
+### 8. 🧪 Thị Trường Quốc Tế (Experimental)
+
+> **Lưu ý**: Các domain sau đang trong giai đoạn thử nghiệm và có thể chưa ổn định. Chỉ hỗ trợ method `ohlcv()` cho dữ liệu lịch sử thông qua nguồn MSN.
+
+#### Crypto Market
 
 ```python
-MARKET_SOURCES = {
-    "market.equity": {
-        "ohlcv": ("kbs", "quote", "Quote", "history"),
-        "trades": ("kbs", "quote", "Quote", "intraday"),
-        "order_book": ("kbs", "quote", "Quote", "price_depth"),
-        "quote": ("kbs", "trading", "Trading", "price_board"),
-        "session_stats": ("vci", "trading", "Trading", "summary"),
-        "foreign_flow": ("vci", "trading", "Trading", "foreign_trade"),
-        "proprietary_flow": ("vci", "trading", "Trading", "prop_trade"),
-        "block_trades": ("kbs", "trading", "Trading", "put_through"),
-        "odd_lot": ("kbs", "trading", "Trading", "odd_lot"),
-        "volume_profile": ("kbs", "trading", "Trading", "matched_by_price"),
-    },
-    "market.index": {
-        "ohlcv": ("kbs", "quote", "Quote", "history"),
-        "quote": ("kbs", "trading", "Trading", "price_board"),
-    },
-    # ... more domains
-}
+mkt = Market()
+# Dữ liệu lịch sử Bitcoin (cần symbol_id từ MSN)
+df = mkt.crypto("BTC").ohlcv(start="2026-01-01", end="2026-03-01")
 ```
+
+#### Forex Market
+
+```python
+mkt = Market()
+# Dữ liệu lịch sử cặp tiền tệ
+df = mkt.forex("USDVND").ohlcv(start="2026-01-01", end="2026-03-01")
+```
+
+#### Commodity Market
+
+```python
+mkt = Market()
+# Dữ liệu lịch sử hàng hóa
+df = mkt.commodity("GC=F").ohlcv(start="2026-01-01", end="2026-03-01")
+```
+
+> **Tip**: Dùng `Reference().search.symbol("tên_tài_sản")` để tìm đúng mã symbol cho các thị trường quốc tế.
 
 ---
 
 ## 💡 Best Practices
 
-### 1. Batch Requests (Tối Ưu Hóa)
+### 1. Gọi nhiều mã cùng lúc
 
 ```python
 # ❌ Không tối ưu - gọi 100 lần
 mkt = Market()
 for symbol in symbols:
-    quote = mkt.equity.quote(symbol)
+    quote = mkt.equity(symbol).quote()
 
 # ✅ Tốt - gọi 1 lần
-all_quotes = mkt.equity.quote()
-symbol_quotes = all_quotes[all_quotes['code'].isin(symbols)]
+all_quotes = mkt.quote(symbols)
 ```
 
-### 2. Caching Data
+### 2. Xử lý lỗi
 
 ```python
-import time
-from functools import lru_cache
-
-mkt = Market()
-
-# Cache giá hiện tại 5 phút
-@lru_cache(maxsize=128)
-def get_quote_cached(symbol):
-    return mkt.equity.quote(symbol)
-
-# Lần đầu gọi API, lần sau dùng cache
-quote1 = get_quote_cached("VIC")
-quote2 = get_quote_cached("VIC")  # Từ cache (nhanh hơn)
-```
-
-### 3. Error Handling
-
-```python
-from pandas.errors import EmptyDataError
-
 mkt = Market()
 
 try:
-    df = mkt.equity.ohlcv("INVALID", start="2026-02-01", end="2026-02-28")
+    df = mkt.equity("INVALID").ohlcv(start="2026-02-01", end="2026-02-28")
 except ValueError as e:
     print(f"Symbol không tồn tại: {e}")
-except EmptyDataError:
-    print("Không có dữ liệu trong khoảng ngày này")
 except Exception as e:
     print(f"Lỗi: {e}")
+```
+
+### 3. Tra cứu tính năng khả dụng
+
+```python
+from vnstock_data import show_api, Market
+
+# Xem tất cả methods trong Market layer
+show_api(Market())
 ```
 
 ---
@@ -352,14 +359,17 @@ except Exception as e:
 ## ⚠️ Lưu Ý Quan Trọng
 
 1. **Realtime vs Historical**: Dữ liệu intraday có thể bị delay 15-30 phút tùy provider
-2. **Market Hours**: Dữ liệu chỉ cập nhật trong giờ giao dịch (9h-15h)
-3. **Holidays**: Không có dữ liệu vào các ngày nghỉ lễ
-4. **Rate Limiting**: Một số API có giới hạn request → nên batch hoặc cache
+2. **Giờ giao dịch**: Dữ liệu chỉ cập nhật trong giờ giao dịch (9h-15h)
+3. **Ngày nghỉ**: Không có dữ liệu vào các ngày nghỉ lễ
+4. **Giới hạn tần suất**: Một số nguồn có giới hạn số lượng yêu cầu → nên gọi nhiều mã cùng lúc hoặc lưu tạm
+5. **Deprecated `derivatives()`**: Dùng `mkt.futures(symbol)` / `mkt.warrant(symbol)` trực tiếp
+6. **Deprecated `pe()`/`pb()`**: Đã chuyển sang `Analytics().valuation(index).pe()/.pb()`
 
 ---
 
 ## 🚦 Next Steps
 
 - **Fundamental Layer**: Để phân tích các chỉ số tài chính
-- **Insights Layer**: Để xem khuyến nghị, xếp hạng
+- **Analytics Layer**: Để định giá thị trường (P/E, P/B)
+- **Insights Layer**: Để xem xếp hạng và lọc cổ phiếu
 - **Macro Layer**: Để xem dữ liệu kinh tế toàn cảnh

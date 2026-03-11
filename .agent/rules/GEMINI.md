@@ -34,11 +34,11 @@ This repository provides complete documentation for the **vnstock ecosystem** �
 
 You are a coding assistant helping users build Python applications using vnstock libraries. Your responsibilities:
 
-1. **Understand User Intent**: Translate requirements into technical solutions
-2. **Choose Right Library**: Recommend vnstock (free) or vnstock_data (sponsored) based on user tier
-3. **Provide Working Code**: Generate functional Python code with basic examples
-4. **Reference Documentation**: Link to accurate docs in this repository
-5. **Explain Clearly**: Use simple language, provide step-by-step guidance
+1. **Understand User Intent**: Translate requirements into technical solutions.
+2. **Choose Right Library**: Recommend `vnstock` (free) or `vnstock_data` (sponsored) based on user tier.
+3. **API Inspection FIRST**: For `vnstock_data` (v3.0.0+), ALWAYS use `show_api()` to explore the structure and `show_doc()` to read details before writing code.
+4. **Provide Working Code**: Generate functional Python code with basic examples. Prefer Unified UI for `vnstock_data`.
+5. **Reference Documentation**: Link to accurate docs in this repository.
 6. **Handle Errors**: Diagnose issues and provide basic error handling. For deep debugging or environment issues, reference `docs/setup-and-debug`.
 
 ---
@@ -75,64 +75,73 @@ pip install git+https://github.com/thinh-vu/vnstock
 
 ## 📖 Documentation Structure
 
-```
-docs/
-├── setup-and-debug/            # Setup, Debug & Vibe Coding
-│   ├── 01-environment-check.md # Environment health check
-│   ├── 02-installation-troubleshooting.md # Install guides & fix errors
-│   ├── 03-vibe-coding-workflow.md # AI interaction guide
-│   └── 04-deployment-guide.md  # Deployment for AI agents
-│
-├── vnstock/                    # Free library documentation
-│   ├── 01-overview.md         # Architecture, rate limits
-│   ├── 02-installation.md     # Setup & configuration
-│   ├── 03-listing-api.md      # Stock symbols, indices
-│   ├── 04-company-api.md      # Company info, officers
-│   ├── 05-trading-api.md      # Trading data, price board
-│   ├── 06-quote-price-api.md  # Historical & intraday prices
-│   ├── 07-financial-api.md    # Financial statements, ratios
-│   ├── 08-fund-api.md         # Fund data
-│   ├── 09-screener-api.md     # Stock screening
-│   ├── 10-connector-guide.md  # External connectors (FMP, DNSE)
-│   ├── 11-best-practices.md   # Tips & optimization
-│   └── 12-migration-guide.md  # vnstock vs vnstock_data comparison
-│
-├── vnstock-data/               # Premium library documentation
-│   ├── 01-overview.md         # Features, data sources
-│   ├── 02-listing.md          # Enhanced listing API
-│   ├── 03-quote.md            # Enhanced quote API
-│   ├── 04-company.md          # Enhanced company API
-│   ├── 05-finance.md          # Enhanced finance API
-│   ├── 06-trading.md          # Enhanced trading API
-│   ├── 07-market.md           # Market data & indices
-│   ├── 08-insights.md         # Stock screening & rankings
-│   ├── 09-macro.md            # Macro indicators
-│   ├── 10-commodity.md        # Commodity prices
-│   ├── 11-fund.md             # Fund data
-│   ├── 12-data-sources.md     # Data source comparison
-│   └── 13-best-practices.md   # Advanced tips
-│
-├── vnstock_ta/                 # Technical analysis
-│   ├── 01-overview.md         # Available indicators
-│   ├── 02-indicators.md       # Indicator reference
-│   ├── 03-plotting.md         # Visualization
-│   └── 04-best-practices.md   # Usage patterns
-│
-├── vnstock_news/               # News & sentiment
-│   ├── 01-overview.md         # News crawling
-│   ├── 02-crawlers.md         # Available crawlers
-│   ├── 03-sitemap-rss-guide.md # RSS & sitemap
-│   ├── 04-trending-analysis.md # Trend analysis
-│   └── 05-best-practices.md   # Best practices
-│
-└── vnstock_pipeline/           # Data pipelines
-    ├── 01-overview.md         # Pipeline architecture
-    ├── 02-tasks-and-builders.md
-    ├── 03-custom-pipelines.md
-    ├── 04-streaming.md
-    ├── 05-best-practices.md
-    └── 06-scheduler-tuning.md
-```
+The repository contains multiple documentation folders covering different parts of the ecosystem. To save context tokens and ensure you have the most up-to-date information, **do not assume the exact file structure**.
+
+**AI Instruction:** Use your directory listing tools (e.g., `list_dir`) to explore the `docs/` and `vnstock*/` directories to find the relevant markdown files. Key locations include:
+- `docs/setup-and-debug/`: Environment health check, installation troubleshooting, and AI vibe coding workflow.
+- `docs/vnstock/`: Free library documentation (listing, company, trading, finance).
+- `docs/vnstock-data/`: Sponsored library documentation, featuring the Unified UI (`14-unified-ui.md` & `unified-ui/` directory).
+- `docs/vnstock_ta/`: Technical analysis indicators and plotting.
+- `docs/vnstock_news/`: News crawling and sentiment.
+- `docs/vnstock_pipeline/`: Data pipelines and streaming.
+
+---
+
+## 💻 Environment & Installation
+
+Proper environment management is critical for the Vnstock ecosystem. **Always verify the user's environment before installation.**
+
+### Global vs. Virtual Environments
+- **Free Libraries** (`vnstock`, `vnstock_ezchart`): Can be installed globally or in a virtual environment (`.venv`).
+- **Premium Libraries** (`vnstock_data`, `vnstock_ta`, `vnstock_news`): **STRONGLY PREFER** installation in a virtual environment located at `~/.venv` (the Home directory) to share credentials across projects.
+
+### 🚀 Sponsored-First Prioritization
+**AI Instruction:** Before suggesting any code or documentation, check if `vnstock_data` is installed in the standard `~/.venv` directory. If detected, you **MUST** prioritize `vnstock_data` (Sponsored) over `vnstock` (Free) in all recommendations. Focus on the Unified UI and Sponsored-only features.
+
+### AI Environment Search Priority
+When looking for installed libraries or Python executables, search in this order:
+1. **Home Virtual Environment**: `~/.venv`
+2. **Project Virtual Environment**: `./.venv`, `~/venv` or `~/env` (current project directory)
+3. **Global Environment**: System Python
+
+### Virtual Environment Activation
+Before running scripts or interacting with the sponsored ecosystem, activate the virtual environment:
+- **macOS/Linux**: `source ~/.venv/bin/activate` (or `source .venv/bin/activate` for project-specific)
+- **Windows**: `~/.venv\Scripts\activate` (or `.venv\Scripts\activate` for project-specific)
+
+**More Info**: [Environment Setup Guide](https://vnstocks.com/onboard-member/cai-dat-go-loi/moi-truong-ao)
+
+---
+
+## 🤖 Agent Guide Installation (For AI Agents)
+
+If the user asks you to "install the agent guide" or "setup the workspace", follow these precise steps to clone this repository into their **current project directory**:
+
+1. **Verify Project Directory & OS**: Ensure the user is in a specific project directory (NOT their home directory). **Crucially, identify the user's Operating System (macOS, Linux, or Windows) before executing any terminal commands**.
+2. **Check for Existing Files**: Check if any of these target files/folders already exist in the current directory: `AGENTS.md`, `docs/`, `.agent/`, `.github/`, `CLAUDE.md`, `.cursor/`.
+3. **Prompt for Confirmation**: If any target files exist, **STOP**. Ask the user if they want to commit these files to Git (for safety) or directly delete them to make room for the new installation. **Do not destructively overwrite without permission.**
+4. **Clone Repository**: Once confirmed (or if the directory is clean), check if `git` is installed. Clone the repository to a temporary location:
+   ```bash
+   git clone https://github.com/vnstock-hq/vnstock-agent-guide.git /tmp/vnstock-agent-guide
+   ```
+5. **Copy Essential Files**: Copy the essential files to the project root based on the OS:
+   - **macOS/Linux**:
+     ```bash
+     cp -r /tmp/vnstock-agent-guide/AGENTS.md /tmp/vnstock-agent-guide/docs /tmp/vnstock-agent-guide/.agent /tmp/vnstock-agent-guide/.github /tmp/vnstock-agent-guide/CLAUDE.md /tmp/vnstock-agent-guide/.cursor ./
+     ```
+   - **Windows (PowerShell)**:
+     ```powershell
+     Copy-Item -Path "C:\tmp\vnstock-agent-guide\AGENTS.md", "C:\tmp\vnstock-agent-guide\docs", "C:\tmp\vnstock-agent-guide\.agent", "C:\tmp\vnstock-agent-guide\.github", "C:\tmp\vnstock-agent-guide\CLAUDE.md", "C:\tmp\vnstock-agent-guide\.cursor" -Destination ".\" -Recurse -Force
+     ```
+6. **Clean Up**: Remove the temporary clone based on the OS:
+   - **macOS/Linux**:
+     ```bash
+     rm -rf /tmp/vnstock-agent-guide
+     ```
+   - **Windows (PowerShell)**:
+     ```powershell
+     Remove-Item -Path "C:\tmp\vnstock-agent-guide" -Recurse -Force
+     ```
 
 ---
 
@@ -165,17 +174,18 @@ df = quote.history(
 print(df.head())
 ```
 
-**Example Code (Sponsored User)**:
+**Example Code (Sponsored User - Unified UI)**:
 ```python
-from vnstock_data import Quote
+from vnstock_data import Market, show_api, show_doc
 
-# Premium features available
-quote = Quote(source="kbs", symbol="VCB")
+# 1. Inspect API (Mandatory for sponsored users)
+# show_api() 
 
-df = quote.history(
+# 2. Get historical data using Unified UI
+mkt = Market()
+df = mkt.equity("VCB").ohlcv(
     start="2024-01-01",
-    end="2024-12-31",
-    interval="1D"
+    end="2024-12-31"
 )
 
 print(df.head())
@@ -192,22 +202,20 @@ print(df.head())
 2. Reference `docs/vnstock-data/05-finance.md` or `docs/vnstock/07-financial-api.md`
 3. Provide basic analysis script
 
-**Example Code**:
+**Example Code (Unified UI)**:
 ```python
-from vnstock_data import Finance, Quote
+from vnstock_data import Fundamental, Market
 
-# Get financial data
-finance = Finance(source="kbs", symbol="VCB")
-ratios = finance.ratio(period="year")
+# Get financial data (Layer 3)
+fun = Fundamental()
+ratios = fun.equity("VCB").ratio()
 
-# Get price data
-quote = Quote(source="kbs", symbol="VCB")
-price_data = quote.history(start="2024-01-01", end="2024-12-31")
+# Get price data (Layer 2)
+mkt = Market()
+price_data = mkt.equity("VCB").ohlcv(start="2024-01-01", end="2024-12-31")
 
 print("Latest Financial Metrics:")
 print(ratios.tail(1))
-print("\nPrice Trend:")
-print(price_data[['time', 'close']].tail(10))
 ```
 
 ---
@@ -272,34 +280,43 @@ print(df[['time', 'close', 'sma_20', 'rsi']].tail(20))
 
 ---
 
-## 🔑 Key Principles
+### 6. **Unified UI & Versioning**
+- **vnstock_data >= 3.0.0**: MUST use Unified UI (`Market`, `Fundamental`, `Reference`, etc.) and API discovery (`show_api`, `show_doc`).
+- **Robust Version Check**: Since older versions may not have `__version__`, use this snippet:
 
-### 1. **User Tier Awareness**
-- **Free Users**: Use `vnstock` library only
-- **Sponsored Users**: Use `vnstock_data` + `vnstock_ta`, `vnstock_news`, `vnstock_pipeline`
-- Always ask or infer user tier before recommending features
+```python
+def get_vnstock_data_version():
+    try:
+        # 1. Try __version__ attribute
+        import vnstock_data
+        return getattr(vnstock_data, '__version__', '2.0.0') # Fallback to 2.x if missing
+    except ImportError:
+        # 2. Try metadata (pip)
+        try:
+            from importlib.metadata import version
+            return version("vnstock_data")
+        except Exception:
+            return "0.0.0"
 
-### 2. **Documentation First**
-- Always reference the correct documentation file
-- Link to specific sections when possible
-- Example: "See `docs/vnstock/06-quote-price-api.md` for more details"
+version = get_vnstock_data_version()
+is_unified_ui = version >= '3.0.0'
+```
 
-### 3. **Basic Error Handling**
-- Include try-except blocks in examples
-- Handle common errors: `RateLimitExceeded`, `ValueError`
-- Provide clear error messages
+---
 
-### 4. **Rate Limits**
-- Free: 20 req/min (60 req/min with API key)
-- Bronze: 180 req/min
-- Silver: 300 req/min
-- Golden: 600 req/min
-- Reference: `docs/vnstock/01-overview.md#rate-limit`
+## 🔍 API Discovery (v3.0.0+)
 
-### 5. **Simple Code Examples**
-- Focus on basic functionality
-- Include comments for clarity
-- Provide expected output
+For `vnstock_data`, ALWAYS run this first in your mind or a scratchpad:
+
+```python
+from vnstock_data import show_api, show_doc
+
+# 1. Discover the tree
+show_api()
+
+# 2. Read details of a specific method
+show_doc("Market.equity")
+```
 
 ---
 
@@ -307,60 +324,4 @@ print(df[['time', 'close', 'sma_20', 'rsi']].tail(20))
 
 ### Task: Get Stock List
 ```
-Free: vnstock.Listing.all_symbols()
-Sponsored: vnstock_data.Listing.all_symbols()
-Reference: docs/vnstock/03-listing-api.md
-```
-
-### Task: Get Company Info
-```
-Free: vnstock.Company.overview()
-Sponsored: vnstock_data.Company.overview()
-Reference: docs/vnstock/04-company-api.md
-```
-
-### Task: Get Financial Statements
-```
-Free: vnstock.Finance.income_statement()
-Sponsored: vnstock_data.Finance.income_statement()
-Reference: docs/vnstock/07-financial-api.md
-```
-
-### Task: Calculate Technical Indicators
-```
-Sponsored: vnstock_ta.Indicators
-Reference: docs/vnstock_ta/02-indicators.md
-```
-
----
-
-## ⚠️ Important Notes
-
-1. **TCBS is Deprecated**: Don't use TCBS source, recommend VCI or KBS
-2. **Data Sources**: VCI and KBS are most reliable
-3. **Real-time Data**: Only available during trading hours (9:00-15:00 Vietnam time)
-4. **Caching**: Implement caching to avoid hitting rate limits
-5. **Error Handling**: Always wrap API calls in try-except blocks
-
----
-
-## 📚 Documentation Reference
-
-| Task               | Free User                     | Sponsored User                              |
-| ------------------ | ----------------------------- | ------------------------------------------- |
-| Get stock prices   | `06-quote-price-api.md`       | `vnstock-data/03-quote.md`                  |
-| Company research   | `04-company-api.md`           | `vnstock-data/04-company.md`                |
-| Financial analysis | `07-financial-api.md`         | `vnstock-data/05-finance.md`                |
-| Technical analysis | `vnstock_ta/02-indicators.md` | `vnstock_ta/02-indicators.md`               |
-| Stock screening    | `09-screener-api.md`          | `vnstock-data/08-insights.md`               |
-| News & sentiment   | Not available                 | `vnstock_news/02-crawlers.md`               |
-| Data pipelines     | Not available                 | `vnstock_pipeline/02-tasks-and-builders.md` |
-| Macro data         | Not available                 | `vnstock-data/09-macro.md`                  |
-| Commodity prices   | Not available                 | `vnstock-data/10-commodity.md`              |
-| Setup & Debugging  | `setup-and-debug/`            | `setup-and-debug/`                          |
-
----
-
-## 🎓 Learning Path for Users
-
-1. **Start Here**: `docs/vnstock/01-o
+Free: vnstock.Listing.al

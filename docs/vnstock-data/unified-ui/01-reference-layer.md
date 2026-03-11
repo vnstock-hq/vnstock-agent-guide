@@ -2,39 +2,43 @@
 
 ## 📌 Tổng Quan
 
-**Reference Layer** cung cấp thông tin nền tảng, tĩnh về các sản phẩm tài chính - công ty, chỉ số, ngành, danh sách símbol, v.v. Đây là dữ liệu **không thay đổi thường xuyên** và được sử dụng để **lookup** hay **master data**.
+**Reference Layer** cung cấp thông tin nền tảng, tĩnh về các sản phẩm tài chính - công ty, chỉ số, ngành, danh sách symbol, ETF, trái phiếu, sự kiện, v.v. Đây là dữ liệu **không thay đổi thường xuyên** và được sử dụng để **lookup** hay **master data**.
 
 ## 🏗️ Cấu Trúc Domain
 
 ```python
 Reference()
-├── .company         # Thông tin công ty
-├── .equity          # Danh sách cổ phiếu
-├── .index           # Danh sách chỉ số
-├── .industry        # Ngành kinh tế
-├── .fund            # Quỹ đầu tư
-└── .derivatives     # Chứng chỉ phái sinh
-    ├── .warrant()   # Chứng quyền (nested)
-    └── .futures()   # Hợp đồng tương lai (nested)
+├── .company(symbol)       # Thông tin công ty
+├── .equity                # Danh sách cổ phiếu (property)
+├── .index                 # Danh sách chỉ số (property)
+├── .industry              # Ngành kinh tế (property)
+├── .fund                  # Quỹ đầu tư mở (property)
+├── .etf                   # Quỹ ETF (property)
+├── .bond                  # Trái phiếu (property)
+├── .events                # Sự kiện thị trường (property)
+├── .search                # Tìm kiếm toàn cầu (property)
+├── .futures(symbol)       # Hợp đồng tương lai
+└── .warrant(symbol)       # Chứng quyền
 ```
 
 ## 📋 Chi Tiết Các Domain
 
 ### 1. Company Domain (Thông Tin Công Ty)
 
-**Source:** VCI (vci)  
+**Nguồn:** VCI, KBS  
 **Registry Key:** `"company"`
 
 #### Phương Thức
 
-| Method | Tham Số | Mô Tả | Ví Dụ |
-|--------|---------|-------|-------|
-| `profile()` | `symbol` | Thông tin tổng quan công ty | `ref.company.profile("TCB")` |
-| `shareholders()` | `symbol` | Danh sách cổ đông chính | `ref.company.shareholders("VIC")` |
-| `officers()` | `symbol` | Danh sách quản lý cấp cao | `ref.company.officers("HPG")` |
-| `subsidiaries()` | `symbol` | Danh sách công ty con | `ref.company.subsidiaries("VNM")` |
-| `news()` | `symbol` | Tin tức công ty | `ref.company.news("TCB")` |
-| `events()` | `symbol` | Sự kiện công ty | `ref.company.events("VIC")` |
+| Method | Tham Số | Mô Tả |
+|--------|---------|-------|
+| `info()` | - | Thông tin tổng quan công ty |
+| `shareholders()` | - | Danh sách cổ đông chính |
+| `officers()` | - | Danh sách quản lý cấp cao |
+| `subsidiaries()` | - | Danh sách công ty con |
+| `news()` | - | Tin tức công ty |
+| `events()` | - | Sự kiện công ty |
+| `margin_ratio()` | - | Tỷ lệ ký quỹ qua các broker |
 
 #### Ví Dụ
 
@@ -44,58 +48,52 @@ from vnstock_data import Reference
 ref = Reference()
 
 # Thông tin công ty
-df_profile = ref.company.profile("TCB")
+df_profile = ref.company("TCB").info()
 print(df_profile)
-# Output: 
-# {
-#   'name': 'Techcombank',
-#   'established': 1993,
-#   'website': 'https://techcombank.com.vn',
-#   'sector': 'Finance',
-#   ...
-# }
 
 # Danh sách cổ đông lớn
-df_shareholders = ref.company.shareholders("VIC")
-print(df_shareholders[['name', 'ownership_percent']])
+df_shareholders = ref.company("VIC").shareholders()
+print(df_shareholders)
 
 # Quản lý cấp cao
-df_officers = ref.company.officers("HPG")
-print(df_officers[['name', 'position']])
+df_officers = ref.company("HPG").officers()
+print(df_officers)
 ```
 
 ---
 
 ### 2. Equity Domain (Danh Sách Cổ Phiếu)
 
-**Source:** VCI (vci)  
+**Nguồn:** VCI (vci)  
 **Registry Key:** `"equity"`
 
-#### Phương Thức
+#### Phương thức
 
-| Method | Tham Số | Mô Tả | Ví Dụ |
-|--------|---------|-------|-------|
-| `list()` | - | Toàn bộ danh sách cổ phiếu | `ref.equity.list()` |
-| `by_group()` | `group_id` (opt) | Cổ phiếu theo nhóm | `ref.equity.by_group("BLUECHIP")` |
-| `by_exchange()` | `exchange` (opt) | Cổ phiếu theo sàn | `ref.equity.by_exchange("HSX")` |
+| Method | Tham Số | Mô Tả |
+|--------|---------|-------|
+| `list()` | - | Toàn bộ danh sách cổ phiếu |
+| `list_by_group()` | `group` | Cổ phiếu theo nhóm (VN30, HOSE...) |
+| `list_by_exchange()` | `exchange` | Cổ phiếu theo sàn (HSX, HNX...) |
+| `list_by_industry()` | - | Cổ phiếu theo ngành ICB |
 
-#### Ví Dụ
+#### Ví dụ
 
 ```python
 from vnstock_data import Reference
 
 ref = Reference()
 
-# Tất cả síbol
+# Tất cả symbol (1700+ mã)
 all_symbols = ref.equity.list()
 print(f"Total symbols: {len(all_symbols)}")
+# Columns: ['symbol', 'org_name']
 
-# Cổ phiếu blue chip
-blue_chips = ref.equity.by_group("BLUECHIP")
-print(blue_chips[['code', 'name']])
+# Cổ phiếu theo nhóm
+vn30 = ref.equity.list_by_group("VN30")
+print(vn30)
 
 # Cổ phiếu sàn HSX
-hsx_stocks = ref.equity.by_exchange("HSX")
+hsx_stocks = ref.equity.list_by_exchange("HSX")
 print(f"HSX symbols: {len(hsx_stocks)}")
 ```
 
@@ -103,41 +101,58 @@ print(f"HSX symbols: {len(hsx_stocks)}")
 
 ### 3. Index Domain (Danh Sách Chỉ Số)
 
-**Source:** VCI (vci)  
+**Nguồn:** KBS, VCI  
 **Registry Key:** `"index"`
 
-#### Phương Thức
+#### Phương thức
 
-| Method | Tham Số | Mô Tả | Ví Dụ |
-|--------|---------|-------|-------|
-| `futures()` | - | Danh sách chỉ số tương lai | `ref.index.futures()` |
+| Method | Tham Số | Mô Tả |
+|--------|---------|-------|
+| `list()` | - | Toàn bộ danh sách chỉ số với metadata |
+| `groups()` | - | Liệt kê các nhóm chỉ số |
+| `members(group)` | `group` | Thành phần cổ phiếu của chỉ số |
+| `list_by_group(group)` | `group` | Chỉ số theo nhóm |
 
-#### Ví Dụ
+#### Ví dụ
 
 ```python
 from vnstock_data import Reference
 
 ref = Reference()
 
-# Danh sách chỉ số tương lai
-indices = ref.index.futures()
-print(indices[['code', 'name']])
+# Liệt kê tất cả chỉ số
+all_indices = ref.index.list()
+print(all_indices)
+
+# Nhóm chỉ số
+groups = ref.index.groups()
+print(groups)
+
+# Thành phần VN30
+vn30_members = ref.index.members("VN30")
+print(vn30_members)
+
+# Chi tiết một chỉ số cụ thể
+vn30_detail = ref.index("VN30")
+print(vn30_detail.info())
+print(vn30_detail.description())
 ```
 
 ---
 
 ### 4. Industry Domain (Ngành Kinh Tế)
 
-**Source:** VCI (vci)  
+**Nguồn:** VCI (vci)  
 **Registry Key:** `"industry"`
 
-#### Phương Thức
+#### Phương thức
 
-| Method | Tham Số | Mô Tả | Ví Dụ |
-|--------|---------|-------|-------|
-| `list()` | - | Toàn bộ danh sách ngành | `ref.industry.list()` |
+| Method | Tham Số | Mô Tả |
+|--------|---------|-------|
+| `list()` | - | Toàn bộ danh sách ngành ICB |
+| `sectors()` | - | Phân loại cổ phiếu theo ngành |
 
-#### Ví Dụ
+#### Ví dụ
 
 ```python
 from vnstock_data import Reference
@@ -146,90 +161,219 @@ ref = Reference()
 
 # Toàn bộ ngành ICB
 industries = ref.industry.list()
-print(industries[['code', 'name']])
+print(industries)
+
+# Cổ phiếu theo ngành
+sectors = ref.industry.sectors()
+print(sectors)
 ```
 
 ---
 
-### 5. Derivatives Domain (Chứng Chỉ Phái Sinh)
+### 5. Fund Domain (Quỹ Mở)
 
-**Source:** KBS, VCI (kbs, vci)  
-**Registry Key:** `"derivatives.warrant"`, `"derivatives.futures"`
-
-Derivatives domain cung cấp access tới Warrant và Futures thông qua sub-domains structure.
-
-#### 5.1 Warrant Sub-Domain (Chứng Quyền)
-
-**Sub-domain:** `.warrant(symbol)`
-
-| Method | Tham Số | Mô Tả | Ví Dụ |
-|--------|---------|-------|-------|
-| `profile()` | - | Thông tin chi tiết chứng quyền | `ref.derivatives().warrant("CACB2511").profile()` |
-
-#### 5.2 Futures Sub-Domain (Hợp Đồng Tương Lai)
-
-**Sub-domain:** `.futures(symbol)`
-
-| Method | Tham Số | Mô Tả | Ví Dụ |
-|--------|---------|-------|-------|
-| `profile()` | - | Thông tin chi tiết hợp đồng | `ref.derivatives().futures("VN30F2503").profile()` |
-
-#### Ví Dụ
-
-```python
-from vnstock_data import Reference
-
-ref = Reference()
-
-# Lấy thông tin chi tiết chứng quyền (nested under derivatives)
-warrant = ref.derivatives().warrant("CACB2511")
-df_warrant_profile = warrant.profile()
-print(df_warrant_profile)
-
-# Lấy thông tin chi tiết hợp đồng tương lai (nested under derivatives)
-futures = ref.derivatives().futures("VN30F2503")
-df_futures_profile = futures.profile()
-print(df_futures_profile)
-```
-
----
-
-### 6. Fund Domain (Quỹ Đầu Tư)
-
-**Source:** FMarket (fmarket)  
+**Nguồn:** FMarket (fmarket)  
 **Registry Key:** `"reference.fund"`
 
-#### Phương Thức
+#### Phương thức
 
-| Method | Tham Số | Mô Tả | Ví Dụ |
-|--------|---------|-------|-------|
-| `list()` | - | Danh sách quỹ | `ref.fund.list()` |
+| Method | Tham Số | Mô Tả |
+|--------|---------|-------|
+| `list()` | - | Danh sách quỹ đầu tư mở |
 
-#### Ví Dụ
+#### Ví dụ
 
 ```python
 from vnstock_data import Reference
 
 ref = Reference()
 
-# Danh sách quỹ đầu tư
+# Danh sách quỹ đầu tư mở
 funds = ref.fund.list()
-print(funds[['code', 'name', 'nav']])
+print(funds)
 ```
 
 ---
 
-### 8. Bond Domain (Trái Phiếu)
+### 6. ETF Domain (Quỹ ETF)
 
-**Source:** VCI (vci)  
+**Nguồn:** KBS (kbs)  
+**Registry Key:** `"etf"`
+
+#### Phương thức
+
+| Method | Tham Số | Mô Tả |
+|--------|---------|-------|
+| `list()` | - | Danh sách tất cả ETF |
+
+#### Ví dụ
+
+```python
+from vnstock_data import Reference
+
+ref = Reference()
+
+# Danh sách ETF
+etf_list = ref.etf.list()
+print(etf_list)
+```
+
+---
+
+### 7. Bond Domain (Trái Phiếu)
+
+**Nguồn:** KBS, VCI  
 **Registry Key:** `"bond"`
 
+#### Phương thức
+
+| Method | Tham Số | Mô Tả |
+|--------|---------|-------|
+| `list()` | `bond_type` | Danh sách trái phiếu. `bond_type`: `'all'`, `'corporate'`, `'government'` |
+
+#### Ví dụ
+
+```python
+from vnstock_data import Reference
+
+ref = Reference()
+
+# Tất cả trái phiếu
+all_bonds = ref.bond.list(bond_type="all")
+print(all_bonds)
+
+# Chỉ trái phiếu doanh nghiệp
+corp_bonds = ref.bond.list(bond_type="corporate")
+print(corp_bonds)
+```
+
+---
+
+### 8. Events Domain (Sự Kiện)
+
+**Nguồn:** VCI (vci), Vnstock internal  
+**Registry Key:** `"events"`
+
+#### Phương thức
+
+| Method | Tham Số | Mô Tả |
+|--------|---------|-------|
+| `calendar()` | `start`, `end`, `event_type` | Lịch sự kiện (cổ tức, ĐHCĐ, IPO...) |
+| `market()` | `start`, `end`, `event_type` | Sự kiện thị trường đặc biệt (nghỉ lễ, sự cố...) |
+
+**`event_type` cho `calendar()`:**
+- `'dividend'`: Cổ tức, phát hành cổ phiếu
+- `'insider'`: Giao dịch nội bộ
+- `'agm'`: Đại hội cổ đông
+- `'others'`: Biến động khác
+
+#### Ví dụ
+
+```python
+from vnstock_data import Reference
+
+ref = Reference()
+
+# Lịch sự kiện tháng 3/2026
+events = ref.events.calendar(start="2026-03-01", end="2026-03-31")
+print(events)
+
+# Chỉ sự kiện cổ tức
+dividends = ref.events.calendar(
+    start="2026-03-01", end="2026-03-31", event_type="dividend"
+)
+print(dividends)
+
+# Sự kiện thị trường (nghỉ lễ, sự cố)
+market_events = ref.events.market()
+print(market_events)
+```
+
+---
+
+### 9. Search Domain (Tìm Kiếm Toàn Cầu)
+
+**Nguồn:** MSN  
+**Registry Key:** `"search"`
+
+#### Phương thức
+
+| Method | Tham Số | Mô Tả |
+|--------|---------|-------|
+| `symbol()` | `query`, `locale`, `limit` | Tìm kiếm symbol toàn cầu (cổ phiếu, crypto, forex, chỉ số) |
+
+**Parameters:**
+- `query` (str): Từ khóa tìm kiếm (ví dụ: "VNM", "Bitcoin", "Gold")
+- `locale` (str, optional): Ngôn ngữ/khu vực (ví dụ: "vi-vn", "en-us")
+- `limit` (int, optional): Số kết quả tối đa. Mặc định 10.
+
+#### Ví dụ
+
+```python
+from vnstock_data import Reference
+
+ref = Reference()
+
+# Tìm kiếm "VNM"
+results = ref.search.symbol("VNM")
+print(results)
+# Columns: ['symbol', 'name', 'exchange', 'short_name', 
+#           'description', 'name_en', 'name_local', 'symbol_id']
+
+# Tìm kiếm Bitcoin
+btc = ref.search.symbol("Bitcoin", limit=5)
+print(btc)
+
+# Tìm kiếm vàng
+gold = ref.search.symbol("Gold", locale="en-us")
+print(gold)
+```
+
+> **Lưu ý**: `symbol_id` từ kết quả tìm kiếm có thể dùng cho các domain Market experimental (crypto, forex, commodity).
+
+---
+
+### 10. Futures Domain (Hợp Đồng Tương Lai)
+
+**Nguồn:** KBS, VCI  
+**Registry Key:** `"derivatives.futures"`
+
+#### Phương thức
+
+| Method | Tham Số | Mô Tả |
+|--------|---------|-------|
+| `list()` | - | Danh sách hợp đồng tương lai |
+| `info()` | - | Thông tin chi tiết hợp đồng (cần symbol) |
+
+#### Ví dụ
+
+```python
+from vnstock_data import Reference
+
+ref = Reference()
+
+# Danh sách hợp đồng tương lai
+futures_list = ref.futures().list()
+print(futures_list)
+
+# Thông tin chi tiết hợp đồng
+futures_info = ref.futures("VN30F2503").info()
+print(futures_info)
+```
+
+---
+
+### 11. Warrant Domain (Chứng Quyền)
+
+**Nguồn:** KBS, VCI  
+**Registry Key:** `"derivatives.warrant"`
+
 #### Phương Thức
 
-| Method | Tham Số | Mô Tả | Ví Dụ |
-|--------|---------|-------|-------|
-| `government()` | - | Trái phiếu Chính phủ | `ref.bond.government()` |
-| `corporate()` | - | Trái phiếu doanh nghiệp | `ref.bond.corporate()` |
+| Method | Tham Số | Mô Tả |
+|--------|---------|-------|
+| `list()` | - | Danh sách chứng quyền |
+| `info()` | - | Thông tin chi tiết chứng quyền (cần symbol) |
 
 #### Ví Dụ
 
@@ -238,37 +382,16 @@ from vnstock_data import Reference
 
 ref = Reference()
 
-# Trái phiếu Chính phủ
-gov_bonds = ref.bond.government()
-print(gov_bonds[['code', 'issuer', 'maturity']])
+# Danh sách chứng quyền
+warrant_list = ref.warrant().list()
+print(warrant_list)
 
-# Trái phiếu công ty
-corp_bonds = ref.bond.corporate()
-print(corp_bonds.head())
+# Thông tin chi tiết
+warrant_info = ref.warrant("CACB2511").info()
+print(warrant_info)
 ```
 
----
-
-## 🔗 Registry Mapping
-
-```python
-REFERENCE_SOURCES = {
-    "company": {
-        "profile": ("vci", "company", "Company", "overview"),
-        "shareholders": ("vci", "company", "Company", "shareholders"),
-        "officers": ("vci", "company", "Company", "officers"),
-        "subsidiaries": ("vci", "company", "Company", "subsidiaries"),
-        "news": ("vci", "company", "Company", "news"),
-        "events": ("vci", "company", "Company", "events"),
-    },
-    "equity": {
-        "list": ("vci", "listing", "Listing", "all_symbols"),
-        "by_group": ("vci", "listing", "Listing", "symbols_by_group"),
-        "by_exchange": ("vci", "listing", "Listing", "symbols_by_exchange"),
-    },
-    # ... more domains
-}
-```
+> **Lưu ý**: `derivatives()` đã deprecated. Dùng `ref.futures()` / `ref.warrant()` trực tiếp.
 
 ---
 
@@ -282,19 +405,16 @@ ref = Reference()
 all_stocks = ref.equity.list()  # Cache kết quả này
 
 # Sử dụng lại nhiều lần
-for symbol in all_stocks['code'].tolist():
+for symbol in all_stocks['symbol'].tolist():
     # ...
+    pass
 ```
 
-### 2. Filtering Efficiently
+### 2. Dùng `show_api()` để tra cứu
 
 ```python
-# Lấy toàn bộ rồi filter
-all_stocks = ref.equity.list()
-blue_chips = all_stocks[all_stocks['group'] == 'BLUECHIP']
-
-# Tốt hơn: Gọi trực tiếp nếu API support
-blue_chips_direct = ref.equity.by_group("BLUECHIP")
+from vnstock_data import show_api, Reference
+show_api(Reference())  # Xem toàn bộ Reference tree
 ```
 
 ---
@@ -303,7 +423,7 @@ blue_chips_direct = ref.equity.by_group("BLUECHIP")
 
 - **Master data** ít thay đổi → thích hợp để cache
 - Nếu muốn realtime data (giá, thanh khoản) → dùng **Market Layer**
-- Ví dụ: sau khi có danh sách cổ phiếu từ Reference → fetch giá từ Market
+- `derivatives()` đã deprecated → dùng `futures()` / `warrant()` trực tiếp
 
 ---
 
@@ -311,4 +431,4 @@ blue_chips_direct = ref.equity.by_group("BLUECHIP")
 
 - **Market Layer**: Lấy giá, thanh khoản, lịch sử giao dịch
 - **Fundamental Layer**: Lấy báo cáo tài chính, tỷ số
-- **Insights Layer**: Phân tích, xếp hạng, khuyến nghị
+- **Insights Layer**: Phân tích, xếp hạng
