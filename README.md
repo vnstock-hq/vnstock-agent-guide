@@ -27,7 +27,7 @@
 | Thư Viện             | Mục Đích                                                                     | Đối Tượng           | Trạng Thái   |
 | -------------------- | ---------------------------------------------------------------------------- | ------------------- | ------------ |
 | **vnstock**          | API dữ liệu chứng khoán miễn phí (Quote, Company, Finance, Trading, Listing) | Người dùng miễn phí | ✅ Hoạt động |
-| **vnstock_data**     | Lớp dữ liệu cao cấp với tính năng nâng cao (Macro, Insights, Screener)       | Người tài trợ       | ✅ Hoạt động |
+| **vnstock_data**     | Lớp dữ liệu với tính năng nâng cao (Macro, Insights, Screener)       | Người tài trợ       | ✅ Hoạt động |
 | **vnstock_ta**       | Chỉ báo phân tích kỹ thuật và vẽ biểu đồ                                     | Người tài trợ       | ✅ Hoạt động |
 | **vnstock_news**     | Thu thập tin tức và phân tích cảm xúc                                        | Người tài trợ       | ✅ Hoạt động |
 | **vnstock_pipeline** | Pipeline dữ liệu và streaming cho production                                 | Người tài trợ       | ✅ Hoạt động |
@@ -60,7 +60,7 @@ git clone https://github.com/vnstock-hq/vnstock-agent-guide.git
 mv -f vnstock-agent-guide/docs vnstock-agent-guide/.agent vnstock-agent-guide/.cursor vnstock-agent-guide/.github vnstock-agent-guide/AGENTS.md vnstock-agent-guide/CLAUDE.md ./
 
 # Windows (PowerShell):
-Move-Item -Path vnstock-agent-guide/docs, vnstock-agent-guide/.agent, vnstock-agent-guide/.cursor, vnstock-agent-guide/.github, vnstock-agent-guide/AGENTS.md, vnstock-agent-guide/CLAUDE.md -Destination ./ -Force
+Move-Item -Path vnstock-agent-guide/docs, vnstock-agent-guide/.agents, vnstock-agent-guide/.cursor, vnstock-agent-guide/.github, vnstock-agent-guide/AGENTS.md, vnstock-agent-guide/CLAUDE.md -Destination ./ -Force
 ```
 
 ### Bước 3: Sử Dụng Với AI Agents
@@ -100,7 +100,7 @@ Hướng dẫn thiết lập môi trường, kiểm tra lỗi và quy trình "Vi
 
 Kiến trúc, cài đặt, APIs, và hướng dẫn di chuyển
 
-### Thư Viện Cao Cấp (`docs/vnstock-data/`)
+### Thư Viện Tài Trợ (`docs/vnstock-data/`)
 
 Tính năng nâng cao, phân tích nâng cao, và best practices
 

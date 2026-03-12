@@ -26,7 +26,7 @@ vnstock_news/
 ├── __init__.py           # Khởi tạo, export main classes
 ├── main.py              # Module monitoring tin tức tự động
 ├── api/
-│   └── enhanced.py      # EnhancedNewsCrawler - API cao cấp
+│   └── enhanced.py      # EnhancedNewsCrawler - API trong gói tài trợ
 ├── core/                # Core modules
 │   ├── base.py          # BaseParser - base class
 │   ├── crawler.py       # Crawler - unified crawler
@@ -177,7 +177,7 @@ asyncio.run(main())
 **Ưu điểm**: Nhanh, concurrent requests  
 **Nhược điểm**: Phức tạp hơn, cần async/await
 
-### 5. **EnhancedNewsCrawler** - API Cao Cấp
+### 5. **EnhancedNewsCrawler**
 
 ```python
 from vnstock_news import EnhancedNewsCrawler

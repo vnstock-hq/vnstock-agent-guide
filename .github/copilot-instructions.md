@@ -87,7 +87,7 @@ docs/
 │   ├── 11-best-practices.md   # Tips & optimization
 │   └── 12-migration-guide.md  # vnstock vs vnstock_data comparison
 │
-├── vnstock-data/               # Premium library documentation
+├── vnstock-data/               # Sponsored library documentation
 │   ├── 01-overview.md         # Features, data sources
 │   ├── 02-listing.md          # Enhanced listing API
 │   ├── 03-quote.md            # Enhanced quote API
@@ -159,7 +159,7 @@ print(df.head())
 ```python
 from vnstock_data import Quote
 
-# Premium features available
+# Sponsored features available
 quote = Quote(source="kbs", symbol="VCB")
 
 df = quote.history(

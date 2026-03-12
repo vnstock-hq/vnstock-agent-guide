@@ -13,7 +13,7 @@ Tất cả các thay đổi đáng chú ý của dự án **vnstock-agent-guide*
 - **Tích hợp Quy trình "Vibe Coding"**: Cập nhật kỹ năng `vnstock-solution-architect` để hỗ trợ tối đa phong cách làm việc "Vibe Coding".
   - Định nghĩa 3 nhóm người dùng rõ ràng: **Người Khám Phá (Explorer)**, **Nhà Phân Tích (Analyst)**, **Chuyên Gia (Expert)**.
   - Triển khai quy trình hỗ trợ 3 giai đoạn: **Khởi tạo** -> **Tinh chỉnh** -> **Gỡ lỗi**.
-  - Thêm "Bản đồ hệ sinh thái" để AI chọn đúng thư viện (`vnstock` bản mã nguồn mở miễn phí với `vnstock_data` bản cao cấp).
+  - Thêm "Bản đồ hệ sinh thái" để AI chọn đúng thư viện (`vnstock` bản mã nguồn mở miễn phí với `vnstock_data` bản tài trợ).
 - **Cải thiện điều hướng AI**:
   - Cập nhật các file hướng dẫn `AGENTS.md`, `CLAUDE.md`, và `GEMINI.md` để tự động trỏ tới tài liệu `setup-and-debug` khi gặp lỗi.
   - Cập nhật câu lệnh copy các file quan trọng vào thư mục dự án của người dùng

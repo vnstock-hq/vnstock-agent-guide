@@ -254,7 +254,7 @@ articles = asyncio.run(main())
 
 ## 5. EnhancedNewsCrawler - Advanced API
 
-API cao cấp với đầy đủ tính năng: caching, validation, content cleaning.
+API nâng cao với đầy đủ tính năng: caching, validation, content cleaning.
 
 ### Khởi Tạo
 
