@@ -8,7 +8,7 @@ tags: [news, crawler, data, vnstock_news]
 # `vnstock-news-crawler` Skill
 
 ## Persona Framing
-> _"You are a meticulous Data Engineer. Your prime directive is to build robust, scalable news crawlers. You do not just create scripts; you ensure the scripts use the right extraction strategy (RSS vs Sitemap) that minimizes API failures and maximizes data freshness."_
+> _"You are a meticulous Data Engineer. Your prime directive is to build robust, scalable news crawlers STRICTLY using the `vnstock_news` library. You MUST NEVER bypass `vnstock_news` to scrape directly with other tools on your own. You do not just create scripts; you ensure the scripts use the right extraction strategy (RSS vs Sitemap) that minimizes API failures and maximizes data freshness. If a site is difficult to parse natively, you MUST use `custom_config` inside `AsyncBatchCrawler` to extract the HTML contents natively within the library."_
 
 ## 1. Quick Reference Table
 
@@ -105,9 +105,62 @@ if __name__ == "__main__":
     print(df.head())
 ```
 
+```
+---
+
+### 📝 Template C: Custom Site with Content Filtering (No category in URL)
+Use when the site is not natively supported and its sitemap URLs are flat (e.g., `...post123.html`), requiring you to fetch the articles first and filter by keywords in their content.
+
+```python
+import asyncio
+import pandas as pd
+from vnstock_news import AsyncBatchCrawler
+
+custom_config = {
+    "name": "Custom Site",
+    "domain": "customsite.vn",
+    "sitemap": {
+        "pattern_type": "monthly",
+        "base_url": "https://customsite.vn/sitemaps/news",
+        "format": "-{year}-{month}",
+        "extension": "xml"
+    },
+    "config": {
+        "title_selector": {"tag": "h1", "class": "title"},
+        "content_selector": {"tag": "div", "class": "article-body"}
+    }
+}
+
+async def fetch_filtered_news():
+    # ⚠️ CRITICAL: site_name MUST be omitted when using custom_config
+    crawler = AsyncBatchCrawler(custom_config=custom_config, max_concurrency=5)
+    
+    # Generate explicit sitemap URL matching the pattern
+    sitemap_url = "https://customsite.vn/sitemaps/news-2026-3.xml"
+    
+    df = await crawler.fetch_articles_async(
+        sources=[sitemap_url],
+        top_n=50,
+        within="1d"
+    )
+    
+    if not df.empty and 'markdown_content' in df.columns:
+        # Filter natively extracted markdown content
+        df_filtered = df[df['markdown_content'].str.contains('keyword1|keyword2', case=False, na=False)]
+        return df_filtered
+    return pd.DataFrame()
+
+if __name__ == "__main__":
+    df = asyncio.run(fetch_filtered_news())
+    print(f"Extracted {len(df)} filtered articles")
+```
+
 ---
 
 ## 5. Anti-Patterns (Avoid at all costs!)
+
+- ⛔ **NEVER bypass vnstock_news internals.**
+  Do not use bare `requests` + `BeautifulSoup` or any other manually. If a site's URLs lack category metadata, extract the URLs using the Sitemap approach and let `AsyncBatchCrawler(custom_config=...)` fetch the `markdown_content`. Then, filter the resulting DataFrame using Pandas string matching (e.g. `df['markdown_content'].str.contains(...)`).
 
 - ⛔ **NEVER pass `site_name` string into `sources`.**  
   _Bad_: `AsyncBatchCrawler(..).fetch_articles_async(sources=["cafef"])`  
