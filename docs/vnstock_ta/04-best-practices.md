@@ -640,21 +640,20 @@ print(df[df['SMA_Signal'] == 1])
 
 Thời gian tính toán cho 1000 bars dữ liệu:
 
-| Chỉ báo | Thời gian | Ghi chú |
-|---------|-----------|---------|
-| SMA | < 1ms | Rất nhanh |
-| EMA | < 1ms | Rất nhanh |
-| RSI | 2-3ms | Nhanh |
-| MACD | 2-3ms | Nhanh |
-| BBANDS | 3-5ms | Trung bình |
-| ATR | 5-10ms | Trung bình |
-| SUPERTREND | 10-20ms | Chậm hơn |
+| Chỉ báo    | Thời gian | Ghi chú    |
+| ---------- | --------- | ---------- |
+| SMA        | < 1ms     | Rất nhanh  |
+| EMA        | < 1ms     | Rất nhanh  |
+| RSI        | 2-3ms     | Nhanh      |
+| MACD       | 2-3ms     | Nhanh      |
+| BBANDS     | 3-5ms     | Trung bình |
+| ATR        | 5-10ms    | Trung bình |
+| SUPERTREND | 10-20ms   | Chậm hơn   |
 
 ---
 
 ## IX. Tài Liệu Tham Khảo
 
 - **vnstock_data**: https://vnstocks.com/
-- **pandas-ta**: https://github.com/twopirllc/pandas-ta
 - **TradingView**: https://www.tradingview.com/education/
 - **Investopedia**: https://www.investopedia.com/

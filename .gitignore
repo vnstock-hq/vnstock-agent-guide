@@ -4,8 +4,7 @@ website docs
 vnstock_data
 /vnstock/
 # .agents/
-.agents/skills/vnstock-document-generator/
-.agents/skills/power-agent-creator/
+.agents/skills/agent-skill-architect
 /dev_notes/
 
 # Byte-compiled / optimized / DLL files
