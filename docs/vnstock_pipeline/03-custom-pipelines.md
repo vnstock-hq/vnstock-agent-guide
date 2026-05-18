@@ -10,40 +10,40 @@ Chương này hướng dẫn xây dựng **custom pipelines** - các quy trình 
 
 ---
 
-## I. Kiến Trúc Custom Pipeline
+## I. Kiến Trúc Tùy Chỉnh
 
 ### Luồng Xử Lý
 
-```
-Input (Tickers) 
+```text
+Dữ Liệu Đầu Vào (Danh sách mã) 
     ↓
-Fetcher (Lấy dữ liệu)
+Fetcher (Thu thập dữ liệu)
     ↓
-Validator (Kiểm tra dữ liệu)
+Validator (Xác thực chất lượng)
     ↓
-Transformer (Chuyển đổi & Làm giàu)
+Transformer (Chuyển đổi & Cải thiện)
     ↓
-Exporter (Lưu dữ liệu)
+Exporter (Lưu trữ và phân phối)
     ↓
-Output (Files/DB/API)
+Dữ Liệu Đầu Ra (Files/DB/API)
 ```
 
-### Component Responsibilities
+### Vai Trò Của Các Thành Phần
 
-| Component | Trách Nhiệm | Input | Output |
-|-----------|------------|-------|--------|
-| **Fetcher** | Lấy raw data từ source | Ticker, params | DataFrame |
-| **Validator** | Kiểm tra data quality | DataFrame | bool (pass/fail) |
-| **Transformer** | Làm sạch, enrich, tính toán | DataFrame | DataFrame (enriched) |
-| **Exporter** | Lưu data | DataFrame, ticker | File/DB/API |
+| Thành Phần      | Trách Nhiệm                           | Đầu Vào                   | Đầu Ra                       |
+| --------------- | ------------------------------------- | ------------------------- | ---------------------------- |
+| **Fetcher**     | Thu thập dữ liệu thô từ nguồn         | Mã chứng khoán, tham số   | DataFrame                    |
+| **Validator**   | Kiểm tra chất lượng và tính toàn vẹn  | DataFrame                 | Boolean (Đạt/Không đạt)      |
+| **Transformer** | Làm sạch, chuẩn hóa và tính toán thêm | DataFrame                 | DataFrame (Đã được làm giàu) |
+| **Exporter**    | Lưu trữ hoặc xuất dữ liệu             | DataFrame, mã chứng khoán | File/Database/API            |
 
 ---
 
-## II. Custom Fetcher Patterns
+## II. Các Mẫu Thiết Kế Fetcher Tùy Chỉnh
 
-### Pattern 1: Simple API Wrapper
+### Mẫu 1: API Wrapper Đơn Giản
 
-**Use case**: Fetch từ API công khai hoặc proprietary
+**Ứng dụng thực tế**: Thu thập dữ liệu từ các API công cộng hoặc hệ thống nội bộ.
 
 ```python
 from vnstock_pipeline.template.vnstock import VNFetcher
@@ -51,7 +51,7 @@ import pandas as pd
 import requests
 
 class APIFetcher(VNFetcher):
-    """Fetch from custom API endpoint"""
+    """Thu thập dữ liệu từ endpoint API tùy chỉnh"""
     
     def __init__(self, api_url: str, api_key: str):
         self.api_url = api_url
@@ -72,7 +72,7 @@ class APIFetcher(VNFetcher):
             data = response.json()
             df = pd.DataFrame(data['quotes'])
             
-            # Normalize columns
+            # Chuẩn hóa tên cột
             df.rename(columns={
                 'timestamp': 'time',
                 'open_price': 'open',
@@ -85,11 +85,11 @@ class APIFetcher(VNFetcher):
             return df
         
         except Exception as e:
-            print(f"Error fetching {ticker}: {e}")
+            print(f"Lỗi khi thu thập {ticker}: {e}")
             return pd.DataFrame()
 ```
 
-**Usage**:
+**Cách Sử Dụng**:
 
 ```python
 fetcher = APIFetcher(
@@ -100,9 +100,9 @@ fetcher = APIFetcher(
 
 ---
 
-### Pattern 2: Multi-Source Fallback
+### Mẫu 2: Dự Phòng Đa Nguồn (Multi-Source Fallback)
 
-**Use case**: Retry với sources khác nếu source chính thất bại
+**Ứng dụng thực tế**: Thử tự động lấy từ nguồn dự phòng nếu nguồn dữ liệu chính gặp sự cố.
 
 ```python
 from vnstock_pipeline.template.vnstock import VNFetcher
@@ -110,10 +110,10 @@ from vnstock_data import Quote
 import pandas as pd
 
 class MultiSourceFetcher(VNFetcher):
-    """Try multiple sources, use best available"""
+    """Thử nhiều nguồn dữ liệu, sử dụng nguồn tốt nhất có sẵn"""
     
     def _vn_call(self, ticker: str, **kwargs) -> pd.DataFrame:
-        sources = ['vci', 'vnd', 'cafef']  # Priority order
+        sources = ['vci', 'vnd', 'cafef']  # Thứ tự ưu tiên
         
         for source in sources:
             try:
@@ -126,30 +126,30 @@ class MultiSourceFetcher(VNFetcher):
                 
                 if len(df) > 0:
                     df['source'] = source
-                    print(f"✅ {ticker} from {source}")
+                    print(f"✅ Đã lấy {ticker} từ nguồn {source}")
                     return df
             
             except Exception as e:
-                print(f"⚠️ {ticker} failed with {source}: {e}")
+                print(f"⚠️ {ticker} lỗi với nguồn {source}: {e}")
                 continue
         
-        print(f"❌ {ticker} failed all sources")
+        print(f"❌ {ticker} thất bại với tất cả các nguồn")
         return pd.DataFrame()
 ```
 
-**Usage**:
+**Cách Sử Dụng**:
 
 ```python
 fetcher = MultiSourceFetcher()
 df = fetcher._vn_call("VCB", start="2024-01-01", end="2024-12-02")
-print(f"Source: {df['source'].iloc[0] if len(df) > 0 else 'None'}")
+print(f"Nguồn sử dụng: {df['source'].iloc[0] if len(df) > 0 else 'Không có'}")
 ```
 
 ---
 
-### Pattern 3: Caching with Expiration
+### Mẫu 3: Lưu Trữ Tạm Thời (Caching)
 
-**Use case**: Avoid redundant API calls, speed up re-runs
+**Ứng dụng thực tế**: Tránh gọi API lặp lại không cần thiết để tăng tốc độ khởi chạy lại pipeline.
 
 ```python
 from vnstock_pipeline.template.vnstock import VNFetcher
@@ -160,7 +160,7 @@ import os
 from datetime import datetime, timedelta
 
 class CachedFetcher(VNFetcher):
-    """Fetch with local cache, automatic expiration"""
+    """Thu thập dữ liệu kèm bộ nhớ đệm cục bộ (tự động hết hạn)"""
     
     def __init__(self, cache_dir: str = "./cache", ttl_hours: int = 24):
         self.cache_dir = cache_dir
@@ -183,101 +183,101 @@ class CachedFetcher(VNFetcher):
         end = kwargs.get("end", "2024-12-02")
         cache_path = self._get_cache_path(ticker, start, end)
         
-        # Check cache
+        # Kiểm tra bộ nhớ đệm
         if self._is_cache_valid(cache_path):
             with open(cache_path, 'rb') as f:
                 df = pickle.load(f)
-                print(f"✅ {ticker} from cache")
+                print(f"✅ Lấy {ticker} từ bộ nhớ đệm")
                 return df
         
-        # Fetch fresh
+        # Tải dữ liệu mới
         try:
             quote = Quote(source="vci", symbol=ticker)
             df = quote.history(start=start, end=end, interval=kwargs.get("interval", "1D"))
             
-            # Save cache
+            # Lưu vào đệm
             with open(cache_path, 'wb') as f:
                 pickle.dump(df, f)
             
-            print(f"✅ {ticker} freshly fetched")
+            print(f"✅ Đã tải mới {ticker}")
             return df
         
         except Exception as e:
-            print(f"❌ Error fetching {ticker}: {e}")
+            print(f"❌ Lỗi khi tải {ticker}: {e}")
             return pd.DataFrame()
 ```
 
-**Usage**:
+**Cách Sử Dụng**:
 
 ```python
 fetcher = CachedFetcher(cache_dir="./stock_cache", ttl_hours=12)
 
-# First call: fetch fresh
+# Lần gọi đầu tiên: Sẽ tải mới từ API
 df1 = fetcher._vn_call("VCB", start="2024-01-01", end="2024-12-02")
 
-# Second call: from cache
+# Lần gọi thứ hai: Sẽ lấy thẳng từ bộ nhớ đệm (nhanh hơn)
 df2 = fetcher._vn_call("VCB", start="2024-01-01", end="2024-12-02")
 
-# After 12 hours: fetch fresh again
+# Sau 12 tiếng: Sẽ hết hạn và bắt đầu tải mới lại
 ```
 
 ---
 
-## III. Custom Validator Patterns
+## III. Các Mẫu Thiết Kế Validator Tùy Chỉnh
 
-### Pattern 1: Business Logic Validation
+### Mẫu 1: Xác Thực Theo Logic Nghiệp Vụ
 
-**Use case**: Kiểm tra điều kiện kinh doanh cụ thể
+**Ứng dụng thực tế**: Kiểm tra dữ liệu theo các điều kiện nghiệp vụ cụ thể.
 
 ```python
 from vnstock_pipeline.template.vnstock import VNValidator
 import pandas as pd
 
 class BusinessValidator(VNValidator):
-    """Validate against business rules"""
+    """Xác thực dựa trên các quy tắc nghiệp vụ"""
     
     required_columns = ["time", "open", "high", "low", "close", "volume"]
     
     def validate(self, data: pd.DataFrame) -> bool:
-        # Base checks
+        # Kiểm tra cơ bản
         if not super().validate(data):
             return False
         
-        # Minimum rows
+        # Số lượng hàng tối thiểu
         if len(data) < 20:
-            print("❌ Insufficient data (< 20 rows)")
+            print("❌ Dữ liệu không đủ (< 20 dòng)")
             return False
         
-        # OHLC logic
+        # Logic giá OHLC
         if (data['high'] < data['low']).any():
-            print("❌ High < Low detected")
+            print("❌ Lỗi: Giá cao nhất (High) < Giá thấp nhất (Low)")
             return False
         
         if (data['close'] > data['high']).any() or (data['close'] < data['low']).any():
-            print("❌ Close outside High/Low range")
+            print("❌ Lỗi: Giá đóng cửa (Close) nằm ngoài khoảng High/Low")
             return False
         
-        # Price continuity
+        # Tính liên tục của giá
         price_gap = data['open'].diff().abs() / data['close'].shift(1)
-        if (price_gap > 0.1).any():  # 10% gap
-            print("⚠️ Large price gap detected")
-            # Could return False or just warn
+        if (price_gap > 0.1).any():  # Nhảy giá 10%
+            print("⚠️ Cảnh báo: Phát hiện khoảng trống giá (gap) lớn")
+            # Có thể trả về False hoặc chỉ cảnh báo
         
-        # Volume checks
+        # Kiểm tra khối lượng
         if (data['volume'] <= 0).any():
-            print("❌ Non-positive volume")
+            print("❌ Lỗi: Khối lượng giao dịch không hợp lệ (<= 0)")
             return False
         
-        # Extreme movements (> 50%)
+        # Biến động bất thường (> 50%)
         max_move = (data['close'] - data['open']).abs() / data['open']
         if (max_move > 0.5).any():
-            print("❌ Extreme price movement (> 50%)")
+            print("❌ Lỗi: Biến động giá bất thường (> 50%)")
             return False
         
         return True
 ```
 
-**Usage**:
+**Cách Sử Dụng**:
 
 ```python
 validator = BusinessValidator()
@@ -301,16 +301,16 @@ print(f"Bad data valid: {validator.validate(bad_df)}")  # False
 
 ---
 
-### Pattern 2: Data Quality Scoring
+### Mẫu 2: Chấm Điểm Chất Lượng Dữ Liệu (Quality Scoring)
 
-**Use case**: Score data quality thay vì reject outright
+**Ứng dụng thực tế**: Đánh giá và cho điểm chất lượng dữ liệu thay vì từ chối hoàn toàn.
 
 ```python
 from vnstock_pipeline.template.vnstock import VNValidator
 import pandas as pd
 
 class QualityScorer(VNValidator):
-    """Score data quality 0-100"""
+    """Chấm điểm chất lượng dữ liệu từ 0-100"""
     
     required_columns = ["time", "open", "high", "low", "close", "volume"]
     
@@ -356,11 +356,11 @@ class QualityScorer(VNValidator):
 
 ---
 
-## IV. Custom Transformer Patterns
+## IV. Các Mẫu Thiết Kế Transformer Tùy Chỉnh
 
-### Pattern 1: Technical Indicators Enrichment
+### Mẫu 1: Tính Toán Chỉ Báo Kỹ Thuật (Technical Indicators)
 
-**Use case**: Thêm 20+ indicators vào dữ liệu OHLCV
+**Ứng dụng thực tế**: Tính toán và bổ sung hơn 20 chỉ báo kỹ thuật vào dữ liệu giá OHLCV.
 
 ```python
 from vnstock_pipeline.template.vnstock import VNTransformer
@@ -368,7 +368,7 @@ import pandas as pd
 import numpy as np
 
 class TAEnrichedTransformer(VNTransformer):
-    """Enrich with comprehensive technical indicators"""
+    """Làm giàu dữ liệu bằng các chỉ báo kỹ thuật toàn diện"""
     
     def transform(self, data: pd.DataFrame) -> pd.DataFrame:
         df = super().transform(data)
@@ -429,7 +429,7 @@ class TAEnrichedTransformer(VNTransformer):
         return df
 ```
 
-**Output example**:
+**Ví dụ cấu trúc đầu ra (Output Example)**:
 
 ```
 DataFrame với columns:
@@ -445,9 +445,9 @@ Tổng cộng: ~25 columns
 
 ---
 
-### Pattern 2: Fundamental Data Enrichment
+### Mẫu 2: Kết Hợp Dữ Liệu Cơ Bản (Fundamental Data)
 
-**Use case**: Kết hợp OHLCV + báo cáo tài chính
+**Ứng dụng thực tế**: Kết hợp dữ liệu giá (OHLCV) với các chỉ số từ báo cáo tài chính.
 
 ```python
 from vnstock_pipeline.template.vnstock import VNTransformer
@@ -455,7 +455,7 @@ from vnstock_data import Finance
 import pandas as pd
 
 class FundamentalEnrichedTransformer(VNTransformer):
-    """Enrich OHLCV with financial indicators"""
+    """Làm giàu dữ liệu OHLCV với các chỉ số tài chính"""
     
     def __init__(self, ticker: str):
         self.ticker = ticker
@@ -464,7 +464,7 @@ class FundamentalEnrichedTransformer(VNTransformer):
         df = super().transform(data)
         
         try:
-            # Fetch latest financial data
+            # Lấy dữ liệu tài chính mới nhất
             finance = Finance(symbol=self.ticker)
             balance = finance.balance_sheet()
             income = finance.income_statement()
@@ -500,9 +500,9 @@ class FundamentalEnrichedTransformer(VNTransformer):
 
 ---
 
-### Pattern 3: Data Normalization
+### Mẫu 3: Chuẩn Hóa Dữ Liệu (Data Normalization)
 
-**Use case**: Chuẩn hóa dữ liệu cho machine learning
+**Ứng dụng thực tế**: Chuẩn hóa và đưa dữ liệu về cùng thang đo (scale) phục vụ huấn luyện mô hình Machine Learning.
 
 ```python
 from vnstock_pipeline.template.vnstock import VNTransformer
@@ -510,21 +510,21 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler
 import pandas as pd
 
 class NormalizedTransformer(VNTransformer):
-    """Normalize data for ML models"""
+    """Chuẩn hóa dữ liệu cho các mô hình Machine Learning"""
     
     def transform(self, data: pd.DataFrame) -> pd.DataFrame:
         df = super().transform(data)
         
-        # Identify numeric columns to normalize
+        # Xác định các cột dạng số cần chuẩn hóa
         numeric_cols = df.select_dtypes(include=['float64', 'int64']).columns
-        exclude = ['volume']  # Don't normalize volume
+        exclude = ['volume']  # Bỏ qua cột khối lượng
         cols_to_normalize = [c for c in numeric_cols if c not in exclude]
         
-        # StandardScaler for indicators
+        # Áp dụng StandardScaler cho các chỉ báo
         scaler = StandardScaler()
         df[cols_to_normalize] = scaler.fit_transform(df[cols_to_normalize])
         
-        # MinMaxScaler for prices (0-1 range)
+        # Áp dụng MinMaxScaler cho các mức giá (khoảng 0-1)
         minmax = MinMaxScaler()
         df[['open', 'high', 'low', 'close']] = minmax.fit_transform(df[['open', 'high', 'low', 'close']])
         
@@ -533,11 +533,11 @@ class NormalizedTransformer(VNTransformer):
 
 ---
 
-## V. Custom Exporter Patterns
+## V. Các Mẫu Thiết Kế Exporter Tùy Chỉnh
 
-### Pattern 1: Multi-Format Export
+### Mẫu 1: Xuất Đa Định Dạng (Multi-Format)
 
-**Use case**: Lưu vào CSV + Parquet + JSON
+**Ứng dụng thực tế**: Lưu cùng lúc vào các định dạng CSV, Parquet và JSON.
 
 ```python
 from vnstock_pipeline.core.exporter import Exporter
@@ -584,9 +584,9 @@ class MultiFormatExporter(Exporter):
 
 ---
 
-### Pattern 2: Database Export
+### Mẫu 2: Xuất Ra Cơ Sở Dữ Liệu (Database Export)
 
-**Use case**: Lưu vào SQLite/DuckDB cho querying
+**Ứng dụng thực tế**: Lưu trực tiếp vào SQLite hoặc DuckDB để tối ưu tốc độ truy vấn SQL.
 
 ```python
 from vnstock_pipeline.core.exporter import Exporter
@@ -642,9 +642,9 @@ high_volume = exporter.query("vcb", "volume > 10000000")
 
 ---
 
-### Pattern 3: Webhook Integration
+### Mẫu 3: Tích Hợp Webhook
 
-**Use case**: Push data vào remote API/webhook
+**Ứng dụng thực tế**: Gửi thông báo hoặc đẩy dữ liệu theo từng lô (batch) lên các hệ thống từ xa như API server, Discord, hoặc Telegram.
 
 ```python
 from vnstock_pipeline.core.exporter import Exporter
@@ -693,11 +693,11 @@ class WebhookExporter(Exporter):
 
 ---
 
-## VI. Complete Production Example
+## VI. Ví Dụ Cấu Trúc Pipeline Hoàn Chỉnh (Production-Ready)
 
 ```python
 """
-Production pipeline: Fetch VN100 stocks, enrich with indicators, export
+Pipeline hoàn chỉnh: Tải VN100, làm giàu dữ liệu kỹ thuật, và xuất ra Parquet/CSV.
 """
 
 from vnstock_pipeline.core.scheduler import Scheduler
@@ -843,7 +843,69 @@ if __name__ == "__main__":
 
 ---
 
-## VII. Testing Custom Pipelines
+## VII. Mẫu Thiết Kế Processor Tùy Chỉnh (Dữ Liệu Streaming)
+
+**Ứng dụng thực tế**: Xử lý dữ liệu thời gian thực từ luồng WebSocket (Streaming) bằng cách tạo các Processor kế thừa từ `DataProcessor`. Khác với quy trình tĩnh ở trên, `DataProcessor` xử lý từng gói tin (tick) bất đồng bộ (async) ngay khi chúng vừa đến hệ thống.
+
+```python
+from vnstock_pipeline.stream import DataProcessor
+import logging
+
+class CustomSignalProcessor(DataProcessor):
+    """Custom processor để lọc và tính toán tín hiệu kỹ thuật real-time"""
+    
+    def __init__(self, symbol: str, buffer_size: int = 100):
+        super().__init__()
+        self.symbol = symbol
+        self.prices = []
+        self.buffer_size = buffer_size
+        
+    async def process(self, data: dict) -> None:
+        # 1. Định tuyến sự kiện thông minh (từ vnstock_pipeline v2+)
+        event_type = data.get("event_type") or data.get("data_type") or ""
+        if event_type not in ["stockps", "board"]:
+            return
+            
+        # 2. Lọc mã chứng khoán (nhận diện cả mã KRX tự động convert)
+        if data.get("krx_symbol", data.get("symbol")) != self.symbol:
+            return
+            
+        # 3. Trích xuất giá và lưu buffer
+        price = float(data.get("price") or data.get("last_price") or 0)
+        if not price:
+            return
+            
+        self.prices.append(price)
+        if len(self.prices) > self.buffer_size:
+            self.prices.pop(0)
+        
+        # 4. Tính toán và Cảnh báo (ví dụ với vnstock_ta)
+        if len(self.prices) >= 20:
+            # import pandas as pd
+            # from vnstock_ta.indicators.trend import TrendIndicator
+            # Xây dựng tín hiệu cảnh báo tại đây...
+            pass
+```
+
+**Cách Sử Dụng** (Tích hợp với `WSSClient`):
+
+```python
+import asyncio
+from vnstock_pipeline.stream import WSSClient
+
+async def main():
+    client = WSSClient(enable_session_manager=True)
+    client.subscribe_symbols(["VN30F1M"])
+    
+    # Gắn Custom Processor vào luồng Streaming Pipeline
+    client.add_processor(CustomSignalProcessor(symbol="VN30F1M"))
+    
+    await client.connect()
+```
+
+---
+
+## VIII. Kịch Bản Kiểm Thử (Testing Custom Pipelines)
 
 ```python
 import unittest

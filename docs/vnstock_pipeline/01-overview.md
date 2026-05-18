@@ -2,17 +2,17 @@
 
 ## Giới Thiệu
 
-`vnstock_pipeline` là thư viện Python cung cấp một framework mạnh mẽ và linh hoạt để xây dựng các **quy trình xử lý dữ liệu** từ việc lấy (fetch), xác thực (validate), chuyển đổi (transform) cho đến xuất (export) dữ liệu thị trường chứng khoán Việt Nam. Thư viện được thiết kế theo kiến trúc **modular** (dạng plugin), cho phép bạn dễ dàng tùy biến hoặc mở rộng mà không cần sửa mã nguồn cốt lõi.
+`vnstock_pipeline` là thư viện Python cung cấp một framework mạnh mẽ và linh hoạt để xây dựng các **luồng xử lý dữ liệu** cho thị trường chứng khoán đặc biệt là tại Việt Nam. Thư viện bao quát toàn bộ quy trình từ bước thu thập, xác thực, chuyển đổi cho đến xuất dữ liệu thành phẩm. Với kiến trúc **mô-đun**, người dùng có thể dễ dàng tùy biến hoặc mở rộng hệ thống mà không cần can thiệp vào mã nguồn cốt lõi.
 
 ### Đặc Điểm Chính
 
-- **Kiến trúc Modular**: Các thành phần (Fetcher, Validator, Transformer, Exporter) độc lập và có thể thay thế
-- **Mẫu Tác Vụ**: Hàm sẵn sàng sử dụng cho các loại dữ liệu phổ biến (OHLCV, Financial, Intraday, Price Board)
-- **Lập Lịch Linh Hoạt**: Scheduler tự động xử lý song song cho danh sách mã
-- **Xử Lý Lỗi**: Logic thử lại, ghi nhật ký lỗi và báo cáo chi tiết
-- **Streaming Thời Gian Thực**: Hỗ trợ WebSocket streaming dữ liệu với độ trễ thấp quy mô toàn thị trường mà không gặp giới hạn tốc độ API như kết nối thông qua REST API thông thường
-- **Tùy Chọn Xuất**: CSV, DuckDB, Parquet, v.v.
-- **Khả Năng Mở Rộng**: Dễ dàng thêm Fetcher, Processor hoặc Exporter tùy chỉnh
+- **Kiến trúc Mô-đun**: Các thành phần cốt lõi (Fetcher, Validator, Transformer, Exporter) hoạt động hoàn toàn độc lập và có thể thêm/bớt dễ dàng (plug-and-play).
+- **Tác vụ dựng sẵn**: Cung cấp sẵn các hàm xử lý hoàn chỉnh cho dữ liệu phổ biến như OHLCV, báo cáo tài chính, dữ liệu trong phiên và bảng giá.
+- **Tự động lập lịch**: Khung điều phối Scheduler tự động chia lô và xử lý song song khối lượng lớn mã cổ phiếu.
+- **Kiểm soát lỗi**: Tích hợp cơ chế tự động thử lại, ghi nhật ký lỗi và báo cáo chi tiết quá trình thực thi.
+- **Dữ liệu thời gian thực**: Hỗ trợ WebSocket streaming với độ trễ thấp quy mô toàn thị trường, loại bỏ giới hạn tốc độ thường gặp ở REST API.
+- **Đa định dạng xuất**: Hỗ trợ xuất dữ liệu ra nhiều nền tảng lưu trữ như CSV, DuckDB, Parquet.
+- **Khả năng mở rộng**: Cung cấp các lớp cơ sở (Base Class) giúp lập trình viên dễ dàng tự tạo bộ xử lý hoặc nguồn cấp dữ liệu riêng.
 
 ### Tại Sao Dùng Vnstock Pipeline?
 
@@ -29,32 +29,32 @@
 ```
 vnstock_pipeline/
 ├── __init__.py
-├── core/                    # Các class cốt lõi
-│   ├── fetcher.py          # Base Fetcher class
-│   ├── validator.py        # Base Validator class
-│   ├── transformer.py      # Base Transformer class
-│   ├── exporter.py         # Base Exporter class
-│   ├── scheduler.py        # Scheduler để chạy pipeline
-│   ├── data_manager.py     # Quản lý bộ nhớ đệm dữ liệu
+├── core/                    # Thành phần cốt lõi
+│   ├── fetcher.py          # Lớp thu thập dữ liệu
+│   ├── validator.py        # Lớp xác thực dữ liệu
+│   ├── transformer.py      # Lớp chuyển đổi dữ liệu
+│   ├── exporter.py         # Lớp xuất dữ liệu
+│   ├── scheduler.py        # Bộ điều phối và lập lịch
+│   ├── data_manager.py     # Quản lý bộ nhớ đệm
 │   └── flexible_exporter.py # Tùy chọn xuất linh hoạt
-├── template/                # Các mẫu triển khai
+├── template/                # Các mẫu triển khai cơ sở
 │   └── vnstock.py          # VNFetcher, VNValidator, VNTransformer
-├── tasks/                   # Các tác vụ có sẵn
-│   ├── ohlcv.py           # Dữ liệu OHLCV hàng ngày
+├── tasks/                   # Các tác vụ dựng sẵn
+│   ├── ohlcv.py           # Dữ liệu giá hàng ngày
 │   ├── financial.py        # Báo cáo tài chính
 │   ├── intraday.py        # Dữ liệu trong phiên
-│   └── price_board.py      # Dữ liệu bảng giá
-├── schemas/                 # Schemas/xác thực dữ liệu
-├── stream/                  # Streaming thời gian thực
-│   ├── client.py           # WSSClient cho WebSocket
-│   ├── processors.py       # Bộ xử lý dữ liệu
+│   └── price_board.py      # Dữ liệu bảng giá trực tuyến
+├── schemas/                 # Định dạng và cấu trúc dữ liệu
+├── stream/                  # Xử lý thời gian thực
+│   ├── client.py           # Kết nối WebSocket
+│   ├── processors.py       # Các bộ xử lý luồng dữ liệu
 │   ├── processors_advanced.py
-│   └── sources/            # Nguồn dữ liệu
-├── utils/                   # Tiện ích
-│   ├── logger.py           # Thiết lập ghi nhật ký
-│   ├── env.py              # Cấu hình môi trường
-│   ├── deduplication.py    # Loại bỏ trùng lặp
-│   └── market_hours.py     # Thông tin giờ giao dịch
+│   └── sources/            # Nguồn cấp dữ liệu thời gian thực
+├── utils/                   # Tiện ích bổ trợ
+│   ├── logger.py           # Cấu hình hệ thống ghi nhật ký
+│   ├── env.py              # Quản lý biến môi trường
+│   ├── deduplication.py    # Thuật toán loại bỏ trùng lặp
+│   └── market_hours.py     # Quản lý khung giờ giao dịch
 └── __pycache__/
 ```
 
@@ -91,15 +91,15 @@ Dữ liệu có cấu trúc
 
 ## Các Loại Tác Vụ
 
-### 1. OHLCV (Open, High, Low, Close, Volume) - Giá Hàng Ngày
+### 1. Dữ Liệu OHLCV
 
-**Mục đích**: Lấy dữ liệu OHLCV lịch sử cho danh sách mã
+**Mục đích**: Thu thập dữ liệu giá lịch sử cho danh sách mã cổ phiếu.
 
 **Lớp chính**:
 - `OHLCVDailyFetcher`: Lấy dữ liệu từ `vnstock_data.explorer.vci.Quote`
-- `OHLCVDailyValidator`: Kiểm tra có đủ cột (time, open, high, low, close, volume)
-- `OHLCVDailyTransformer`: Xóa trùng lặp, định dạng datetime
-- `CSVExport`: Xuất ra CSV
+- `OHLCVDailyValidator`: Kiểm tra các cột bắt buộc (time, open, high, low, close, volume)
+- `OHLCVDailyTransformer`: Loại bỏ dữ liệu trùng lặp, chuẩn hóa định dạng thời gian
+- `CSVExport`: Xuất kết quả ra file CSV
 
 **Kết quả**:
 ```
@@ -119,16 +119,16 @@ run_task(tickers, start="2024-01-01", end="2024-12-02", interval="1D")
 # Kết quả: ./data/ohlcv/VCB.csv, ./data/ohlcv/ACB.csv, ...
 ```
 
-### 2. Financial - Báo Cáo Tài Chính
+### 2. Báo Cáo Tài Chính
 
-**Mục đích**: Lấy báo cáo tài chính (BCTC, KQKD, LCTT, Tỉ số)
+**Mục đích**: Thu thập các nhóm báo cáo tài chính cốt lõi.
 
 **Loại báo cáo**:
-- `balance_sheet`: Cân đối kế toán (94 cột)
-- `income_statement_year`: KQKD năm (28 cột)
-- `income_statement_quarter`: KQKD quý (28 cột)
+- `balance_sheet`: Bảng cân đối kế toán (94 cột)
+- `income_statement_year`: Kết quả kinh doanh năm (28 cột)
+- `income_statement_quarter`: Kết quả kinh doanh quý (28 cột)
 - `cash_flow`: Lưu chuyển tiền tệ (56 cột)
-- `ratio`: Tỉ số tài chính (58 cột)
+- `ratio`: Tỷ số tài chính (58 cột)
 
 **Kết quả**: Lưu riêng các báo cáo
 ```
@@ -152,19 +152,19 @@ run_financial_task(
 )
 ```
 
-### 3. Intraday - Dữ Liệu Trong Phiên
+### 3. Dữ Liệu Khớp Lệnh
 
 **Mục đích**: Lấy dữ liệu giao dịch trong phiên (1 phút, 5 phút, 15 phút, 1 giờ)
 
 **Kết quả**: Tương tự OHLCV nhưng với khung thời gian nhỏ hơn
 
-### 4. Price Board - Bảng Giá Thời Gian Thực
+### 4. Dữ Liệu Bảng Giá
 
-**Mục đích**: Lấy thông tin giá trực tiếp
+**Mục đích**: Lấy thông tin giá khớp lệnh và sổ lệnh trực tiếp.
 
 **Chế độ**:
-- `eod`: Lấy một lần cuối ngày (End Of Day)
-- `live`: Cập nhật liên tục trong phiên giao dịch
+- `eod`: Lấy dữ liệu tổng hợp một lần vào cuối ngày giao dịch.
+- `live`: Cập nhật liên tục theo thời gian thực trong phiên giao dịch.
 
 **Ví dụ**:
 ```python
@@ -178,12 +178,12 @@ run_price_board(tickers, interval=60, mode="eod")  # Cập nhật mỗi 60 giây
 
 ## Cách Sử Dụng Chi Tiết
 
-### Cấp độ 1: Sử Dụng Tác Vụ Có Sẵn (Đơn Giản)
+### Cấp độ 1: Sử Dụng Tác Vụ Dựng Sẵn (Đơn Giản)
 
 ```python
 from vnstock_pipeline.tasks.ohlcv import run_task
 
-# Lấy OHLCV cho 3 mã
+# Lấy dữ liệu giá cho 3 mã
 tickers = ['VCB', 'ACB', 'HPG']
 run_task(
     tickers,
@@ -195,14 +195,13 @@ run_task(
 ```
 
 **Ưu điểm**:
-- ✅ Nhanh, không cần cấu hình
-- ✅ Tất cả xử lý tự động
+- ✅ Nhanh chóng, không yêu cầu cấu hình phức tạp.
+- ✅ Toàn bộ quy trình xử lý được tự động hóa.
 
 **Nhược điểm**:
-- ❌ Cấu hình cố định
-- ❌ Khó tùy biến
+- ❌ Cấu hình tĩnh, khó can thiệp vào từng bước xử lý riêng lẻ.
 
-### Cấp độ 2: Tùy Biến Với Scheduler (Trung Bình)
+### Cấp độ 2: Tùy Biến Với Bộ Lập Lịch Scheduler (Trung Bình)
 
 ```python
 from vnstock_pipeline.core.scheduler import Scheduler
@@ -211,13 +210,13 @@ from vnstock_pipeline.core.exporter import CSVExport
 
 tickers = ['VCB', 'ACB', 'HPG']
 
-# Tạo các thành phần
+# Khởi tạo các thành phần
 fetcher = OHLCVDailyFetcher()
 validator = OHLCVDailyValidator()
 transformer = OHLCVDailyTransformer()
 exporter = CSVExport(base_path="./my_data/ohlcv")
 
-# Tạo scheduler
+# Tạo khung điều phối
 scheduler = Scheduler(
     fetcher,
     validator,
@@ -226,32 +225,32 @@ scheduler = Scheduler(
     retry_attempts=3,
     backoff_factor=2.0,
     max_workers=3,           # (v2.1.5) Số luồng xử lý song song
-    request_delay=0.5,       # (v2.1.5) Delay giữa requests (giây)
-    rate_limit_wait=35.0     # (v2.1.5) Thời gian chờ khi gặp rate limit (giây)
+    request_delay=0.5,       # (v2.1.5) Độ trễ giữa các yêu cầu (giây)
+    rate_limit_wait=35.0     # (v2.1.5) Thời gian chờ khi gặp giới hạn tốc độ (giây)
 )
 
-# Chạy
+# Khởi chạy
 scheduler.run(
     tickers,
     fetcher_kwargs={"start": "2024-01-01", "end": "2024-12-02"}
 )
 
-# Hoặc override tại thời điểm chạy
+# Hoặc ghi đè cấu hình tại thời điểm chạy
 scheduler.run(
     tickers,
     fetcher_kwargs={"start": "2024-01-01", "end": "2024-12-02"},
-    max_workers=5,           # Override scheduler config
+    max_workers=5,           # Ghi đè cấu hình scheduler
     request_delay=0.3,
     rate_limit_wait=40.0
 )
 ```
 
 **Ưu điểm**:
-- ✅ Kiểm soát chi tiết
-- ✅ Có thể cấu hình từng thành phần
+- ✅ Kiểm soát chi tiết từng thành phần.
+- ✅ Cấu hình tham số linh hoạt.
 
 **Nhược điểm**:
-- ❌ Mã phức tạp hơn
+- ❌ Cấu trúc mã phức tạp hơn.
 
 ### Cấp độ 3: Tạo Tác Vụ Tùy Chỉnh (Nâng Cao)
 
@@ -312,7 +311,7 @@ scheduler.run(tickers)
 
 ---
 
-## Scheduler - Điều Phối Xử Lý
+## Khung Điều Phối (Scheduler)
 
 ### Tính Năng Chính
 
@@ -322,15 +321,15 @@ scheduler = Scheduler(
     validator,
     transformer,
     exporter,
-    retry_attempts=3,        # Thử lại 3 lần nếu lỗi
-    backoff_factor=2.0       # Chờ 2s, 4s, 8s giữa các lần thử
+    retry_attempts=3,        # Thử lại 3 lần nếu gặp lỗi
+    backoff_factor=2.0       # Chờ theo cấp số nhân (2s, 4s, 8s) giữa các lần thử
 )
 ```
 
-### Xử Lý Song Song
+### Chế Độ Xử Lý
 
-- **Nếu mã ≤ 10**: Xử lý tuần tự
-- **Nếu mã > 10**: Xử lý song song với ThreadPoolExecutor + báo cáo tiến trình
+- **Nếu ≤ 10 mã**: Tự động xử lý tuần tự.
+- **Nếu > 10 mã**: Tự động chia luồng xử lý song song và hiển thị thanh tiến trình.
 
 ### Báo Cáo & Ghi Nhật Ký
 
@@ -462,30 +461,36 @@ scheduler.run(
 
 ---
 
-## Streaming Thời Gian Thực (Nâng Cao)
+## Dữ Liệu Thời Gian Thực (Streaming)
 
-### Streaming WebSocket từ VPS
+### Cấu Trúc và Bộ Xử Lý Dữ liệu Streaming qua WebSocket
 
 ```python
+import asyncio
 from vnstock_pipeline.stream import WSSClient
+from vnstock_pipeline.stream.processors import CSVProcessor, ConsoleProcessor
 
 async def main():
-    client = WSSClient()
+    # Bật tính năng Session Manager (quản lý nghỉ trưa tự động)
+    client = WSSClient(enable_session_manager=True, market="HOSE")
 
-    # Subscribe đến các mã
-    client.subscribe_symbols(['VCB', 'ACB', 'HPG'])
+    # Đăng ký mã cổ phiếu / phái sinh (Tự resolve mã nội bộ KRX)
+    client.subscribe_symbols(['VCB', 'ACB', 'VN30F1M'])
 
-    # Thêm bộ xử lý để xử lý dữ liệu thời gian thực
-    from vnstock_pipeline.stream.processors import CSVProcessor
-    client.add_processor(CSVProcessor("./realtime_data.csv"))
+    # Thêm bộ xử lý để hiển thị và lưu trữ dữ liệu thời gian thực
+    client.add_processor(ConsoleProcessor())
+    client.add_processor(CSVProcessor("data/realtime_{event_type}.csv", naming="standard"))
 
-    # Kết nối
+    # Kết nối (Tự động chạy ngầm keep-alive Engine.IO)
     await client.connect()
 
-# Chạy
-import asyncio
-asyncio.run(main())
+# Chạy (Cần quản lý Event Loop bằng asyncio.Event để chặn kết thúc sớm trong thực tế)
+# asyncio.run(main())
 ```
+
+> [!TIP]
+> **Tải Bộ Code Mẫu**
+> Để xem thêm các minh họa nâng cao về streaming (như kết hợp Redis Pub/Sub, Discord Signal Bot cảnh báo RSI/MACD, hay ghi DB song song bằng DuckDB), người dùng thuộc gói tài trợ **Golden** hoặc **Diamond**, vui lòng đăng nhập và tải gói thư mục ZIP độc quyền tại [trang Quản lý tài khoản Vnstocks](https://vnstocks.com/account?section=packages&tab=exclusive-files).
 
 ---
 
@@ -567,7 +572,7 @@ scheduler.run(tickers[100:150])
 
 ## Khắc Phục Sự Cố
 
-### Lỗi: "Index must be DatetimeIndex"
+### Lỗi: Yêu cầu định dạng DatetimeIndex
 
 ```python
 # ❌ Sai
