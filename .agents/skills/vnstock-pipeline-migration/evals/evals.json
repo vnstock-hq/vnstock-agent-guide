@@ -1,0 +1,24 @@
+{
+  "skill_name": "vnstock-pipeline-migration",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I just upgraded vnstock_pipeline to v2.3.1. Can you help fix the imports in my scripts folder?",
+      "expected_output": "The agent should write and execute a script to migrate the imports in the 'scripts' folder, updating core.exporter, core.data_manager, etc., to their new paths.",
+      "expectations": [
+        "The agent scans the provided directory (or asks for the directory if 'scripts' isn't fully defined).",
+        "The agent uses the regex mapping from the mapping rules.",
+        "The agent replaces vnstock_pipeline.core.exporter with vnstock_pipeline.core.exporters"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Fix imports for v2.3.1 in this snippet: `from vnstock_pipeline.helpers.preview import preview_database`",
+      "expected_output": "The agent should explain that helpers were moved to utils, and provide the updated snippet.",
+      "expectations": [
+        "The agent provides the updated code: `from vnstock_pipeline.utils.preview import preview_database`",
+        "The agent does not run any file-modifying tools since it's just a snippet in the chat."
+      ]
+    }
+  ]
+}
