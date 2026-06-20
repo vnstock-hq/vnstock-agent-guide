@@ -1,0 +1,23 @@
+{
+  "skill_name": "vnstock-charting-expert",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Vẽ biểu đồ nến cho mã VCB tuần vừa rồi.",
+      "expected_output": "The agent should fetch VCB data, write a python script using vnstock_ezchart to generate an HTML chart, run the script, and provide the absolute path to the HTML file.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "Mình muốn xem biểu đồ tĩnh so sánh khối lượng giao dịch HPG và HSG tuần qua.",
+      "expected_output": "The agent should fetch data for HPG and HSG, write a script using matplotlib to generate a static PNG, run the script, and embed the PNG directly into the chat.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Vẽ chart với design tối (dark mode) chuyên nghiệp cho trend VNINDEX.",
+      "expected_output": "The agent should view references/design_aesthetics.md, then write a script using the premium dark mode aesthetic to generate and display the chart.",
+      "files": []
+    }
+  ]
+}

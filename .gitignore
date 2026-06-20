@@ -3,8 +3,7 @@ website docs
 .github/copilot-instruction.md
 vnstock_data
 /vnstock/
-# .agents/
-.agents/skills/agent-skill-architect
+.agents/skills/skill-creator
 /dev_notes/
 /scratch
 

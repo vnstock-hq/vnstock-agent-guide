@@ -1,0 +1,23 @@
+{
+  "skill_name": "vnstock-pipeline-cli",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Tạo file cấu hình storage lưu tại thư mục data_warehouse và dùng định dạng parquet cho mình nhé.",
+      "expected_output": "The agent should execute the CLI command to set layout and format, and confirm success. It should ask for permission since these commands modify configurations.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "Chạy dữ liệu ohlcv cho các mã cổ phiếu trong liquidity_auto",
+      "expected_output": "The agent should recognize this is a pipeline run and use the run ohlcv command with watchlist liquidity_auto.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Mình muốn tạo một file Python chạy tự động pipeline cuối ngày để tải các dữ liệu cần thiết.",
+      "expected_output": "The agent should view the `sync_market_data.py` script first as a reference before creating the orchestrator script.",
+      "files": []
+    }
+  ]
+}

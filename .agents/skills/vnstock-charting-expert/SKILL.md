@@ -21,12 +21,12 @@ While `vnstock_ezchart` is powerful for standard financial charting, sometimes u
 - **When to use `matplotlib`:** Fall back to `matplotlib` (and optionally `seaborn`) ONLY when the user explicitly requests a "static" image, a file export (like PNG/PDF), or when they need to plot custom derivative data (e.g., correlation matrices, complex statistical distributions, or side-by-side comparative scatter plots).
 - **Why use `matplotlib`?** It gives you low-level control over every pixel of the chart, allowing for custom annotations, multi-axis plotting, and seamless integration into static reports.
 
-## 3. The "WOW" Factor (Design Aesthetics)
+## 3. Design Aesthetics and Visual Clarity
 
-A generic, default-looking chart is UNACCEPTABLE. Every chart you generate must look premium, modern, and visually stunning, reflecting the high standards of the vnstock ecosystem.
+Traders and financial analysts rely heavily on visual clarity to make rapid, informed decisions. A generic or cluttered chart can obscure important trends. Therefore, it is important to apply premium, modern design principles (high contrast, clear labels, distinct colors) to all visualizations.
 
-- **Mandatory Reading:** You MUST read `references/design_aesthetics.md` for specific styling rules, color palettes, and grid configurations before writing any chart code.
-- **Code Templates:** You MUST consult `references/code_examples.md` to see exactly how to implement these premium aesthetics in both `vnstock_ezchart` and `matplotlib`.
+- **Design Guidelines:** Use your `view_file` tool to read `references/design_aesthetics.md`. This explains the reasoning behind our color palettes, grid configurations, and sizing.
+- **Code Templates:** Use your `view_file` tool to consult `references/code_examples.md` for practical ways to implement these aesthetic guidelines in `vnstock_ezchart` and `matplotlib`.
 
 ## 4. Guiding Principles for Charting
 
@@ -34,9 +34,11 @@ A generic, default-looking chart is UNACCEPTABLE. Every chart you generate must 
 2. **Contextual Labels:** A chart without labels is useless. You must always include clear titles, X and Y axis labels, and legends to explain what the data represents.
 3. **Handle Empty Data:** Stock APIs can sometimes return empty DataFrames (e.g., querying on a weekend). Add basic error handling in the script to verify the DataFrame is not empty before attempting to plot.
 
-## 5. Expected Output
+## 5. Agentic Execution & Expected Output
 
-When triggered, your response should include:
-1. A brief explanation of which library (`vnstock_ezchart` or `matplotlib`) you chose and **why**.
-2. The complete, runnable Python code to generate the "WOW" chart, explicitly applying the signature styling from the design references.
-3. Brief instructions on how the user can view or interact with the resulting chart.
+Instead of just providing the user with code to copy-paste, you should take an active role:
+1. **Write the Script:** Create a Python script (e.g., in `scratch/`) that fetches the data and renders the chart. If the chart is interactive (`vnstock_ezchart`), output an HTML file. If static (`matplotlib`), save it as an image (PNG).
+2. **Execute:** Use your `run_command` tool to execute the script using the correct virtual environment (e.g., `~/.venv/bin/python`).
+3. **Present:** 
+   - If it's an image, embed it directly into the chat using Markdown artifact syntax: `![Chart Description](/absolute/path/to/chart.png)`.
+   - If it's an interactive HTML chart, provide the absolute file path and instruct the user to open it in their browser.
