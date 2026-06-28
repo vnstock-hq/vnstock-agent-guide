@@ -17,15 +17,9 @@ pip install vnstock
 ### Option 2: Cài từ GitHub (Latest Development)
 
 ```bash
-pip install git+https://github.com/vnstock-lab/vnstock.git
+pip install git+https://github.com/thinh-vu/vnstock.git
 ```
 
-### Option 3: Cài từ Local (Dev Version)
-
-```bash
-# Clone hoặc copy thư mục private_packages
-pip install git+https://github.com/vnstock-lab/vnstock.git
-```
 
 ## 📋 Dependencies
 
@@ -545,17 +539,19 @@ print(officers)
 
 ## 📚 Các Bước Tiếp Theo
 
-1. ✅ **Installation** - Bạn đã ở đây
-2. [01-Overview](01-overview.md) - Tổng quan thư viện
-3. [03-Listing API](03-listing-api.md) - Tìm kiếm chứng khoán
-4. [04-Quote & Price](04-quote-price-api.md) - Giá lịch sử & realtime
-5. [05-Financial API](05-financial-api.md) - Dữ liệu tài chính
-6. [06-Connector Guide](06-connector-guide.md) - API bên ngoài
-7. [07-Best Practices](07-best-practices.md) - Mẹo & kinh nghiệm
+1. [01-Unified UI Overview](01-unified-ui.md) - Tổng quan thư viện & Giao diện hợp nhất
+2. ✅ **Installation** - Bạn đã ở đây
+3. [03-Reference Layer](03-reference-layer.md) - Tra cứu thông tin tĩnh & danh mục
+4. [04-Market Layer](04-market-layer.md) - Dữ liệu thị trường & giá
+5. [05-Fundamental Layer](05-fundamental-layer.md) - Phân tích cơ bản
+6. [06-Retail Layer](06-retail-layer.md) - Dữ liệu dân sinh (Vàng, Tỷ giá)
+7. [07-Comparison](07-comparison.md) - So sánh bản Free và Sponsor
+8. [08-Migration Guide](08-migration-guide.md) - Hướng dẫn di chuyển từ bản Free sang Sponsor
+9. [Advanced Usage](advanced-usage/00-overview.md) - Các API cũ (Tuỳ chỉnh nâng cao)
 
 ---
 
-**Last Updated**: 2024-12-17  
-**Version**: 3.4.0  
+**Last Updated**: Tháng 4, 2026  
+**Version**: 3.5.1+ (Hỗ trợ Unified UI)  
 **Status**: Actively Maintained  
-**Important**: TCBS deprecated, use VCI or KBS instead
+**Important**: Khuyến nghị sử dụng Unified UI làm tiêu chuẩn. TCBS đã bị loại bỏ.
