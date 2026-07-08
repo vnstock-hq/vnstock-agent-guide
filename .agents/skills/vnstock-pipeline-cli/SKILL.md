@@ -49,7 +49,7 @@ When the user wants to download or update market data:
 
 When the user wants to combine multiple simple CLI commands into a robust, automated execution flow (e.g., an end-of-day market data sync), recommend creating an orchestrator script in Python instead of a complex bash script. 
 
-**Use your file viewing tools (e.g., `view_file`) to read `scripts/sync_market_data.py`** (located in the same directory as this skill) for a complete reference example before writing any code. This example demonstrates how to use `subprocess.run` with `sys.executable` to sequentially trigger CLI tasks (`reference`, `session-stats`, `ohlcv`, `financial`, `news`) while implementing robust logging and error handling.
+Read `scripts/sync_market_data.py` (located in the same directory as this skill) for a complete reference example before writing any code. This example demonstrates how to use `subprocess.run` with `sys.executable` to sequentially trigger CLI tasks (`reference`, `session-stats`, `ohlcv`, `financial`, `news`) while implementing robust logging and error handling.
 
 ## 6. Output Formatting
 When running audit commands or previewing data on behalf of the user, **always format the results nicely** using Markdown tables, lists, and callouts so the user can easily read the terminal output in the chat interface.

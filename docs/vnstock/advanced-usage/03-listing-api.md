@@ -797,13 +797,12 @@ if not symbols or len(symbols) == 0:
 
 ## 📚 Bước Tiếp Theo
 
-1. [02-Installation](02-installation.md) - Cài đặt
-2. [01-Overview](../00-overview.md) - Tổng quan
+1. [02-Installation](../02-installation.md) - Cài đặt
+2. [00-Overview](00-overview.md) - Tổng quan
 3. ✅ **03-Listing API** - Bạn đã ở đây
-4. [04-Quote & Price](04-quote-price-api.md) - Giá lịch sử
-5. [05-Financial API](05-financial-api.md) - Dữ liệu tài chính
-6. [06-Connector Guide](06-connector-guide.md) - API bên ngoài
-7. [07-Best Practices](07-best-practices.md) - Mẹo & kinh nghiệm
+4. [06-Quote & Price](06-quote-price-api.md) - Giá lịch sử
+5. [07-Financial API](07-financial-api.md) - Dữ liệu tài chính
+6. [10-Connector Guide](10-connector-guide.md) - API bên ngoài
 
 ---
 

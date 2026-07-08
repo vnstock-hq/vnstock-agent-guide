@@ -410,7 +410,6 @@ print(df[['price', 'volume', 'buy_volume', 'sell_volume']].head())
 - **[03-Listing API](03-listing-api.md)** - Tìm kiếm chứng khoán
 - **[04-Company API](04-company-api.md)** - Thông tin công ty
 - **[05-Trading API](05-trading-api.md)** - Bảng giá giao dịch
-- **[08-Best Practices](08-best-practices.md)** - Mẹo tối ưu hóa
 
 ---
 

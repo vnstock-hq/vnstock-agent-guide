@@ -799,8 +799,8 @@ else:
 
 ## 📚 Bước Tiếp Theo
 
-1. [02-Installation](02-installation.md) - Cài đặt
-2. [01-Overview](../00-overview.md) - Tổng quan
+1. [02-Installation](../02-installation.md) - Cài đặt
+2. [00-Overview](00-overview.md) - Tổng quan
 3. [03-Listing API](03-listing-api.md) - Danh sách chứng khoán
 4. [04-Company API](04-company-api.md) - Thông tin công ty
 5. [05-Trading API](05-trading-api.md) - Dữ liệu giao dịch
@@ -809,8 +809,7 @@ else:
 8. [08-Fund API](08-fund-api.md) - Dữ liệu quỹ
 9. [09-Screener API](09-screener-api.md) - Lọc cổ phiếu
 10. [10-Connector Guide](10-connector-guide.md) - API bên ngoài
-11. [11-Best Practices](11-best-practices.md) - Mẹo & kinh nghiệm
-12. [12-Migration Guide](12-migration-guide.md) - Nâng cấp vnstock_data
+11. [Migration Guide](../08-migration-guide.md) - Nâng cấp vnstock_data
 
 ## 📋 Tóm Tắt Thay Đổi Phiên Bản
 

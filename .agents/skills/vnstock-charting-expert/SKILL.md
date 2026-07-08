@@ -25,8 +25,8 @@ While `vnstock_ezchart` is powerful for standard financial charting, sometimes u
 
 Traders and financial analysts rely heavily on visual clarity to make rapid, informed decisions. A generic or cluttered chart can obscure important trends. Therefore, it is important to apply premium, modern design principles (high contrast, clear labels, distinct colors) to all visualizations.
 
-- **Design Guidelines:** Use your `view_file` tool to read `references/design_aesthetics.md`. This explains the reasoning behind our color palettes, grid configurations, and sizing.
-- **Code Templates:** Use your `view_file` tool to consult `references/code_examples.md` for practical ways to implement these aesthetic guidelines in `vnstock_ezchart` and `matplotlib`.
+- **Design Guidelines:** Read `references/design_aesthetics.md` before applying custom styling. This explains the reasoning behind our color palettes, grid configurations, and sizing.
+- **Code Templates:** Consult `references/code_examples.md` for practical ways to implement these aesthetic guidelines in `vnstock_ezchart` and `matplotlib`.
 
 ## 4. Guiding Principles for Charting
 
@@ -38,7 +38,7 @@ Traders and financial analysts rely heavily on visual clarity to make rapid, inf
 
 Instead of just providing the user with code to copy-paste, you should take an active role:
 1. **Write the Script:** Create a Python script (e.g., in `scratch/`) that fetches the data and renders the chart. If the chart is interactive (`vnstock_ezchart`), output an HTML file. If static (`matplotlib`), save it as an image (PNG).
-2. **Execute:** Use your `run_command` tool to execute the script using the correct virtual environment (e.g., `~/.venv/bin/python`).
+2. **Execute:** Run the script using the correct virtual environment (e.g., `~/.venv/bin/python`).
 3. **Present:** 
    - If it's an image, embed it directly into the chat using Markdown artifact syntax: `![Chart Description](/absolute/path/to/chart.png)`.
    - If it's an interactive HTML chart, provide the absolute file path and instruct the user to open it in their browser.

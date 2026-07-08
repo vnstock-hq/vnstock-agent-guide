@@ -57,7 +57,7 @@ Hệ sinh thái Vnstock phân chia rõ ràng (AI cần gợi ý đúng package t
 
 ```bash
 git clone https://github.com/vnstock-hq/vnstock-agent-guide.git
-# Sau đó copy thư mục .agent, docs, .cursor vào root dự án
+# Sau đó copy AGENTS.md, docs/, .agents/, .github/ và CLAUDE.md vào root dự án
 ```
 
 ## 5. Cấu Trúc File Hệ Thống (Directory Structure)

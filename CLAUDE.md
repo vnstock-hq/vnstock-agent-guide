@@ -83,7 +83,7 @@ The repository contains multiple documentation folders covering different parts 
 **AI Instruction:** Use your directory listing tools (e.g., `list_dir`) to explore the `docs/` and `vnstock*/` directories to find the relevant markdown files. Key locations include:
 - `docs/setup-and-debug/`: Environment health check, installation troubleshooting, and AI vibe coding workflow.
 - `docs/vnstock/`: Free library documentation (listing, company, trading, finance).
-- `docs/vnstock-data/`: Sponsored library documentation, featuring the Unified UI (`14-unified-ui.md` & `unified-ui/` directory).
+- `docs/vnstock-data/`: Sponsored library documentation, featuring the Unified UI (`01-unified-ui.md`) and layer guides (`02-reference-layer.md`, `03-market-layer.md`, etc.).
 - `docs/vnstock_ta/`: Technical analysis indicators and plotting.
 - `docs/vnstock_news/`: News crawling and sentiment.
 - `docs/vnstock_pipeline/`: Data pipelines and streaming.
@@ -131,11 +131,11 @@ If the user asks you to "install the agent guide" or "setup the workspace", foll
 5. **Copy Essential Files**: Copy the essential files to the project root based on the OS:
    - **macOS/Linux**:
      ```bash
-     cp -r /tmp/vnstock-agent-guide/AGENTS.md /tmp/vnstock-agent-guide/docs /tmp/vnstock-agent-guide/.agent /tmp/vnstock-agent-guide/.github /tmp/vnstock-agent-guide/CLAUDE.md /tmp/vnstock-agent-guide/.cursor ./
+     cp -r /tmp/vnstock-agent-guide/AGENTS.md /tmp/vnstock-agent-guide/docs /tmp/vnstock-agent-guide/.agents /tmp/vnstock-agent-guide/.github /tmp/vnstock-agent-guide/CLAUDE.md ./
      ```
    - **Windows (PowerShell)**:
      ```powershell
-     Copy-Item -Path "C:\tmp\vnstock-agent-guide\AGENTS.md", "C:\tmp\vnstock-agent-guide\docs", "C:\tmp\vnstock-agent-guide\.agent", "C:\tmp\vnstock-agent-guide\.github", "C:\tmp\vnstock-agent-guide\CLAUDE.md", "C:\tmp\vnstock-agent-guide\.cursor" -Destination ".\" -Recurse -Force
+     Copy-Item -Path "C:\tmp\vnstock-agent-guide\AGENTS.md", "C:\tmp\vnstock-agent-guide\docs", "C:\tmp\vnstock-agent-guide\.agents", "C:\tmp\vnstock-agent-guide\.github", "C:\tmp\vnstock-agent-guide\CLAUDE.md" -Destination ".\" -Recurse -Force
      ```
 6. **Clean Up**: Remove the temporary clone based on the OS:
    - **macOS/Linux**:
@@ -157,22 +157,21 @@ If the user asks you to "install the agent guide" or "setup the workspace", foll
 
 **Your Approach**:
 1. Determine user tier (free or sponsored)
-2. If **free**: Use `vnstock.Quote` → Reference `docs/vnstock/06-quote-price-api.md`
-3. If **sponsored**: Use `vnstock_data.Quote` → Reference `docs/vnstock-data/03-quote.md`
+2. If **free**: Use `vnstock.ui.Market` → Reference `docs/vnstock/04-market-layer.md`
+3. If **sponsored**: Use `vnstock_data.Market` → Reference `docs/vnstock-data/03-market-layer.md`
 4. Provide basic code example
 
 **Example Code (Free User)**:
 ```python
-from vnstock import Quote
+from vnstock.ui import Market
 
-# Initialize Quote API
-quote = Quote(source="kbs", symbol="VCB")
+# Initialize Market API
+mkt = Market()
 
 # Get historical data
-df = quote.history(
+df = mkt.equity("VCB").ohlcv(
     start="2024-01-01",
-    end="2024-12-31",
-    interval="1D"  # Daily data
+    end="2024-12-31"
 )
 
 print(df.head())
@@ -203,7 +202,7 @@ print(df.head())
 
 **Your Approach**:
 1. Recommend **vnstock_data** for better financial data (if sponsored)
-2. Reference `docs/vnstock-data/05-finance.md` or `docs/vnstock/07-financial-api.md`
+2. Reference `docs/vnstock-data/04-fundamental-layer.md` or `docs/vnstock/05-fundamental-layer.md`
 3. Provide basic analysis script
 
 **Example Code (Unified UI)**:
@@ -230,23 +229,25 @@ print(ratios.tail(1))
 
 **Your Approach**:
 1. This requires **vnstock_data** (sponsored feature)
-2. Reference `docs/vnstock-data/08-insights.md` for screener
-3. Reference `docs/vnstock-data/02-listing.md` for stock lists
+2. Reference `docs/vnstock-data/06-insights-layer.md` for screener
+3. Reference `docs/vnstock-data/02-reference-layer.md` for stock lists
 4. Build screening logic with clear criteria
 
 **Example Code**:
 ```python
-from vnstock_data import Listing, Finance
+from vnstock_data import Fundamental, Insights, Reference
 
 # Get VN30 stocks
-listing = Listing(source="kbs")
-vn30_stocks = listing.indices(index="VN30")
+ref = Reference()
+vn30_stocks = ref.index.members("VN30")
 
 print(f"VN30 stocks: {vn30_stocks}")
 
-# Get financial ratios for a specific stock
-finance = Finance(source="kbs", symbol="VCB")
-ratios = finance.ratio(period="year")
+# Get financial ratios and screener data
+fun = Fundamental()
+ins = Insights()
+ratios = fun.equity("VCB").ratio(period="year")
+screener = ins.screener.filter()
 print(f"VCB financial ratios:\n{ratios.tail(1)}")
 
 # Note: For custom screening logic, see the paid course
@@ -266,20 +267,19 @@ print(f"VCB financial ratios:\n{ratios.tail(1)}")
 
 **Example Code**:
 ```python
-from vnstock import Quote
-from vnstock_ta import Indicators
-import pandas as pd
+from vnstock_data import Market
+from vnstock_ta import Indicator
 
 # Get price data
-quote = Quote(source="kbs", symbol="VCB")
-df = quote.history(start="2024-01-01", end="2024-12-31", interval="1D")
+mkt = Market()
+df = mkt.equity("VCB").ohlcv(start="2024-01-01", end="2024-12-31")
 
 # Calculate indicators
-ta = Indicators(df)
-df['sma_20'] = ta.sma(period=20)
-df['rsi'] = ta.rsi(period=14)
+ta = Indicator(data=df)
+df["sma_20"] = ta.trend.sma(length=20)
+df["rsi"] = ta.momentum.rsi(length=14)
 
-print(df[['time', 'close', 'sma_20', 'rsi']].tail(20))
+print(df[["time", "close", "sma_20", "rsi"]].tail(20))
 ```
 
 ---
@@ -328,23 +328,23 @@ show_doc("Market.equity")
 
 ### Task: Get Stock List
 ```
-Free: vnstock.Listing.all_symbols()
-Sponsored: vnstock_data.Listing.all_symbols()
-Reference: docs/vnstock/03-listing-api.md
+Free: vnstock.ui.Reference().equity.all_symbols()
+Sponsored: vnstock_data.Reference().equity.all_symbols()
+Reference: docs/vnstock/03-reference-layer.md and docs/vnstock-data/02-reference-layer.md
 ```
 
 ### Task: Get Company Info
 ```
-Free: vnstock.Company.overview()
-Sponsored: vnstock_data.Company.overview()
-Reference: docs/vnstock/04-company-api.md
+Free: vnstock.ui.Reference().company("VCB").overview()
+Sponsored: vnstock_data.Reference().company("VCB").overview()
+Reference: docs/vnstock/03-reference-layer.md and docs/vnstock-data/02-reference-layer.md
 ```
 
 ### Task: Get Financial Statements
 ```
-Free: vnstock.Finance.income_statement()
-Sponsored: vnstock_data.Finance.income_statement()
-Reference: docs/vnstock/07-financial-api.md
+Free: vnstock.ui.Fundamental().equity("VCB").income_statement()
+Sponsored: vnstock_data.Fundamental().equity("VCB").income_statement()
+Reference: docs/vnstock/05-fundamental-layer.md and docs/vnstock-data/04-fundamental-layer.md
 ```
 
 ### Task: Calculate Technical Indicators
@@ -369,15 +369,15 @@ Reference: docs/vnstock_ta/02-indicators.md
 
 | Task               | Free User                     | Sponsored User                              |
 | ------------------ | ----------------------------- | ------------------------------------------- |
-| Get stock prices   | `06-quote-price-api.md`       | `vnstock-data/03-quote.md`                  |
-| Company research   | `04-company-api.md`           | `vnstock-data/04-company.md`                |
-| Financial analysis | `07-financial-api.md`         | `vnstock-data/05-finance.md`                |
+| Get stock prices   | `vnstock/04-market-layer.md`  | `vnstock-data/03-market-layer.md`           |
+| Company research   | `vnstock/03-reference-layer.md` | `vnstock-data/02-reference-layer.md`      |
+| Financial analysis | `vnstock/05-fundamental-layer.md` | `vnstock-data/04-fundamental-layer.md`  |
 | Technical analysis | `vnstock_ta/02-indicators.md` | `vnstock_ta/02-indicators.md`               |
-| Stock screening    | `09-screener-api.md`          | `vnstock-data/08-insights.md`               |
+| Stock screening    | `vnstock/advanced-usage/09-screener-api.md` | `vnstock-data/06-insights-layer.md` |
 | News & sentiment   | Not available                 | `vnstock_news/02-crawlers.md`               |
 | Data pipelines     | Not available                 | `vnstock_pipeline/02-tasks-and-builders.md` |
-| Macro data         | Not available                 | `vnstock-data/09-macro.md`                  |
-| Commodity prices   | Not available                 | `vnstock-data/10-commodity.md`              |
+| Macro data         | Not available                 | `vnstock-data/05-macro-layer.md`            |
+| Commodity prices   | Not available                 | `vnstock-data/05-macro-layer.md`            |
 | Setup & Debugging  | `setup-and-debug/`            | `setup-and-debug/`                          |
 
 ---
@@ -387,20 +387,20 @@ Reference: docs/vnstock_ta/02-indicators.md
 If `vnstock_data` is detected in `~/.venv`, prioritize the **Sponsored Path**. Otherwise, follow the **Free Path**.
 
 ### 🌟 Sponsored Path (Prioritized if vnstock_data is present)
-1. **Start Here**: `docs/vnstock-data/01-overview.md` - Features & Data Sources
-2. **Unified UI**: `docs/vnstock-data/14-unified-ui.md` - Mastering Layer 1-7
-3. **Market Data**: `docs/vnstock-data/unified-ui/02-market-layer.md` - Comprehensive OHLCV
-4. **Fundamentals**: `docs/vnstock-data/unified-ui/03-fundamental-layer.md` - Financial Ratios & Stats
+1. **Start Here**: `docs/vnstock-data/README.md` - Features & Data Sources
+2. **Unified UI**: `docs/vnstock-data/01-unified-ui.md` - Mastering Layer 1-7
+3. **Market Data**: `docs/vnstock-data/03-market-layer.md` - Comprehensive OHLCV
+4. **Fundamentals**: `docs/vnstock-data/04-fundamental-layer.md` - Financial Ratios & Stats
 5. **Technical Analysis**: `docs/vnstock_ta/02-indicators.md` - Pro Indicators
 6. **Automation**: `docs/vnstock_pipeline/01-overview.md` - Data Pipelines
 
 ### 🍃 Free Path
-1. **Start Here**: `docs/vnstock/01-overview.md` - Understand the ecosystem
+1. **Start Here**: `docs/vnstock/README.md` - Understand the ecosystem
 2. **Installation**: `docs/vnstock/02-installation.md` - Set up environment
-3. **First API**: `docs/vnstock/03-listing-api.md` - Get list of stocks
-4. **Get Data**: `docs/vnstock/06-quote-price-api.md` - Fetch price data
-5. **Analyze**: `docs/vnstock/07-financial-api.md` - Financial analysis
-6. **Upgrade**: `docs/vnstock/12-migration-guide.md` - Move to vnstock_data
+3. **First API**: `docs/vnstock/03-reference-layer.md` - Get list of stocks
+4. **Get Data**: `docs/vnstock/04-market-layer.md` - Fetch price data
+5. **Analyze**: `docs/vnstock/05-fundamental-layer.md` - Financial analysis
+6. **Upgrade**: `docs/vnstock/08-migration-guide.md` - Move to vnstock_data
 
 ---
 

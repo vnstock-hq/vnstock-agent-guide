@@ -281,8 +281,8 @@ print(change_dist)
 
 ## 📚 Bước Tiếp Theo
 
-1. [02-Installation](02-installation.md) - Cài đặt
-2. [01-Overview](../00-overview.md) - Tổng quan
+1. [02-Installation](../02-installation.md) - Cài đặt
+2. [00-Overview](00-overview.md) - Tổng quan
 3. [03-Listing API](03-listing-api.md) - Danh sách mã
 4. [04-Company API](04-company-api.md) - Thông tin công ty
 5. ✅ **05-Trading API** - Bạn đã ở đây

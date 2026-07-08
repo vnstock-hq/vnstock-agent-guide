@@ -191,8 +191,7 @@ print(top_picks[[
 
 ## 🔗 Xem Thêm
 
-- **[02-Installation](02-installation.md)** - Cài đặt
-- **[08-Best Practices](08-best-practices.md)** - Mẹo tối ưu hóa
+- **[02-Installation](../02-installation.md)** - Cài đặt
 
 ---
 

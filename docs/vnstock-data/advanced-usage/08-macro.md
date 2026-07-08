@@ -1,6 +1,6 @@
 # Macro - Kinh Tế Vĩ Mô
 
-> ⚠️ **Migration Notice**: Lớp `Macro` này sẽ chuyển đổi sang [Unified UI](./14-unified-ui.md) structure sau ngày **31/8/2026**. Vui lòng bắt đầu sử dụng cấu trúc mới: `Macro().economy()`, `Macro().currency()`, `Macro().commodity()` thay vì các method trực tiếp. Nếu code hiện tại của bạn đang sử dụng cấu trúc cũ, bạn có thể tiếp tục dùng đến hết 31/8/2026.
+> ⚠️ **Migration Notice**: Lớp `Macro` này sẽ chuyển đổi sang [Unified UI](../01-unified-ui.md) structure sau ngày **31/8/2026**. Vui lòng bắt đầu sử dụng cấu trúc mới: `Macro().economy()`, `Macro().currency()`, `Macro().commodity()` thay vì các method trực tiếp. Nếu code hiện tại của bạn đang sử dụng cấu trúc cũ, bạn có thể tiếp tục dùng đến hết 31/8/2026.
 
 Lớp `Macro` cung cấp dữ liệu kinh tế vĩ mô của Việt Nam từ MayBank (MBK).
 

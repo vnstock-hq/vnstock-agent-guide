@@ -1,7 +1,8 @@
 import sys
 import os
+import json
 import platform
-import subprocess
+from pathlib import Path
 
 def check_python_version():
     major, minor = sys.version_info.major, sys.version_info.minor
@@ -21,6 +22,34 @@ def get_hosting():
     if 'CODESPACE_NAME' in os.environ: return "GitHub Codespace"
     if 'KAGGLE_CONTAINER_NAME' in os.environ: return "Kaggle"
     return "Local/Unknown"
+
+def read_auth_state():
+    auth_path = Path.home() / ".vnstock" / "auth_state.json"
+    if not auth_path.exists():
+        return auth_path, None
+
+    try:
+        with auth_path.open(encoding="utf-8") as fh:
+            return auth_path, json.load(fh)
+    except Exception as exc:
+        return auth_path, {"_error": str(exc)}
+
+def check_auth_state():
+    print("\n--- License State ---")
+    auth_path, auth_state = read_auth_state()
+    print(f"Auth file: {auth_path}")
+
+    if auth_state is None:
+        print("⚠️ auth_state.json not found. Vnstock may not be installed or initialized.")
+        return None
+
+    if "_error" in auth_state:
+        print(f"❌ Could not read auth_state.json: {auth_state['_error']}")
+        return None
+
+    tier = auth_state.get("tier") or auth_state.get("license_tier") or "unknown"
+    print(f"✅ License Tier: {tier}")
+    return str(tier).lower()
 
 def check_packages():
     print("\n--- Package Inventory ---")
@@ -51,4 +80,5 @@ if __name__ == "__main__":
     print(f"Hosting: {get_hosting()}")
     check_python_version()
     check_venv()
+    check_auth_state()
     check_packages()

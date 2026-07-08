@@ -632,8 +632,7 @@ print(ratio_summary[['symbol', 'year_report', 'revenue', 'ebit']].head())
 
 - **[03-Listing API](03-listing-api.md)** - Tìm kiếm chứng khoán
 - **[05-Trading API](05-trading-api.md)** - Dữ liệu giao dịch
-- **[06-Financial API](06-financial-api.md)** - Dữ liệu tài chính
-- **[08-Best Practices](08-best-practices.md)** - Mẹo tối ưu hóa
+- **[07-Financial API](07-financial-api.md)** - Dữ liệu tài chính
 
 ---
 

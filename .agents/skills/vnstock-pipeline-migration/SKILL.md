@@ -27,8 +27,8 @@ When a user asks you to help them migrate their code or fix their imports for `v
 2. **Review Mapping Rules**: Read `references/mapping_rules.md` to see the exact import transformations required.
 3. **Handle Deprecations**: Look out for deprecated modules `utils.governance` and `utils.fetcher_helper`. Inform the user that they should use `VNValidator` and `Scheduler` respectively.
 4. **Execute the Migration**:
-   - Write a python script using the `run_command` tool to walk through their `.py`, `.ipynb`, and `.md` files and apply Regex transformations based on the mapping rules.
-   - Alternatively, use `multi_replace_file_content` if they only want to migrate a single file.
+   - Write a Python script and run it with the available command execution tool to walk through their `.py`, `.ipynb`, and `.md` files and apply Regex transformations based on the mapping rules.
+   - Alternatively, use precise file edits if they only want to migrate a single file.
 5. **Explain the Changes**: Inform the user about what changed. Use "Theory of Mind" to explain *why* the changes were made (e.g., "The old `core/exporter.py` was a 750-line monolith, so it was split into `core/exporters/` for better maintainability").
 
 ## 4. Data & Storage Migration Workflow
@@ -52,4 +52,4 @@ When a user wants to migrate their existing database or update their data-readin
 ## 5. Strict Constraints
 
 - Do NOT attempt to migrate code related to `vnstock_data` or `vnstock` unless the user explicitly provides rules for those libraries. Focus strictly on `vnstock_pipeline`.
-- Do NOT use `sed` in bash commands for mass replacement. Always use a python script via `run_command` or the `multi_replace_file_content` tool.
+- Do NOT use `sed` in bash commands for mass replacement. Always use a Python script for bulk migrations, or precise file edits for a single file.

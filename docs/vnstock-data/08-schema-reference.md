@@ -6,9 +6,9 @@ Tài liệu quy chuẩn Schema cho toàn bộ hệ thống Unified UI của vnst
 
 Tài liệu về lược đồ dữ liệu (Schema Reference) đã được chia nhỏ thành các file tương ứng với từng Layer trong kiến trúc Unified UI. Vui lòng tham khảo các liên kết dưới đây:
 
-- [**1. Reference Layer**](../schema/01-reference.md)
-- [**2. Market Layer**](../schema/02-market.md)
-- [**3. Fundamental Layer**](../schema/03-fundamental.md)
-- [**4. Analytics Layer**](../schema/04-analytics.md)
-- [**5. Macro Layer**](../schema/05-macro.md)
-- [**6. Insights Layer**](../schema/06-insights.md)
+- [**1. Reference Layer**](schema/01-reference.md)
+- [**2. Market Layer**](schema/02-market.md)
+- [**3. Fundamental Layer**](schema/03-fundamental.md)
+- [**4. Analytics Layer**](schema/04-analytics.md)
+- [**5. Macro Layer**](schema/05-macro.md)
+- [**6. Insights Layer**](schema/06-insights.md)

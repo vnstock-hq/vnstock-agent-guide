@@ -96,7 +96,7 @@ def main():
             print("\n> IMPORTANT: If you were moving from an older version of vnstock_data to v3.0.0+,")
             print("> you may also want to manually update your code to use the Unified UI ")
             print("> (e.g. from vnstock_data import Market, Reference, etc.).")
-            print("> See docs/vnstock-data/14-unified-ui.md for details.")
+            print("> See docs/vnstock-data/01-unified-ui.md and docs/vnstock-data/migrations/v3.0.md for details.")
 
 if __name__ == "__main__":
     main()

@@ -444,13 +444,12 @@ Error: No data available for this symbol/date range
 
 ## 📚 Bước Tiếp Theo
 
-1. [02-Installation](02-installation.md) - Cài đặt
-2. [01-Overview](../00-overview.md) - Tổng quan
+1. [02-Installation](../02-installation.md) - Cài đặt
+2. [00-Overview](00-overview.md) - Tổng quan
 3. [03-Listing API](03-listing-api.md) - Danh sách chứng khoán
-4. [04-Quote & Price](04-quote-price-api.md) - Giá lịch sử
-5. [05-Financial API](05-financial-api.md) - Dữ liệu tài chính
+4. [06-Quote & Price](06-quote-price-api.md) - Giá lịch sử
+5. [07-Financial API](07-financial-api.md) - Dữ liệu tài chính
 6. ✅ **06-Connector Guide** - Bạn đã ở đây
-7. [07-Best Practices](07-best-practices.md) - Mẹo & kinh nghiệm
 
 ---
 

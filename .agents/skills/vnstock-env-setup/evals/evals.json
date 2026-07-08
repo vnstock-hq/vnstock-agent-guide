@@ -35,7 +35,7 @@
       "assertions": [
         {
           "name": "Overwrite Permission",
-          "description": "Ensures the agent uses notify_user to get explicit permission to overwrite."
+          "description": "Ensures the agent gets explicit permission to overwrite."
         }
       ]
     }

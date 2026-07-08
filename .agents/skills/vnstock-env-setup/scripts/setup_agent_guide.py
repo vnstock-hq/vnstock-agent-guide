@@ -73,20 +73,17 @@ def install_agent_guide():
                 shutil.copy2(src, os.path.join(cwd, file))
                 print(f"✅ Copied {file}")
                 
-        # 2. Copy specific skills to avoid overwriting user's custom skills
-        skills_to_copy = [
-            "vnstock-solution-architect",
-            "vnstock-migration-expert",
-            "vnstock-env-setup"
-        ]
-        
+        # 2. Copy Vnstock skills without overwriting unrelated user custom skills.
         dest_skills_dir = os.path.join(cwd, ".agents", "skills")
         os.makedirs(dest_skills_dir, exist_ok=True)
-        
+
+        src_skills_dir = os.path.join(temp_dir, ".agents", "skills")
+        skills_to_copy = sorted(os.listdir(src_skills_dir)) if os.path.exists(src_skills_dir) else []
+
         for skill in skills_to_copy:
-            src_skill = os.path.join(temp_dir, ".agents", "skills", skill)
+            src_skill = os.path.join(src_skills_dir, skill)
             dest_skill = os.path.join(dest_skills_dir, skill)
-            if os.path.exists(src_skill):
+            if os.path.isdir(src_skill):
                 if os.path.exists(dest_skill):
                     shutil.rmtree(dest_skill)
                 shutil.copytree(src_skill, dest_skill)
@@ -100,6 +97,15 @@ def install_agent_guide():
                 shutil.rmtree(dest_docs)
             shutil.copytree(src_docs, dest_docs)
             print("✅ Copied/Overwrote 'docs' directory")
+
+        # 4. Copy GitHub helper files if present.
+        src_github = os.path.join(temp_dir, ".github")
+        dest_github = os.path.join(cwd, ".github")
+        if os.path.exists(src_github):
+            if os.path.exists(dest_github):
+                shutil.rmtree(dest_github)
+            shutil.copytree(src_github, dest_github)
+            print("✅ Copied/Overwrote '.github' directory")
 
         print("🎉 Agent Guide Installation Complete!")
 

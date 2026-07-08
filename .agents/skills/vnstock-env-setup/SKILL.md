@@ -86,7 +86,7 @@ py .agents/skills/vnstock-env-setup/scripts/diagnostics.py
 Before proceeding, install the latest Agent Guide to provide the AI with the deepest context ($docs/$ and skills).
 
 1. **Check for existing docs:** `ls -d docs/ 2>/dev/null`
-2. **Request Permission:** If `docs/` exists, you MUST pause and ask the user (e.g. using `notify_user`): *"Thư mục `docs/` đã tồn tại. Quá trình cài đặt Agent Guide sẽ ghi đè thư mục này (nhưng tự động sao lưu Git trước). Bạn có đồng ý không?"*
+2. **Request Permission:** If `docs/` exists, you MUST pause and ask the user directly: *"Thư mục `docs/` đã tồn tại. Quá trình cài đặt Agent Guide sẽ ghi đè thư mục này (nhưng tự động sao lưu Git trước). Bạn có đồng ý không?"*
 3. **Execute Setup:**
 ```bash
 # Mac/Linux (append --confirm-docs-overwrite if permission was granted)
@@ -138,7 +138,7 @@ py -m vnstock_installer
 ```
 
 ### Step 6: Verification & Migration Check (⭐ CRITICAL)
-Run `diagnostics.py` again. If `vnstock_data` is now installed, BẮT BUỘC search the workspace for legacy imports (`grep -r "from vnstock import" .`). If found, run `vnstock-migration-expert` to migrate the user's code.
+Run `diagnostics.py` again. If `vnstock_data` is now installed, BẮT BUỘC search the workspace for legacy imports using a fast code search tool (for example `rg "from vnstock import"`). If found, run `vnstock-migration-expert` to migrate the user's code.
 
 ---
 

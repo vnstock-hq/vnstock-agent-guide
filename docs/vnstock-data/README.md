@@ -10,7 +10,7 @@
 - **Dữ liệu phân tích cơ bản (Fundamental)**: 
   - Báo cáo tài chính: Bảng cân đối kế toán, KQKD, Lưu chuyển tiền tệ.
   - Chỉ số tài chính, định giá, hồ sơ doanh nghiệp.
-  - [Chuẩn hóa Cấu trúc Báo cáo Tài chính (Schema Standardization)](schema-standardization.md): Hệ thống lược đồ chuẩn đảm bảo tính tương thích chéo.
+  - [Tham chiếu cấu trúc dữ liệu](08-schema-reference.md): Hệ thống lược đồ chuẩn đảm bảo tính tương thích chéo.
 - **Dữ liệu chuyên sâu**: Giao dịch khối ngoại, tự doanh, top cổ phiếu ảnh hưởng chỉ số, bản đồ nhiệt (Heatmap).
 - **Hiệu suất cao**: Caching, retry logic, rate limit handling.
 - **Xử lý lỗi mạnh mẽ**: Tự động retry khi kết nối mất.

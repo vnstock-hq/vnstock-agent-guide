@@ -11,11 +11,11 @@ description: Activate this skill when a user wants to upgrade from the free tier
 
 | User Intent | Best Tool / Script | Action |
 | :--- | :--- | :--- |
-| "Add API Key but still community version?" | Guide `docs/vnstock/12-migration-guide.md` | Explain `vnstock` vs `vnstock_data`. Instruct to install and switch imports. |
+| "Add API Key but still community version?" | Guide `docs/vnstock/08-migration-guide.md` | Explain `vnstock` vs `vnstock_data`. Instruct to install and switch imports. |
 | "Migrate large project Free to Sponsor" | `vnstock.core.utils.upgrade.migrate_to_sponsor` | Ensure code is committed, then run the built-in AST migration Python function. |
 | "GUI Installation Failed" | `docs/setup-and-debug/02-installation-troubleshooting.md` | Instruct to install from `requirements.txt` first. |
 | "externally-managed-environment error" | `docs/setup-and-debug/02-installation-troubleshooting.md` | Instruct to create a Virtual Environment (`.venv`). |
-| "Migrate old code to Unified UI (v3)" | `docs/vnstock-data/14-unified-ui.md` | Analyze code and map to the 7 Layers (Reference, Market, Fundamental, etc.). |
+| "Migrate old code to Unified UI (v3)" | `docs/vnstock-data/01-unified-ui.md` and `docs/vnstock-data/migrations/v3.0.md` | Analyze code and map to the 7 Layers (Reference, Market, Fundamental, etc.). |
 
 ---
 
@@ -137,4 +137,4 @@ Before notifying the user of completion, verify:
 - [ ] No residual `import vnstock` remains (if upgrading to sponsor tier).
 - [ ] Unified UI correctly utilizes the 7 Layers (Reference, Market, Fundamental, etc.).
 - [ ] No hallucinated API endpoints were used (checked via `show_api()`).
-- [ ] Linked `12-migration-guide.md` or `14-unified-ui.md` for further reading.
+- [ ] Linked `docs/vnstock/08-migration-guide.md` or `docs/vnstock-data/01-unified-ui.md` for further reading.
