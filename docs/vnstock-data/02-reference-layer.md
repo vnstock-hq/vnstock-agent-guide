@@ -33,14 +33,14 @@ Reference()
 
 #### Phương Thức
 
-| Method           | Tham Số | Mô Tả                       |
-| ---------------- | ------- | --------------------------- |
-| `info()`         | -       | Thông tin tổng quan công ty |
+| Method           | Tham Số | Mô Tả                                                                                    |
+| ---------------- | ------- | ---------------------------------------------------------------------------------------- |
+| `info()`         | -       | Thông tin tổng quan công ty                                                              |
 | `shareholders()` | `mode`  | Cơ cấu cổ đông và cổ đông lớn. `mode` có thể là `'detailed'` (mặc định) hoặc `'summary'` |
-| `officers()`     | -       | Danh sách quản lý cấp cao   |
-| `subsidiaries()` | -       | Danh sách công ty con       |
-| `news()`         | -       | Tin tức công ty             |
-| `events()`       | -       | Sự kiện công ty             |
+| `officers()`     | -       | Danh sách quản lý cấp cao                                                                |
+| `subsidiaries()` | -       | Danh sách công ty con                                                                    |
+| `news()`         | -       | Tin tức công ty                                                                          |
+| `events()`       | -       | Sự kiện công ty                                                                          |
 
 #### 📝 Chi Tiết Các Phương Thức
 
@@ -107,12 +107,12 @@ df_events = ref.company("TCB").events()
 
 #### Phương thức
 
-| Method               | Tham Số | Mô Tả                              |
-| -------------------- | ------- | ---------------------------------- |
-| `list()`             | -       | Toàn bộ danh sách cổ phiếu         |
-| `list_by_group()`    | `group` | Cổ phiếu theo nhóm (VN30, HOSE...) |
-| `list_by_exchange()` | -       | Cổ phiếu theo sàn (HSX, HNX...)    |
-| `list_by_industry()` | -       | Cổ phiếu theo ngành ICB            |
+| Method               | Tham Số            | Mô Tả                              |
+| -------------------- | ------------------ | ---------------------------------- |
+| `list()`             | -                  | Toàn bộ danh sách cổ phiếu         |
+| `list_by_group()`    | `group`            | Cổ phiếu theo nhóm (VN30, HOSE...) |
+| `list_by_exchange()` | -                  | Cổ phiếu theo sàn (HSX, HNX...)    |
+| `list_by_industry()` | `icb_code`, `lang` | Cổ phiếu theo ngành ICB            |
 
 #### 📝 Chi Tiết Các Phương Thức
 
@@ -247,12 +247,25 @@ sectors = ref.industry.sectors()
 
 **1. Danh sách Quỹ Đầu Tư Mở (`list`)**
 - **Mục đích:** Tra cứu danh sách tất cả các quỹ mở (Mutual Funds) đang hoạt động trên FMarket.
-- **Tham số:** `fund_type` (`str`): Loại quỹ muốn lọc (VD: `"Cổ phiếu"`, `"Trái phiếu"`, `"Cân bằng"`). Để trống `""` sẽ lấy toàn bộ.
 ```python
 from vnstock_data import Reference
 ref = Reference()
 
-funds = ref.fund.list(fund_type="")
+funds = ref.fund.list()
+```
+
+**2. Thông tin chi tiết của Quỹ**
+- **Mục đích:** Truy xuất thông tin phân bổ và tăng trưởng của một quỹ cụ thể.
+- **Tham số:** Có thể truyền `symbol` (Mã quỹ) vào phương thức hoặc gọi trực tiếp trên domain (`ref.fund("Mã_Quỹ")`). `source` mặc định là `"fmarket"`.
+```python
+# Gọi qua thuộc tính symbol
+fmarket = ref.fund("FUEVNFND")
+top_holdings = fmarket.top_holding()
+industry = fmarket.industry_holding()
+nav = fmarket.nav_report()
+
+# Hoặc truyền tham số trực tiếp
+assets = ref.fund.asset_holding(symbol="FUEVNFND")
 ```
 
 ---
@@ -291,6 +304,7 @@ etf_list = ref.etf.list()
 | Method   | Tham Số     | Mô Tả                                                                     |
 | -------- | ----------- | ------------------------------------------------------------------------- |
 | `list()` | `bond_type` | Danh sách trái phiếu. `bond_type`: `'all'`, `'corporate'`, `'government'` |
+| `info()` | -           | Thông tin chi tiết trái phiếu (cần symbol)                                |
 
 #### 📝 Chi Tiết Các Phương Thức
 
@@ -302,10 +316,16 @@ from vnstock_data import Reference
 ref = Reference()
 
 # Lấy toàn bộ danh sách trái phiếu
-all_bonds = ref.bond.list(bond_type="all")
+all_bonds = ref.bond().list(bond_type="all")
 
 # Lọc riêng trái phiếu doanh nghiệp
-corp_bonds = ref.bond.list(bond_type="corporate")
+corp_bonds = ref.bond().list(bond_type="corporate")
+```
+
+**2. Thông tin chi tiết Trái Phiếu (`info`)**
+- **Mục đích:** Lấy thông tin tóm tắt và chi tiết của một mã trái phiếu cụ thể.
+```python
+bond_info = ref.bond("CII425021").info()
 ```
 
 ---
@@ -317,10 +337,10 @@ corp_bonds = ref.bond.list(bond_type="corporate")
 
 #### Phương thức
 
-| Method       | Tham Số                      | Mô Tả                                           |
-| ------------ | ---------------------------- | ----------------------------------------------- |
-| `calendar()` | `start`, `end`, `event_type` | Lịch sự kiện (cổ tức, ĐHCĐ, IPO...)             |
-| `market()`   | `start`, `end`, `event_type` | Sự kiện thị trường đặc biệt (nghỉ lễ, sự cố...) |
+| Method       | Tham Số                                       | Mô Tả                                           |
+| ------------ | --------------------------------------------- | ----------------------------------------------- |
+| `calendar()` | `start`, `end`, `event_type`, `page`, `limit` | Lịch sự kiện (cổ tức, ĐHCĐ, IPO...)             |
+| `market()`   | `start`, `end`, `event_type`                  | Sự kiện thị trường đặc biệt (nghỉ lễ, sự cố...) |
 
 **`event_type` cho `calendar()`:**
 - `'dividend'`: Cổ tức, phát hành cổ phiếu
@@ -333,8 +353,10 @@ corp_bonds = ref.bond.list(bond_type="corporate")
 **1. Lịch sự kiện (`calendar`)**
 - **Mục đích:** Tra cứu lịch chi trả cổ tức, họp Đại hội đồng cổ đông, giao dịch nội bộ... theo thời gian.
 - **Tham số:** 
-  - `start`, `end` (`str`, optional): Khoảng thời gian lọc (`"YYYY-MM-DD"`).
+  - `start`, `end` (`str`, optional): Khoảng thời gian lọc (`"YYYY-MM-DD"`). Mặc định là ngày hiện tại.
   - `event_type` (`str`, optional): Loại sự kiện (`"dividend"`, `"insider"`, `"agm"`, `"others"`).
+  - `page` (`int`): Trang dữ liệu, mặc định `0`.
+  - `limit` (`int`): Số bản ghi tối đa, mặc định `20000`.
 ```python
 from vnstock_data import Reference
 ref = Reference()

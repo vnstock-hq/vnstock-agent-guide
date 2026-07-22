@@ -37,6 +37,7 @@ Fundamental()
 - `period` (`str`): Kỳ báo cáo (`'year'` cho năm, `'quarter'` cho quý).
 - `lang` (`str`): Ngôn ngữ (`'vi'` hoặc `'en'`). Mặc định `'vi'`.
 - `dropna` (`bool`): Xoá các trường bị rỗng. Mặc định `True`.
+- `scorecard` (`str`, optional): Ép chuẩn hoá theo khung (`'auto'`, `'banking'`, `'securities'`, `'insurance'`, `'generic'`). Mặc định `None`.
 
 **Ví Dụ:**
 ```python
@@ -53,7 +54,7 @@ df_income = fun.equity("TCB").income_statement(period="year")
 
 **Source:** MAS  
 **Registry Key:** `"equity.fundamental.balance_sheet"`  
-**Tham số:** Tương tự `income_statement` (`period`, `lang`, `dropna`).
+**Tham số:** Tương tự `income_statement` (`period`, `lang`, `dropna`, `scorecard`).
 
 **Ví Dụ:**
 ```python

@@ -17,7 +17,8 @@
 Macro()
 ├── .economy()       # Dữ liệu kinh tế Việt Nam
 ├── .currency()      # Tỷ giá, lãi suất
-└── .commodity()     # Giá hàng hóa
+├── .commodity()     # Giá hàng hóa
+└── .global          # Chỉ số toàn cầu (bond, fed rate)
 ```
 
 ## 📋 Chi Tiết Các Domain
@@ -41,8 +42,11 @@ Dữ liệu kinh tế Việt Nam theo quý/năm: GDP, CPI, FDI, xuất nhập kh
 | `import_export()` | `start`, `end`, `period` | Xuất nhập khẩu | DataFrame |
 | `retail()` | `start`, `end`, `period` | Bán lẻ | DataFrame |
 | `fdi()` | `start`, `end`, `period` | Đầu tư trực tiếp nước ngoài | DataFrame |
-| `money_supply()` | `start`, `end`, `period` | Cung tiền | DataFrame |
+| `money_supply()` | `start`, `end`, `period`, `breakdown` | Cung tiền | DataFrame |
 | `population_labor()` | `start`, `end`, `period` | Dân số & lao động | DataFrame |
+| `credit()` | `start`, `end`, `period`, `breakdown` | Tín dụng | DataFrame |
+| `total_investment()` | `start`, `end`, `period` | Tổng vốn đầu tư | DataFrame |
+| `state_budget()` | `start`, `end`, `period` | Ngân sách nhà nước | DataFrame |
 
 **Parameters:**
 - `start`: Mốc bắt đầu (ví dụ: "2020-01" hoặc "2020")
@@ -121,6 +125,10 @@ Tỷ giá hối đoái, lãi suất tiền tệ, chính sách tiền tệ.
 |--------|---------|-------|--------|
 | `exchange_rate()` | `start`, `end`, `period` | Tỷ giá hối đoái | DataFrame |
 | `interest_rate()` | `start`, `end`, `period`, `format` | Lãi suất | DataFrame |
+| `interbank_rate()` | `start`, `end`, `period` | Lãi suất liên ngân hàng | DataFrame |
+| `policy_rate()` | `start`, `end` | Lãi suất điều hành | DataFrame |
+| `omo()` | `start`, `end` | Nghiệp vụ thị trường mở | DataFrame |
+| `deposit_rate()` | `mode`, `period`, `start`, `end` | Lãi suất huy động | DataFrame |
 
 **Parameters:**
 - `period`: "day" (mặc định), "month", "quarter"
@@ -288,6 +296,46 @@ print(df_pork_china[['report_time', 'price']])
 
 ---
 
+### 4. Global Domain (Kinh Tế Toàn Cầu)
+
+**Registry Key:** `"macro.global"`
+
+#### Mô Tả
+
+Cung cấp các chỉ số vĩ mô toàn cầu như lợi suất trái phiếu chính phủ, lãi suất Fed, và các chỉ số vĩ mô thế giới (ví dụ DXY).
+
+#### Phương Thức
+
+| Method | Tham Số | Mô Tả | Return |
+|--------|---------|-------|--------|
+| `bond_yield()` | `market`, `tenor` | Lợi suất trái phiếu chính phủ | DataFrame |
+| `fed_rate()` | `start`, `end` | Lãi suất Fed (US Federal Reserve Fund Rate) | DataFrame |
+| `index()` | `symbol` | Các chỉ số vĩ mô toàn cầu (ví dụ DXY) | DataFrame |
+
+**Parameters:**
+- `market`: Ví dụ "VN"
+- `tenor`: Kỳ hạn, ví dụ "10Y", "5Y"
+- `symbol`: Ticker của chỉ số vĩ mô (mặc định 'DXY')
+
+#### Ví Dụ
+
+```python
+from vnstock_data import Macro
+
+mac = Macro()
+
+# Lợi suất trái phiếu VN 10 năm
+df_bond = mac.global.bond_yield(market="VN", tenor="10Y")
+
+# Lãi suất Fed
+df_fed = mac.global.fed_rate()
+
+# Chỉ số DXY (Sức mạnh đồng USD)
+df_dxy = mac.global.index(symbol="DXY")
+```
+
+---
+
 ## 🔗 Registry Mapping
 
 ```python
@@ -305,6 +353,15 @@ MACRO_SOURCES = {
     "macro.currency": {
         "exchange_rate": ("mbk", "macro", "Macro", "exchange_rate"),
         "interest_rate": ("mbk", "macro", "Macro", "interest_rate"),
+        "interbank_rate": ("mbk", "macro", "Macro", "interbank_rate"),
+        "policy_rate": ("mbk", "macro", "Macro", "policy_rate"),
+        "omo": ("mbk", "macro", "Macro", "omo"),
+        "deposit_rate": ("mbk", "macro", "Macro", "deposit_rate"),
+    },
+    "macro.global": {
+        "bond_yield": ("asean", "macro", "Macro", "bond_yield"),
+        "fed_rate": ("asean", "macro", "Macro", "fed_rate"),
+        "index": ("asean", "macro", "Macro", "index"),
     },
     "macro.commodity": {
         "gold_vn": ("spl", "commodity", "CommodityPrice", "gold_vn"),

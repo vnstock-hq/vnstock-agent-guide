@@ -14,7 +14,11 @@
 ```python
 Insights()
 ├── .ranking       # Xếp hạng top cổ phiếu
-└── .screener      # Bộ lọc chứng khoán
+├── .screener      # Bộ lọc chứng khoán
+├── .sentiment     # Tâm lý thị trường (Experimental)
+├── .flow          # Dòng tiền thị trường (Experimental)
+├── .sector()      # Phân tích ngành (Experimental)
+└── .equity()      # Phân tích cổ phiếu (Experimental)
 ```
 
 ## 📋 Chi Tiết Các Domain
@@ -243,6 +247,84 @@ print(cheap_good[['symbol', 'pe', 'roe']].head())
 | ABB | UPCOM | 15200 | 17400 | 15200 | 13000 | 1.65051e+09 | 107900 | 1.57326e+13 | 0 | 1.23616e+10 | -86.8034 | 831840 | 302733 | -63.6068 | 4.69571 | 0.986995 | 21.1886 | 260.74 | 49.4604 | 34.5488 | 68.6208 |
 
 ---
+
+### 3. Sentiment Domain (Tâm Lý Thị Trường)
+
+**Registry Key:** `"insights.sentiment"`
+
+Cung cấp các chỉ báo vĩ mô về tâm lý thị trường.
+
+| Method | Tham Số | Mô Tả | Return |
+|--------|---------|-------|--------|
+| `breadth()` | `exchange` | Độ rộng thị trường (tăng/giảm, trên MA20/MA50) | DataFrame |
+| `contribution()` | `exchange` | Top cổ phiếu đóng góp vào điểm số chỉ số | DataFrame |
+| `heatmap()` | `exchange` | Bản đồ nhiệt thị trường | DataFrame |
+
+```python
+# Độ rộng thị trường sàn HOSE
+df_breadth = ins.sentiment.breadth(exchange='HOSE')
+```
+
+---
+
+### 4. Flow Domain (Dòng Tiền)
+
+**Registry Key:** `"insights.flow"`
+
+Cung cấp phân tích dòng tiền của các thành phần tham gia thị trường.
+
+| Method | Tham Số | Mô Tả | Return |
+|--------|---------|-------|--------|
+| `foreign()` | `exchange`, `group_by` | Dòng tiền mua/bán ròng của khối ngoại | DataFrame |
+| `proprietary()` | `exchange`, `group_by` | Dòng tiền tự doanh | DataFrame |
+| `active()` | `exchange`, `group_by` | Dòng tiền chủ động (aggressor) | DataFrame |
+
+```python
+# Dòng tiền khối ngoại trên sàn HOSE
+df_foreign = ins.flow.foreign(exchange='HOSE', group_by='stock')
+```
+
+---
+
+### 5. Sector Domain (Phân Tích Ngành)
+
+**Registry Key:** `"insights.sector"`
+
+Cung cấp công cụ phân tích cấp độ ngành (Yêu cầu `ind_code`).
+
+| Method | Tham Số | Mô Tả | Return |
+|--------|---------|-------|--------|
+| `valuation()` | | Chỉ số định giá của ngành | DataFrame |
+| `members()` | | Danh sách các cổ phiếu thành phần | DataFrame |
+| `rrg()` | | Động lượng RRG của ngành | DataFrame |
+| `flow()` | | Dòng tiền cấp độ ngành | DataFrame |
+| `index_intraday()` | | Giá trị chỉ số ngành intraday | DataFrame |
+| `flow_intraday()` | | Dòng tiền chủ động intraday của ngành | DataFrame |
+
+```python
+# Phân tích định giá ngành ngân hàng
+df_bank_val = ins.sector('bank').valuation()
+```
+
+---
+
+### 6. Equity Domain (Phân Tích Cổ Phiếu)
+
+**Registry Key:** `"insights.equity"`
+
+Cung cấp công cụ phân tích cấp độ cổ phiếu (Yêu cầu `symbol`).
+
+| Method | Tham Số | Mô Tả | Return |
+|--------|---------|-------|--------|
+| `peer_compare()` | | So sánh định giá với các công ty cùng ngành | DataFrame |
+| `order_flow()` | `mode` | Phân bổ dòng lệnh (`mode`: 'by_price' hoặc 'by_time') | DataFrame |
+| `order_flow_history()` | | Lịch sử giao dịch và phân bổ dòng tiền | DataFrame |
+| `rrg()` | | Động lượng RRG của cổ phiếu | DataFrame |
+
+```python
+# So sánh ACB với các ngân hàng khác
+df_acb_comp = ins.equity('ACB').peer_compare()
+```
 
 ## 💡 Best Practices
 

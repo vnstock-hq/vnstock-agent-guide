@@ -58,20 +58,20 @@ Các hàm truy xuất trạng thái hiện tại như `quote()`, `order_book()`,
 
 #### Phương Thức
 
-| Method | Mô Tả | Return |
-|--------|------|--------|
-| `ohlcv()` | Giá OHLCV lịch sử | DataFrame |
-| `trade_history()` | Lịch sử thống kê giao dịch (giá, khối lượng, giá trị) | DataFrame |
-| `trades()` | Lệnh giao dịch chi tiết (Time & Sales) | DataFrame |
-| `order_book()` | Cấp độ mua/bán | DataFrame |
-| `quote()` | Giá hiện tại / Bảng giá | DataFrame |
-| `session_stats()` | Thống kê phiên giao dịch | DataFrame |
-| `foreign_flow()` | Dòng tiền nước ngoài | DataFrame |
-| `proprietary_flow()` | Dòng tiền tự doanh | DataFrame |
-| `block_trades()` | Giao dịch thỏa thuận | DataFrame |
-| `odd_lot()` | Giao dịch lô lẻ | DataFrame |
-| `volume_profile()` | Phân bố khối lượng theo giá | DataFrame |
-| `summary()` | Tổng hợp thông tin cổ phiếu | DataFrame |
+| Method               | Mô Tả                                                 | Return    |
+| -------------------- | ----------------------------------------------------- | --------- |
+| `ohlcv()`            | Giá OHLCV lịch sử                                     | DataFrame |
+| `trade_history()`    | Lịch sử thống kê giao dịch (giá, khối lượng, giá trị) | DataFrame |
+| `trades()`           | Lệnh giao dịch chi tiết (Time & Sales)                | DataFrame |
+| `order_book()`       | Cấp độ mua/bán                                        | DataFrame |
+| `quote()`            | Giá hiện tại / Bảng giá                               | DataFrame |
+| `session_stats()`    | Thống kê phiên giao dịch                              | DataFrame |
+| `foreign_flow()`     | Dòng tiền nước ngoài                                  | DataFrame |
+| `proprietary_flow()` | Dòng tiền tự doanh                                    | DataFrame |
+| `block_trades()`     | Giao dịch thỏa thuận                                  | DataFrame |
+| `odd_lot()`          | Giao dịch lô lẻ                                       | DataFrame |
+| `volume_profile()`   | Phân bố khối lượng theo giá                           | DataFrame |
+| `summary()`          | Tổng hợp thông tin cổ phiếu                           | DataFrame |
 
 #### 📝 Chi Tiết Các Phương Thức
 
@@ -166,11 +166,13 @@ vol_profile = mkt.equity("VJC").volume_profile()
 
 #### Phương Thức
 
-| Method | Mô Tả | Return |
-|--------|------|--------|
-| `ohlcv()` | Điểm chỉ số lịch sử | DataFrame |
-| `quote()` | Điểm chỉ số hiện tại | DataFrame |
-| `summary()` | Tổng hợp chỉ số | DataFrame |
+| Method              | Mô Tả                                        | Return    |
+| ------------------- | -------------------------------------------- | --------- |
+| `ohlcv()`           | Điểm chỉ số lịch sử                          | DataFrame |
+| `quote()`           | Điểm chỉ số hiện tại                         | DataFrame |
+| `summary()`         | Tổng hợp chỉ số                              | DataFrame |
+| `trade_history()`   | Thống kê giao dịch lịch sử (giá, khối lượng) | DataFrame |
+| `stock_influence()` | Top cổ phiếu ảnh hưởng tới chỉ số            | DataFrame |
 
 #### 📝 Chi Tiết Các Phương Thức
 
@@ -198,6 +200,18 @@ quote_index = mkt.index("VNINDEX").quote()
 summary_index = mkt.index("VNINDEX").summary()
 ```
 
+**4. Thống kê Giao dịch Lịch sử (`trade_history`)**
+- **Mục đích:** Cung cấp dữ liệu thống kê giao dịch theo thời gian.
+```python
+hist_trades = mkt.index("VNINDEX").trade_history(start="2026-02-01", end="2026-03-01")
+```
+
+**5. Cổ phiếu Ảnh hưởng (`stock_influence`)**
+- **Mục đích:** Lấy top các cổ phiếu tác động mạnh nhất đến điểm số của chỉ số.
+```python
+influence = mkt.index("VNINDEX").stock_influence()
+```
+
 ---
 
 ### 3. Futures Market (Thị Trường Hợp Đồng Tương Lai)
@@ -207,13 +221,13 @@ summary_index = mkt.index("VNINDEX").summary()
 
 #### Phương Thức
 
-| Method | Mô Tả | Return |
-|--------|------|--------|
-| `ohlcv()` | Giá hợp đồng lịch sử | DataFrame |
-| `quote()` | Giá hiện tại | DataFrame |
-| `trades()` | Giao dịch chi tiết | DataFrame |
-| `order_book()` | Cấp độ mua/bán | DataFrame |
-| `summary()` | Thông tin hợp đồng | DataFrame |
+| Method         | Mô Tả                | Return    |
+| -------------- | -------------------- | --------- |
+| `ohlcv()`      | Giá hợp đồng lịch sử | DataFrame |
+| `quote()`      | Giá hiện tại         | DataFrame |
+| `trades()`     | Giao dịch chi tiết   | DataFrame |
+| `order_book()` | Cấp độ mua/bán       | DataFrame |
+| `summary()`    | Thông tin hợp đồng   | DataFrame |
 
 #### 📝 Chi Tiết Các Phương Thức
 
@@ -262,13 +276,13 @@ summary_vn30f = mkt.futures("VN30F2503").summary()
 
 #### Phương Thức
 
-| Method | Mô Tả | Return |
-|--------|------|--------|
-| `ohlcv()` | Giá chứng quyền lịch sử | DataFrame |
-| `quote()` | Giá hiện tại | DataFrame |
-| `trades()` | Giao dịch chi tiết | DataFrame |
-| `order_book()` | Cấp độ mua/bán | DataFrame |
-| `summary()` | Thông tin chứng quyền | DataFrame |
+| Method         | Mô Tả                   | Return    |
+| -------------- | ----------------------- | --------- |
+| `ohlcv()`      | Giá chứng quyền lịch sử | DataFrame |
+| `quote()`      | Giá hiện tại            | DataFrame |
+| `trades()`     | Giao dịch chi tiết      | DataFrame |
+| `order_book()` | Cấp độ mua/bán          | DataFrame |
+| `summary()`    | Thông tin chứng quyền   | DataFrame |
 
 #### 📝 Chi Tiết Các Phương Thức
 
@@ -317,13 +331,13 @@ summary_warrant = mkt.warrant("CACB2511").summary()
 
 #### Phương Thức
 
-| Method | Mô Tả | Return |
-|--------|------|--------|
-| `ohlcv()` | Giá trái phiếu lịch sử | DataFrame |
-| `quote()` | Giá hiện tại | DataFrame |
-| `trades()` | Giao dịch chi tiết | DataFrame |
-| `order_book()` | Cấp độ mua/bán | DataFrame |
-| `summary()` | Thông tin trái phiếu | DataFrame |
+| Method         | Mô Tả                  | Return    |
+| -------------- | ---------------------- | --------- |
+| `ohlcv()`      | Giá trái phiếu lịch sử | DataFrame |
+| `quote()`      | Giá hiện tại           | DataFrame |
+| `trades()`     | Giao dịch chi tiết     | DataFrame |
+| `order_book()` | Cấp độ mua/bán         | DataFrame |
+| `summary()`    | Thông tin trái phiếu   | DataFrame |
 
 #### 📝 Chi Tiết Các Phương Thức
 
@@ -389,12 +403,12 @@ quote_etf = mkt.etf("E1VFVN30").quote()
 
 #### Phương Thức
 
-| Method | Mô Tả | Return |
-|--------|------|--------|
-| `history()` | Lịch sử NAV quỹ | DataFrame |
-| `top_holding()` | Top cổ phiếu nắm giữ | DataFrame |
-| `industry_holding()` | Nắm giữ theo ngành | DataFrame |
-| `asset_holding()` | Nắm giữ theo loại tài sản | DataFrame |
+| Method               | Mô Tả                     | Return    |
+| -------------------- | ------------------------- | --------- |
+| `history()`          | Lịch sử NAV quỹ           | DataFrame |
+| `top_holding()`      | Top cổ phiếu nắm giữ      | DataFrame |
+| `industry_holding()` | Nắm giữ theo ngành        | DataFrame |
+| `asset_holding()`    | Nắm giữ theo loại tài sản | DataFrame |
 
 #### 📝 Chi Tiết Các Phương Thức
 
@@ -435,9 +449,11 @@ asset = mkt.fund("VFIBS").asset_holding()
 
 #### Phương Thức
 
-| Method | Tham Số | Mô Tả | Return |
-|--------|---------|------|--------|
-| `quote()` | `symbols_list` | Giá nhiều mã cùng lúc | DataFrame |
+| Method          | Tham Số        | Mô Tả                    | Return    |
+| --------------- | -------------- | ------------------------ | --------- |
+| `quote()`       | `symbols_list` | Giá nhiều mã cùng lúc    | DataFrame |
+| `put_through()` | `symbols_list` | Lệnh thoả thuận nhiều mã | DataFrame |
+| `odd_lot()`     | `symbols_list` | Lệnh lô lẻ nhiều mã      | DataFrame |
 
 #### Ví Dụ
 
@@ -449,6 +465,10 @@ mkt = Market()
 # Bảng giá nhiều mã cùng lúc
 df_quotes = mkt.quote(["VIC", "TCB", "HPG", "VNM"])
 print(df_quotes)
+
+# Bảng giá lô lẻ và thoả thuận
+df_odds = mkt.odd_lot(["VIC", "TCB"])
+df_pts = mkt.put_through(["VIC", "TCB"])
 ```
 
 ---
@@ -462,18 +482,18 @@ print(df_quotes)
 
 Dữ liệu Crypto Market được liên kết trực tiếp từ **Binance Spot API**. Hỗ trợ truy xuất OHLCV theo khung thời gian (interval) tuỳ chỉnh, Orderbook Horizontal chuẩn hoá đa cấp độ (L1-L10), lịch sử giao dịch (Intraday Trades với cơ chế map Taker/Maker) và báo giá tổng hợp 24h.
 
-| Method | Mô Tả | Return |
-|--------|------|--------|
-| `ohlcv()` | Giá lịch sử Klines đa khung thời gian (1m, 1h, 1d) | DataFrame |
-| `quote()` | Báo giá ticker lũy kế 24 giờ dạng Snapshot | DataFrame |
-| `intraday()` | Khớp lệnh chi tiết gần nhất (Time & Sales) | DataFrame |
-| `order_book()` | Sổ lệnh L1 - L10 (được dàn đều theo chiều ngang) | DataFrame |
-| `trade_history()` | Truy vấn lịch sử giao dịch bằng ID lệnh cũ (`/historicalTrades`) | DataFrame |
-| `vwap()` | Giá trung bình theo khối lượng (`/avgPrice`) | DataFrame |
-| `daily_stats()` | Thống kê phiên giao dịch (`/ticker/tradingDay`) | DataFrame |
-| `last_price()` | Mức giá khớp lệnh cuối cùng (`/ticker/price`) | DataFrame |
-| `rolling_stats()` | Thống kê theo cửa sổ trượt (Rolling Window Ticker) | DataFrame |
-| `reference_price(mode)` | Giá tham chiếu (`price`) hoặc cấu trúc tính toán (`calc`) | DataFrame |
+| Method                  | Mô Tả                                                            | Return    |
+| ----------------------- | ---------------------------------------------------------------- | --------- |
+| `ohlcv()`               | Giá lịch sử Klines đa khung thời gian (1m, 1h, 1d)               | DataFrame |
+| `quote()`               | Báo giá ticker lũy kế 24 giờ dạng Snapshot                       | DataFrame |
+| `intraday()`            | Khớp lệnh chi tiết gần nhất (Time & Sales)                       | DataFrame |
+| `order_book()`          | Sổ lệnh L1 - L10 (được dàn đều theo chiều ngang)                 | DataFrame |
+| `trade_history()`       | Truy vấn lịch sử giao dịch bằng ID lệnh cũ (`/historicalTrades`) | DataFrame |
+| `vwap()`                | Giá trung bình theo khối lượng (`/avgPrice`)                     | DataFrame |
+| `daily_stats()`         | Thống kê phiên giao dịch (`/ticker/tradingDay`)                  | DataFrame |
+| `last_price()`          | Mức giá khớp lệnh cuối cùng (`/ticker/price`)                    | DataFrame |
+| `rolling_stats()`       | Thống kê theo cửa sổ trượt (Rolling Window Ticker)               | DataFrame |
+| `reference_price(mode)` | Giá tham chiếu (`price`) hoặc cấu trúc tính toán (`calc`)        | DataFrame |
 
 #### Ví dụ Truy xuất Crypto
 ```python
@@ -505,10 +525,12 @@ df_vwap = crypto.vwap()
 
 Các domain Forex, Commodity, Index (Chỉ số Quốc Tế) giờ đây được hợp nhất kiến trúc và trực tiếp truy xuất Data **Tick/Phút liên tục** thông qua `Dukascopy`. Hệ thống còn cho phép cơ chế *Resampling* nội bộ đối với các khung cao (1h, 4h, 1d...).
 
-| Method | Tham Số Chính | Mô Tả | Return |
-|--------|---------------|------|--------|
-| `ohlcv()` | `interval`, `length`, `timezone` | Lịch sử giá theo khoảng thời gian tuỳ chọn | DataFrame |
-| `intraday()`| `timezone` | Dữ liệu Tick (Khớp lệnh) | DataFrame |
+| Method    | Tham Số Chính                    | Mô Tả                                                      | Return    |
+| --------- | -------------------------------- | ---------------------------------------------------------- | --------- |
+| `ohlcv()` | `interval`, `length`, `timezone` | Lịch sử giá theo khoảng thời gian tuỳ chọn                 | DataFrame |
+| `quote()` | `timezone`                       | Snapshot giá hiện tại (áp dụng cho Index với scope global) | DataFrame |
+
+> **Lưu ý**: Dữ liệu khớp lệnh chi tiết (`trades`) không khả dụng trên nguồn FXSB cho Forex, Commodity và Global Index.
 
 > **🌟 Tính năng Timezone Configuration Parameter**:  
 > Lịch sử giá Dukascopy và Quốc tế mặc định được tự động map về quy chuẩn giờ Hệ thống Việt Nam (`Asia/Ho_Chi_Minh` / GMT+7). Tuy nhiên, có thể tuỳ ý ghi đè múi giờ gốc (UTC) hoặc bất kỳ giờ khu vực nào qua tham số `timezone`.
